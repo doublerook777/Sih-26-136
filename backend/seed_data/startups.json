@@ -3,7 +3,8 @@
     "id": 1,
     "user_id": 2,
     "name": "AquaSense Systems",
-    "sector": "Water Management",
+    "sector": "water",
+    "sector_label": "Water Management",
     "technologies": [
       "IoT",
       "Pressure Sensors",
@@ -12,14 +13,33 @@
       "SCADA Integration",
       "Telemetry"
     ],
+    "tech_tags": [
+      "iot",
+      "sensors",
+      "ai",
+      "analytics",
+      "gis"
+    ],
     "dpiit_number": "DIPP48291",
     "incorporation_year": 2021,
     "turnover": 6500000,
     "team_size": 18,
     "past_projects": [
-      "Pune Municipal Smart Water Pilot - Ward 7",
-      "PCMC DMA Leakage Reduction Project",
-      "Surat Industrial Water Audit Telemetry"
+      {
+        "name": "Pune Municipal Smart Water Pilot - Ward 7",
+        "sector": "water",
+        "year": 2024
+      },
+      {
+        "name": "PCMC DMA Leakage Reduction Project",
+        "sector": "water",
+        "year": 2023
+      },
+      {
+        "name": "Surat Industrial Water Audit Telemetry",
+        "sector": "water",
+        "year": 2022
+      }
     ],
     "certifications": [
       "ISO 9001:2015",
@@ -36,7 +56,8 @@
     "id": 2,
     "user_id": 3,
     "name": "PipeAI Technologies",
-    "sector": "Water Management",
+    "sector": "water",
+    "sector_label": "Water Management",
     "technologies": [
       "Machine Learning",
       "Digital Twin",
@@ -45,13 +66,28 @@
       "Flow Analytics",
       "IoT"
     ],
+    "tech_tags": [
+      "ai",
+      "analytics",
+      "gis",
+      "cloud",
+      "iot"
+    ],
     "dpiit_number": "DIPP73910",
     "incorporation_year": 2022,
     "turnover": 4200000,
     "team_size": 12,
     "past_projects": [
-      "Nagpur Pipeline Stress & Burst Prediction",
-      "MIDC Industrial Feeder Digital Twin"
+      {
+        "name": "Nagpur NRW Digital Twin Study",
+        "sector": "water",
+        "year": 2024
+      },
+      {
+        "name": "Coimbatore Pipeline Failure Prediction Pilot",
+        "sector": "water",
+        "year": 2023
+      }
     ],
     "certifications": [
       "ISO 9001:2015",
@@ -67,7 +103,8 @@
     "id": 3,
     "user_id": 4,
     "name": "HydroTrack Telemetry",
-    "sector": "Water Management",
+    "sector": "water",
+    "sector_label": "Water Management",
     "technologies": [
       "Ultrasonic Flow Sensors",
       "LoRaWAN",
@@ -75,12 +112,21 @@
       "Cloud Dashboards",
       "Alert Engine"
     ],
+    "tech_tags": [
+      "sensors",
+      "iot",
+      "cloud"
+    ],
     "dpiit_number": "DIPP19482",
-    "incorporation_year": 2023,
+    "incorporation_year": 2025,
     "turnover": 2800000,
     "team_size": 9,
     "past_projects": [
-      "Jaipur Urban Water Distribution Telemetry - Zone 4"
+      {
+        "name": "Kolhapur Ward-level Flow Metering Trial",
+        "sector": "water",
+        "year": 2024
+      }
     ],
     "certifications": [
       "ISO 9001:2015",
@@ -96,7 +142,8 @@
     "id": 4,
     "user_id": 5,
     "name": "JalShuddh AI",
-    "sector": "Water Management",
+    "sector": "water",
+    "sector_label": "Water Management",
     "technologies": [
       "Spectroscopy Sensors",
       "Computer Vision",
@@ -104,14 +151,33 @@
       "Edge AI",
       "Turbidity Analytics"
     ],
+    "tech_tags": [
+      "sensors",
+      "computer-vision",
+      "ai",
+      "edge-computing",
+      "iot"
+    ],
     "dpiit_number": "DIPP62041",
     "incorporation_year": 2021,
     "turnover": 5100000,
     "team_size": 14,
     "past_projects": [
-      "Ganga River Tributary Monitoring Station",
-      "Varanasi STPs Real-time Effluent Quality Check",
-      "Delhi Jal Board WTP Sensor Trial"
+      {
+        "name": "Nashik Source Water Quality Monitoring",
+        "sector": "water",
+        "year": 2024
+      },
+      {
+        "name": "Aurangabad Treatment Plant Turbidity Pilot",
+        "sector": "water",
+        "year": 2023
+      },
+      {
+        "name": "Bhopal Lake Contamination Survey",
+        "sector": "water",
+        "year": 2022
+      }
     ],
     "certifications": [
       "ISO 9001:2015",
@@ -128,7 +194,8 @@
     "id": 5,
     "user_id": 6,
     "name": "AquaDrain Solutions",
-    "sector": "Water Management",
+    "sector": "water",
+    "sector_label": "Water Management",
     "technologies": [
       "Radar Level Sensors",
       "Drainage Flow Modeling",
@@ -136,13 +203,26 @@
       "SMS Gateways",
       "GIS"
     ],
-    "dpiit_number": "DIPP88102",
+    "tech_tags": [
+      "sensors",
+      "gis",
+      "analytics"
+    ],
+    "dpiit_number": null,
     "incorporation_year": 2022,
     "turnover": 3500000,
     "team_size": 10,
     "past_projects": [
-      "Chennai Stormwater Drain Silt & Water Level Monitoring",
-      "Mumbai Lower Parel Inundation Alert Trial"
+      {
+        "name": "Thane Stormwater Drain Level Network",
+        "sector": "water",
+        "year": 2024
+      },
+      {
+        "name": "Vasai Flood Early Warning Deployment",
+        "sector": "water",
+        "year": 2023
+      }
     ],
     "certifications": [
       "ISO 9001:2015",
@@ -158,7 +238,8 @@
     "id": 6,
     "user_id": 7,
     "name": "MedQueue Technologies",
-    "sector": "Healthcare",
+    "sector": "healthcare",
+    "sector_label": "Healthcare",
     "technologies": [
       "Queue Optimization Algorithms",
       "OPD Workflow AI",
@@ -167,14 +248,32 @@
       "HMIS Integration",
       "FastAPI"
     ],
+    "tech_tags": [
+      "ai",
+      "analytics",
+      "cloud",
+      "mobile-app"
+    ],
     "dpiit_number": "DIPP55231",
     "incorporation_year": 2020,
     "turnover": 8800000,
     "team_size": 22,
     "past_projects": [
-      "AIIMS New Delhi Outpatient Triage Pilot",
-      "KEM Hospital Mumbai Queue Management System",
-      "PGI Chandigarh Token Scheduling"
+      {
+        "name": "Indore District Hospital OPD Queue Pilot",
+        "sector": "healthcare",
+        "year": 2024
+      },
+      {
+        "name": "Bhopal CHC Appointment Scheduling Rollout",
+        "sector": "healthcare",
+        "year": 2023
+      },
+      {
+        "name": "Gwalior Medical College Token System",
+        "sector": "healthcare",
+        "year": 2022
+      }
     ],
     "certifications": [
       "ISO 27001",
@@ -191,7 +290,8 @@
     "id": 7,
     "user_id": 8,
     "name": "VitalsEdge Diagnostics",
-    "sector": "Healthcare",
+    "sector": "healthcare",
+    "sector_label": "Healthcare",
     "technologies": [
       "Edge AI",
       "Computer Vision",
@@ -200,14 +300,33 @@
       "HL7/FHIR",
       "Android SDK"
     ],
+    "tech_tags": [
+      "ai",
+      "computer-vision",
+      "edge-computing",
+      "sensors",
+      "mobile-app"
+    ],
     "dpiit_number": "DIPP31908",
     "incorporation_year": 2021,
     "turnover": 7200000,
     "team_size": 16,
     "past_projects": [
-      "National Health Mission Telemedicine Kiosk Trial - Odisha",
-      "Primary Health Center Remote Vitals Kit - Belagavi",
-      "Tribal Health Outreach Diagnostics - Bastar"
+      {
+        "name": "Jaipur PHC Point-of-Care Screening Pilot",
+        "sector": "healthcare",
+        "year": 2024
+      },
+      {
+        "name": "Udaipur Rural Diagnostics Van Deployment",
+        "sector": "healthcare",
+        "year": 2023
+      },
+      {
+        "name": "Kota Anaemia Screening Camp Analytics",
+        "sector": "healthcare",
+        "year": 2022
+      }
     ],
     "certifications": [
       "ISO 13485 (Medical Devices)",
@@ -224,7 +343,8 @@
     "id": 8,
     "user_id": 9,
     "name": "ArogyaScan AI",
-    "sector": "Healthcare",
+    "sector": "healthcare",
+    "sector_label": "Healthcare",
     "technologies": [
       "Deep Learning",
       "Chest X-Ray Screening",
@@ -233,13 +353,27 @@
       "Edge Computing",
       "Python"
     ],
-    "dpiit_number": "DIPP90412",
+    "tech_tags": [
+      "ai",
+      "computer-vision",
+      "edge-computing",
+      "cloud"
+    ],
+    "dpiit_number": null,
     "incorporation_year": 2022,
     "turnover": 4900000,
     "team_size": 11,
     "past_projects": [
-      "State TB Elimination Campaign Mobile Van Trial - Rajasthan",
-      "Municipal General Hospital Radiography Screening - Thane"
+      {
+        "name": "Raipur TB Chest X-Ray Screening Pilot",
+        "sector": "healthcare",
+        "year": 2024
+      },
+      {
+        "name": "Bilaspur District Radiology Triage Study",
+        "sector": "healthcare",
+        "year": 2023
+      }
     ],
     "certifications": [
       "ISO 13485",
@@ -256,7 +390,8 @@
     "id": 9,
     "user_id": 10,
     "name": "PharmChain Logistics",
-    "sector": "Healthcare",
+    "sector": "healthcare",
+    "sector_label": "Healthcare",
     "technologies": [
       "Cold Chain IoT",
       "Temperature Data Loggers",
@@ -264,13 +399,28 @@
       "Predictive Spoilage AI",
       "Vaccine Track and Trace"
     ],
+    "tech_tags": [
+      "iot",
+      "sensors",
+      "ai",
+      "telematics",
+      "analytics"
+    ],
     "dpiit_number": "DIPP44192",
     "incorporation_year": 2021,
     "turnover": 5800000,
     "team_size": 15,
     "past_projects": [
-      "Universal Immunization Program Cold Chain - Assam",
-      "State Vaccine Depot Real-time Temp Monitoring - MP"
+      {
+        "name": "Lucknow Vaccine Cold Chain Monitoring",
+        "sector": "healthcare",
+        "year": 2024
+      },
+      {
+        "name": "Varanasi District Immunisation Logistics",
+        "sector": "healthcare",
+        "year": 2023
+      }
     ],
     "certifications": [
       "ISO 9001:2015",
@@ -287,19 +437,29 @@
     "id": 10,
     "user_id": 11,
     "name": "NeuroBed Systems",
-    "sector": "Healthcare",
+    "sector": "healthcare",
+    "sector_label": "Healthcare",
     "technologies": [
       "Under-Mattress Piezoelectric Sensors",
       "Ballistocardiography",
       "Contactless Patient Monitoring",
       "Central ICU Dashboard"
     ],
+    "tech_tags": [
+      "sensors",
+      "iot",
+      "analytics"
+    ],
     "dpiit_number": "DIPP82371",
-    "incorporation_year": 2023,
+    "incorporation_year": 2025,
     "turnover": 2900000,
     "team_size": 8,
     "past_projects": [
-      "District Civil Hospital Step-down Ward Pilot - Solapur"
+      {
+        "name": "Ranchi ICU Contactless Monitoring Trial",
+        "sector": "healthcare",
+        "year": 2024
+      }
     ],
     "certifications": [
       "ISO 9001:2015",
@@ -315,7 +475,8 @@
     "id": 11,
     "user_id": 12,
     "name": "TrashBotics Automation",
-    "sector": "Waste Management",
+    "sector": "waste",
+    "sector_label": "Waste Management",
     "technologies": [
       "Computer Vision",
       "Optical Sorting",
@@ -323,14 +484,32 @@
       "AI Classification",
       "Conveyor Integration"
     ],
+    "tech_tags": [
+      "computer-vision",
+      "ai",
+      "robotics",
+      "automation"
+    ],
     "dpiit_number": "DIPP61934",
     "incorporation_year": 2020,
     "turnover": 9500000,
     "team_size": 24,
     "past_projects": [
-      "Indore Smart City MRF Automated Plastic Sorter",
-      "Navi Mumbai Municipal Dry Waste Sorting Facility",
-      "Surat Municipal Solid Waste Segregation Line"
+      {
+        "name": "Ahmedabad MRF Optical Sorting Line",
+        "sector": "waste",
+        "year": 2024
+      },
+      {
+        "name": "Rajkot Dry Waste Robotic Sorting Pilot",
+        "sector": "waste",
+        "year": 2023
+      },
+      {
+        "name": "Vadodara Recyclables Recovery Study",
+        "sector": "waste",
+        "year": 2022
+      }
     ],
     "certifications": [
       "ISO 9001:2015",
@@ -347,7 +526,8 @@
     "id": 12,
     "user_id": 13,
     "name": "BinSense IoT",
-    "sector": "Waste Management",
+    "sector": "waste",
+    "sector_label": "Waste Management",
     "technologies": [
       "Ultrasonic Fill-level Sensors",
       "NB-IoT",
@@ -355,14 +535,33 @@
       "Municipal GIS Portal",
       "Driver Navigation App"
     ],
+    "tech_tags": [
+      "iot",
+      "sensors",
+      "gis",
+      "analytics",
+      "mobile-app"
+    ],
     "dpiit_number": "DIPP29104",
     "incorporation_year": 2021,
     "turnover": 6100000,
     "team_size": 17,
     "past_projects": [
-      "Bhopal Municipal Garbage Dumper Fill Monitoring",
-      "Mysuru Swachh City Smart Bin Deployment",
-      "Chandigarh Sector Commercial Area Bin Pilot"
+      {
+        "name": "Mysuru Smart Bin Fill-level Network",
+        "sector": "waste",
+        "year": 2024
+      },
+      {
+        "name": "Hubballi Collection Route Optimisation",
+        "sector": "waste",
+        "year": 2023
+      },
+      {
+        "name": "Belagavi Ward Bin Census Digitisation",
+        "sector": "waste",
+        "year": 2022
+      }
     ],
     "certifications": [
       "ISO 9001:2015",
@@ -379,7 +578,8 @@
     "id": 13,
     "user_id": 14,
     "name": "EcoFleet Routing",
-    "sector": "Waste Management",
+    "sector": "waste",
+    "sector_label": "Waste Management",
     "technologies": [
       "Vehicle Telematics",
       "GPS Fleet Tracking",
@@ -387,13 +587,27 @@
       "Fuel Optimization Engine",
       "Weighbridge API"
     ],
-    "dpiit_number": "DIPP74819",
+    "tech_tags": [
+      "telematics",
+      "gis",
+      "analytics",
+      "iot"
+    ],
+    "dpiit_number": null,
     "incorporation_year": 2022,
     "turnover": 4300000,
     "team_size": 13,
     "past_projects": [
-      "Coimbatore Corporation Door-to-Door Waste Vehicle Tracking",
-      "Thiruvananthapuram Ward Collection Auditing"
+      {
+        "name": "Ludhiana Waste Fleet Telematics Rollout",
+        "sector": "waste",
+        "year": 2024
+      },
+      {
+        "name": "Amritsar Weighbridge Integration Pilot",
+        "sector": "transport",
+        "year": 2023
+      }
     ],
     "certifications": [
       "ISO 9001:2015",
@@ -409,7 +623,8 @@
     "id": 14,
     "user_id": 15,
     "name": "BioGasGen Decentralized",
-    "sector": "Waste Management",
+    "sector": "waste",
+    "sector_label": "Waste Management",
     "technologies": [
       "Anaerobic Digester Automation",
       "IoT Biogas Scrubber",
@@ -417,13 +632,27 @@
       "SCADA Dashboard",
       "Organic Waste Pre-treatment"
     ],
+    "tech_tags": [
+      "iot",
+      "sensors",
+      "automation",
+      "analytics"
+    ],
     "dpiit_number": "DIPP13905",
     "incorporation_year": 2021,
     "turnover": 5200000,
     "team_size": 14,
     "past_projects": [
-      "Kochi Vegetable Market 5-TPD Biomethanation Plant",
-      "Kalyan-Dombivli Canteen Organic Waste to Energy System"
+      {
+        "name": "Erode Decentralised Biogas Cluster",
+        "sector": "waste",
+        "year": 2024
+      },
+      {
+        "name": "Salem Market Organic Waste Digester",
+        "sector": "waste",
+        "year": 2023
+      }
     ],
     "certifications": [
       "ISO 9001:2015",
@@ -440,7 +669,8 @@
     "id": 15,
     "user_id": 16,
     "name": "CleanHazard Systems",
-    "sector": "Waste Management",
+    "sector": "waste",
+    "sector_label": "Waste Management",
     "technologies": [
       "Barcoded Biomedical Bags",
       "BLE Beacons",
@@ -448,12 +678,22 @@
       "CPCB Portal Sync",
       "GPS Vans"
     ],
+    "tech_tags": [
+      "iot",
+      "sensors",
+      "gis",
+      "mobile-app"
+    ],
     "dpiit_number": "DIPP89214",
-    "incorporation_year": 2023,
+    "incorporation_year": 2025,
     "turnover": 2700000,
     "team_size": 7,
     "past_projects": [
-      "Guwahati Medical College Biomedical Waste Traceability Trial"
+      {
+        "name": "Patna Biomedical Waste Tracking Pilot",
+        "sector": "waste",
+        "year": 2024
+      }
     ],
     "certifications": [
       "ISO 9001:2015",
@@ -469,7 +709,8 @@
     "id": 16,
     "user_id": 17,
     "name": "UrbanFlow Traffic AI",
-    "sector": "Transport & Mobility",
+    "sector": "transport",
+    "sector_label": "Transport & Mobility",
     "technologies": [
       "Computer Vision",
       "Adaptive Traffic Signal Control (ATSC)",
@@ -478,14 +719,33 @@
       "Traffic Flow Simulation",
       "OpenCV"
     ],
+    "tech_tags": [
+      "computer-vision",
+      "ai",
+      "edge-computing",
+      "analytics",
+      "automation"
+    ],
     "dpiit_number": "DIPP38201",
     "incorporation_year": 2020,
     "turnover": 11000000,
     "team_size": 26,
     "past_projects": [
-      "Bengaluru Silk Board - HSR Junction Adaptive Signal Trial",
-      "Hyderabad Cyberabad Junction Queue Clearance AI",
-      "Ahmedabad SG Highway ITMS Intersection Optimization"
+      {
+        "name": "Hyderabad Adaptive Signal Corridor Pilot",
+        "sector": "transport",
+        "year": 2024
+      },
+      {
+        "name": "Warangal Junction Video Analytics Study",
+        "sector": "transport",
+        "year": 2023
+      },
+      {
+        "name": "Vijayawada Traffic Flow Simulation",
+        "sector": "transport",
+        "year": 2022
+      }
     ],
     "certifications": [
       "ISO 9001:2015",
@@ -502,7 +762,8 @@
     "id": 17,
     "user_id": 18,
     "name": "EvGrid Dynamics",
-    "sector": "Transport & Mobility",
+    "sector": "transport",
+    "sector_label": "Transport & Mobility",
     "technologies": [
       "OCPP 2.0.1",
       "Smart EV Charging",
@@ -511,14 +772,33 @@
       "Renewable Solar Integration",
       "FastAPI"
     ],
+    "tech_tags": [
+      "iot",
+      "cloud",
+      "analytics",
+      "mobile-app",
+      "automation"
+    ],
     "dpiit_number": "DIPP67192",
     "incorporation_year": 2021,
     "turnover": 6800000,
     "team_size": 18,
     "past_projects": [
-      "Delhi DTC Bus Depot EV Smart Charging Infrastructure",
-      "BEST Mumbai E-Bus Fleet Charging Management System",
-      "Noida City Electric Feeder Charging Hub"
+      {
+        "name": "Bengaluru Public EV Charging Network",
+        "sector": "transport",
+        "year": 2024
+      },
+      {
+        "name": "Mangaluru Depot Load Management Pilot",
+        "sector": "transport",
+        "year": 2023
+      },
+      {
+        "name": "Hassan Solar-linked Charging Trial",
+        "sector": "transport",
+        "year": 2022
+      }
     ],
     "certifications": [
       "ISO 9001:2015",
@@ -535,7 +815,8 @@
     "id": 18,
     "user_id": 19,
     "name": "TransitPulse Mobility",
-    "sector": "Transport & Mobility",
+    "sector": "transport",
+    "sector_label": "Transport & Mobility",
     "technologies": [
       "GTFS Realtime",
       "Bus Passenger Counter (APC)",
@@ -543,13 +824,28 @@
       "Passenger Information System (PIS)",
       "Mobile Transit App"
     ],
+    "tech_tags": [
+      "telematics",
+      "gis",
+      "mobile-app",
+      "analytics",
+      "sensors"
+    ],
     "dpiit_number": "DIPP51829",
     "incorporation_year": 2021,
     "turnover": 5400000,
     "team_size": 15,
     "past_projects": [
-      "PMPML Pune Real-time Bus Arrival Prediction",
-      "KSRTC Kerala Feeder Route Passenger Density Analytics"
+      {
+        "name": "Kochi Bus Passenger Information Rollout",
+        "sector": "transport",
+        "year": 2024
+      },
+      {
+        "name": "Thrissur Fleet Occupancy Analytics",
+        "sector": "transport",
+        "year": 2023
+      }
     ],
     "certifications": [
       "ISO 9001:2015",
@@ -566,7 +862,8 @@
     "id": 19,
     "user_id": 20,
     "name": "SafeStreet Vision",
-    "sector": "Transport & Mobility",
+    "sector": "transport",
+    "sector_label": "Transport & Mobility",
     "technologies": [
       "Road Surface AI",
       "Pothole Detection",
@@ -574,13 +871,27 @@
       "GIS Pavement Management",
       "Municipal Work Order Automation"
     ],
-    "dpiit_number": "DIPP94381",
+    "tech_tags": [
+      "computer-vision",
+      "ai",
+      "gis",
+      "mobile-app"
+    ],
+    "dpiit_number": null,
     "incorporation_year": 2022,
     "turnover": 3900000,
     "team_size": 11,
     "past_projects": [
-      "Greater Hyderabad Municipal Corporation Pothole Survey",
-      "Lucknow Municipal Corporation Road Surface Distress Mapping"
+      {
+        "name": "Bhubaneswar Pothole Detection Survey",
+        "sector": "transport",
+        "year": 2024
+      },
+      {
+        "name": "Cuttack Pavement Condition Mapping",
+        "sector": "transport",
+        "year": 2023
+      }
     ],
     "certifications": [
       "ISO 9001:2015",
@@ -596,7 +907,8 @@
     "id": 20,
     "user_id": 21,
     "name": "LastMile Micro",
-    "sector": "Transport & Mobility",
+    "sector": "transport",
+    "sector_label": "Transport & Mobility",
     "technologies": [
       "Smart Docking Station",
       "IoT E-Bike Lock",
@@ -604,12 +916,22 @@
       "Geofencing",
       "Battery Swap Telemetry"
     ],
+    "tech_tags": [
+      "iot",
+      "sensors",
+      "mobile-app",
+      "telematics"
+    ],
     "dpiit_number": "DIPP20847",
-    "incorporation_year": 2023,
+    "incorporation_year": 2025,
     "turnover": 2600000,
     "team_size": 9,
     "past_projects": [
-      "Metro Rail Station Last-Mile Feeder Feasibility Pilot - Kochi Metro"
+      {
+        "name": "Gandhinagar Campus Micromobility Docks",
+        "sector": "transport",
+        "year": 2024
+      }
     ],
     "certifications": [
       "ISO 9001:2015",
