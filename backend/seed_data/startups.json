@@ -1,0 +1,624 @@
+[
+  {
+    "id": 1,
+    "user_id": 2,
+    "name": "AquaSense Systems",
+    "sector": "Water Management",
+    "technologies": [
+      "IoT",
+      "Pressure Sensors",
+      "Acoustic Sensors",
+      "AI Anomaly Detection",
+      "SCADA Integration",
+      "Telemetry"
+    ],
+    "dpiit_number": "DIPP48291",
+    "incorporation_year": 2021,
+    "turnover": 6500000,
+    "team_size": 18,
+    "past_projects": [
+      "Pune Municipal Smart Water Pilot - Ward 7",
+      "PCMC DMA Leakage Reduction Project",
+      "Surat Industrial Water Audit Telemetry"
+    ],
+    "certifications": [
+      "ISO 9001:2015",
+      "ISO 27001",
+      "CPRI Certified Hardware"
+    ],
+    "description": "End-to-end smart municipal water distribution monitoring platform with acoustic sensor nodes, GIS pressure mapping, and ML-based non-revenue water (NRW) leak detection algorithms.",
+    "weakness": "Requires physical sensor retrofitting on aged pipeline junctions before calibration.",
+    "prototype": true,
+    "stage": "Growth",
+    "location": "Pune, Maharashtra"
+  },
+  {
+    "id": 2,
+    "user_id": 3,
+    "name": "PipeAI Technologies",
+    "sector": "Water Management",
+    "technologies": [
+      "Machine Learning",
+      "Digital Twin",
+      "Predictive Maintenance",
+      "GIS Mapping",
+      "Flow Analytics",
+      "IoT"
+    ],
+    "dpiit_number": "DIPP73910",
+    "incorporation_year": 2022,
+    "turnover": 4200000,
+    "team_size": 12,
+    "past_projects": [
+      "Nagpur Pipeline Stress & Burst Prediction",
+      "MIDC Industrial Feeder Digital Twin"
+    ],
+    "certifications": [
+      "ISO 9001:2015",
+      "SOC 2 Type II"
+    ],
+    "description": "Predictive pipeline maintenance and digital twin simulation engine that ingests hydraulic data to forecast pipeline bursts and structural decay.",
+    "weakness": "Relies heavily on existing telemetry feeds from municipal water SCADA systems.",
+    "prototype": true,
+    "stage": "Pilot Ready",
+    "location": "Bengaluru, Karnataka"
+  },
+  {
+    "id": 3,
+    "user_id": 4,
+    "name": "HydroTrack Telemetry",
+    "sector": "Water Management",
+    "technologies": [
+      "Ultrasonic Flow Sensors",
+      "LoRaWAN",
+      "Cellular Telemetry",
+      "Cloud Dashboards",
+      "Alert Engine"
+    ],
+    "dpiit_number": "DIPP19482",
+    "incorporation_year": 2023,
+    "turnover": 2800000,
+    "team_size": 9,
+    "past_projects": [
+      "Jaipur Urban Water Distribution Telemetry - Zone 4"
+    ],
+    "certifications": [
+      "ISO 9001:2015",
+      "WPC Approved Radios"
+    ],
+    "description": "Low-power LoRaWAN-enabled ultrasonic bulk flow meters and wireless telemetry loggers for municipal district metering areas (DMA).",
+    "weakness": "Battery longevity in harsh underground utility chambers requires annual maintenance.",
+    "prototype": true,
+    "stage": "Early Stage",
+    "location": "Jaipur, Rajasthan"
+  },
+  {
+    "id": 4,
+    "user_id": 5,
+    "name": "JalShuddh AI",
+    "sector": "Water Management",
+    "technologies": [
+      "Spectroscopy Sensors",
+      "Computer Vision",
+      "IoT Water Quality",
+      "Edge AI",
+      "Turbidity Analytics"
+    ],
+    "dpiit_number": "DIPP62041",
+    "incorporation_year": 2021,
+    "turnover": 5100000,
+    "team_size": 14,
+    "past_projects": [
+      "Ganga River Tributary Monitoring Station",
+      "Varanasi STPs Real-time Effluent Quality Check",
+      "Delhi Jal Board WTP Sensor Trial"
+    ],
+    "certifications": [
+      "ISO 9001:2015",
+      "NABL Calibrated Sensors",
+      "ISO 14001"
+    ],
+    "description": "Automated real-time multi-parameter water quality testing units monitoring pH, TDS, Turbidity, Dissolved Oxygen, and heavy metal optical fingerprints.",
+    "weakness": "Optical sensor lenses require periodic automatic reagent cleaning cycles.",
+    "prototype": true,
+    "stage": "Growth",
+    "location": "Varanasi, Uttar Pradesh"
+  },
+  {
+    "id": 5,
+    "user_id": 6,
+    "name": "AquaDrain Solutions",
+    "sector": "Water Management",
+    "technologies": [
+      "Radar Level Sensors",
+      "Drainage Flow Modeling",
+      "Early Warning System",
+      "SMS Gateways",
+      "GIS"
+    ],
+    "dpiit_number": "DIPP88102",
+    "incorporation_year": 2022,
+    "turnover": 3500000,
+    "team_size": 10,
+    "past_projects": [
+      "Chennai Stormwater Drain Silt & Water Level Monitoring",
+      "Mumbai Lower Parel Inundation Alert Trial"
+    ],
+    "certifications": [
+      "ISO 9001:2015",
+      "IP68 Submersible Certified"
+    ],
+    "description": "Submersible stormwater drain depth monitoring and urban flash flood early warning system for municipal disaster management cells.",
+    "weakness": "Requires debris guards to prevent sensor occlusion in open high-silt storm drains.",
+    "prototype": true,
+    "stage": "Pilot Ready",
+    "location": "Chennai, Tamil Nadu"
+  },
+  {
+    "id": 6,
+    "user_id": 7,
+    "name": "MedQueue Technologies",
+    "sector": "Healthcare",
+    "technologies": [
+      "Queue Optimization Algorithms",
+      "OPD Workflow AI",
+      "WhatsApp Bot",
+      "SMS Gateway",
+      "HMIS Integration",
+      "FastAPI"
+    ],
+    "dpiit_number": "DIPP55231",
+    "incorporation_year": 2020,
+    "turnover": 8800000,
+    "team_size": 22,
+    "past_projects": [
+      "AIIMS New Delhi Outpatient Triage Pilot",
+      "KEM Hospital Mumbai Queue Management System",
+      "PGI Chandigarh Token Scheduling"
+    ],
+    "certifications": [
+      "ISO 27001",
+      "HIPAA Compliant",
+      "ABDM M1-M3 Certified"
+    ],
+    "description": "Intelligent outpatient queue optimization and dynamic token allocation system reducing patient wait times in busy district and civil hospitals.",
+    "weakness": "Requires hospital reception staff training to prevent physical bypass tokens.",
+    "prototype": true,
+    "stage": "Growth",
+    "location": "New Delhi, Delhi"
+  },
+  {
+    "id": 7,
+    "user_id": 8,
+    "name": "VitalsEdge Diagnostics",
+    "sector": "Healthcare",
+    "technologies": [
+      "Edge AI",
+      "Computer Vision",
+      "Point-of-Care Diagnostics",
+      "Bluetooth BLE",
+      "HL7/FHIR",
+      "Android SDK"
+    ],
+    "dpiit_number": "DIPP31908",
+    "incorporation_year": 2021,
+    "turnover": 7200000,
+    "team_size": 16,
+    "past_projects": [
+      "National Health Mission Telemedicine Kiosk Trial - Odisha",
+      "Primary Health Center Remote Vitals Kit - Belagavi",
+      "Tribal Health Outreach Diagnostics - Bastar"
+    ],
+    "certifications": [
+      "ISO 13485 (Medical Devices)",
+      "CDSCO Registered",
+      "ISO 27001"
+    ],
+    "description": "Portable backpack clinic and multiparameter diagnostic device capturing ECG, SpO2, NIBP, and blood glucose with automated teleconsultation upload.",
+    "weakness": "Requires stable 2G/4G connectivity for live specialist tele-consultation video.",
+    "prototype": true,
+    "stage": "Growth",
+    "location": "Bengaluru, Karnataka"
+  },
+  {
+    "id": 8,
+    "user_id": 9,
+    "name": "ArogyaScan AI",
+    "sector": "Healthcare",
+    "technologies": [
+      "Deep Learning",
+      "Chest X-Ray Screening",
+      "DICOM Processing",
+      "TB Detection",
+      "Edge Computing",
+      "Python"
+    ],
+    "dpiit_number": "DIPP90412",
+    "incorporation_year": 2022,
+    "turnover": 4900000,
+    "team_size": 11,
+    "past_projects": [
+      "State TB Elimination Campaign Mobile Van Trial - Rajasthan",
+      "Municipal General Hospital Radiography Screening - Thane"
+    ],
+    "certifications": [
+      "ISO 13485",
+      "CDSCO Class B Approved",
+      "AERB Certified Workflows"
+    ],
+    "description": "Automated AI screening software for chest X-rays detecting Tuberculosis, pneumonia, and pulmonary nodules in under 15 seconds at the point of care.",
+    "weakness": "High sensitivity requires radiologist confirmation on borderline positive scores.",
+    "prototype": true,
+    "stage": "Pilot Ready",
+    "location": "Hyderabad, Telangana"
+  },
+  {
+    "id": 9,
+    "user_id": 10,
+    "name": "PharmChain Logistics",
+    "sector": "Healthcare",
+    "technologies": [
+      "Cold Chain IoT",
+      "Temperature Data Loggers",
+      "Cellular GPS",
+      "Predictive Spoilage AI",
+      "Vaccine Track and Trace"
+    ],
+    "dpiit_number": "DIPP44192",
+    "incorporation_year": 2021,
+    "turnover": 5800000,
+    "team_size": 15,
+    "past_projects": [
+      "Universal Immunization Program Cold Chain - Assam",
+      "State Vaccine Depot Real-time Temp Monitoring - MP"
+    ],
+    "certifications": [
+      "ISO 9001:2015",
+      "WHO-PQS Pre-qualified Hardware",
+      "ISO 27001"
+    ],
+    "description": "Real-time vaccine cold chain integrity monitor with continuous temperature/humidity tracking, geolocation, and freeze alert triggers.",
+    "weakness": "Transit blackspots in deep rural areas cause delayed alert bursts upon reconnection.",
+    "prototype": true,
+    "stage": "Growth",
+    "location": "Ahmedabad, Gujarat"
+  },
+  {
+    "id": 10,
+    "user_id": 11,
+    "name": "NeuroBed Systems",
+    "sector": "Healthcare",
+    "technologies": [
+      "Under-Mattress Piezoelectric Sensors",
+      "Ballistocardiography",
+      "Contactless Patient Monitoring",
+      "Central ICU Dashboard"
+    ],
+    "dpiit_number": "DIPP82371",
+    "incorporation_year": 2023,
+    "turnover": 2900000,
+    "team_size": 8,
+    "past_projects": [
+      "District Civil Hospital Step-down Ward Pilot - Solapur"
+    ],
+    "certifications": [
+      "ISO 9001:2015",
+      "IEC 60601-1 Medical Safety Tested"
+    ],
+    "description": "Contactless under-mattress sensor pad monitoring respiratory rate, heart rate, and bed exits for high-occupancy hospital wards without attached leads.",
+    "weakness": "Heavier patient movement generates transient artifact noise in signal graphs.",
+    "prototype": true,
+    "stage": "Early Stage",
+    "location": "Kochi, Kerala"
+  },
+  {
+    "id": 11,
+    "user_id": 12,
+    "name": "TrashBotics Automation",
+    "sector": "Waste Management",
+    "technologies": [
+      "Computer Vision",
+      "Optical Sorting",
+      "Robotic Arm Delta Mechanism",
+      "AI Classification",
+      "Conveyor Integration"
+    ],
+    "dpiit_number": "DIPP61934",
+    "incorporation_year": 2020,
+    "turnover": 9500000,
+    "team_size": 24,
+    "past_projects": [
+      "Indore Smart City MRF Automated Plastic Sorter",
+      "Navi Mumbai Municipal Dry Waste Sorting Facility",
+      "Surat Municipal Solid Waste Segregation Line"
+    ],
+    "certifications": [
+      "ISO 9001:2015",
+      "CE Machinery Directive",
+      "CPCB Vendor Empaneled"
+    ],
+    "description": "High-speed AI robotic sorting system for Material Recovery Facilities (MRF) capable of sorting 120 items per minute across 14 plastic and paper grades.",
+    "weakness": "Requires shredded or singulated waste feed without heavy tangled textile clumps.",
+    "prototype": true,
+    "stage": "Growth",
+    "location": "Indore, Madhya Pradesh"
+  },
+  {
+    "id": 12,
+    "user_id": 13,
+    "name": "BinSense IoT",
+    "sector": "Waste Management",
+    "technologies": [
+      "Ultrasonic Fill-level Sensors",
+      "NB-IoT",
+      "Dynamic Route Optimization",
+      "Municipal GIS Portal",
+      "Driver Navigation App"
+    ],
+    "dpiit_number": "DIPP29104",
+    "incorporation_year": 2021,
+    "turnover": 6100000,
+    "team_size": 17,
+    "past_projects": [
+      "Bhopal Municipal Garbage Dumper Fill Monitoring",
+      "Mysuru Swachh City Smart Bin Deployment",
+      "Chandigarh Sector Commercial Area Bin Pilot"
+    ],
+    "certifications": [
+      "ISO 9001:2015",
+      "IP67 Ingress Protection",
+      "ISO 27001"
+    ],
+    "description": "Smart municipal dustbin fill-level monitoring system with real-time garbage truck routing optimization to eliminate overflowing public vats.",
+    "weakness": "Ultrasonic sensor can be obstructed if lightweight trash adheres directly to sensor face.",
+    "prototype": true,
+    "stage": "Growth",
+    "location": "Mysuru, Karnataka"
+  },
+  {
+    "id": 13,
+    "user_id": 14,
+    "name": "EcoFleet Routing",
+    "sector": "Waste Management",
+    "technologies": [
+      "Vehicle Telematics",
+      "GPS Fleet Tracking",
+      "RFID Bin Tagging",
+      "Fuel Optimization Engine",
+      "Weighbridge API"
+    ],
+    "dpiit_number": "DIPP74819",
+    "incorporation_year": 2022,
+    "turnover": 4300000,
+    "team_size": 13,
+    "past_projects": [
+      "Coimbatore Corporation Door-to-Door Waste Vehicle Tracking",
+      "Thiruvananthapuram Ward Collection Auditing"
+    ],
+    "certifications": [
+      "ISO 9001:2015",
+      "AIS-140 Compliant Telematics"
+    ],
+    "description": "Door-to-door solid waste collection vehicle tracking, RFID bin lift verification, and carbon-efficient routing software for municipal sanitary inspectors.",
+    "weakness": "Requires sanitary workers to scan RFID tags on household waste gates consistently.",
+    "prototype": true,
+    "stage": "Pilot Ready",
+    "location": "Coimbatore, Tamil Nadu"
+  },
+  {
+    "id": 14,
+    "user_id": 15,
+    "name": "BioGasGen Decentralized",
+    "sector": "Waste Management",
+    "technologies": [
+      "Anaerobic Digester Automation",
+      "IoT Biogas Scrubber",
+      "Methane Flow Sensors",
+      "SCADA Dashboard",
+      "Organic Waste Pre-treatment"
+    ],
+    "dpiit_number": "DIPP13905",
+    "incorporation_year": 2021,
+    "turnover": 5200000,
+    "team_size": 14,
+    "past_projects": [
+      "Kochi Vegetable Market 5-TPD Biomethanation Plant",
+      "Kalyan-Dombivli Canteen Organic Waste to Energy System"
+    ],
+    "certifications": [
+      "ISO 9001:2015",
+      "PESO Gas Safety Approved",
+      "MNRE Empaneled"
+    ],
+    "description": "Modular automated decentralized wet waste biomethanation plant converting 1 to 5 metric tons of municipal kitchen/market waste into electricity.",
+    "weakness": "Requires steady supply of segregated organic waste without plastic packaging contamination.",
+    "prototype": true,
+    "stage": "Growth",
+    "location": "Kochi, Kerala"
+  },
+  {
+    "id": 15,
+    "user_id": 16,
+    "name": "CleanHazard Systems",
+    "sector": "Waste Management",
+    "technologies": [
+      "Barcoded Biomedical Bags",
+      "BLE Beacons",
+      "Weight Loggers",
+      "CPCB Portal Sync",
+      "GPS Vans"
+    ],
+    "dpiit_number": "DIPP89214",
+    "incorporation_year": 2023,
+    "turnover": 2700000,
+    "team_size": 7,
+    "past_projects": [
+      "Guwahati Medical College Biomedical Waste Traceability Trial"
+    ],
+    "certifications": [
+      "ISO 9001:2015",
+      "CPCB Biomedical Waste Rules 2016 Compliant"
+    ],
+    "description": "End-to-end barcoded tracking and digital manifest system for clinical and hazardous biomedical waste disposal from nursing homes to incinerators.",
+    "weakness": "Limited fleet coverage currently restricted to northeastern regional healthcare clusters.",
+    "prototype": true,
+    "stage": "Early Stage",
+    "location": "Guwahati, Assam"
+  },
+  {
+    "id": 16,
+    "user_id": 17,
+    "name": "UrbanFlow Traffic AI",
+    "sector": "Transport & Mobility",
+    "technologies": [
+      "Computer Vision",
+      "Adaptive Traffic Signal Control (ATSC)",
+      "CCTV Video Analytics",
+      "Edge Computing",
+      "Traffic Flow Simulation",
+      "OpenCV"
+    ],
+    "dpiit_number": "DIPP38201",
+    "incorporation_year": 2020,
+    "turnover": 11000000,
+    "team_size": 26,
+    "past_projects": [
+      "Bengaluru Silk Board - HSR Junction Adaptive Signal Trial",
+      "Hyderabad Cyberabad Junction Queue Clearance AI",
+      "Ahmedabad SG Highway ITMS Intersection Optimization"
+    ],
+    "certifications": [
+      "ISO 9001:2015",
+      "ISO 27001",
+      "IRC:SP:70 Traffic Standards Compliant"
+    ],
+    "description": "Dynamic adaptive traffic light control system using standard municipal traffic camera feeds to reduce intersection queue spillover in real time.",
+    "weakness": "Vision accuracy dips during extreme monsoonal downpours with lens splashing.",
+    "prototype": true,
+    "stage": "Growth",
+    "location": "Bengaluru, Karnataka"
+  },
+  {
+    "id": 17,
+    "user_id": 18,
+    "name": "EvGrid Dynamics",
+    "sector": "Transport & Mobility",
+    "technologies": [
+      "OCPP 2.0.1",
+      "Smart EV Charging",
+      "Dynamic Load Management",
+      "Payment Switch",
+      "Renewable Solar Integration",
+      "FastAPI"
+    ],
+    "dpiit_number": "DIPP67192",
+    "incorporation_year": 2021,
+    "turnover": 6800000,
+    "team_size": 18,
+    "past_projects": [
+      "Delhi DTC Bus Depot EV Smart Charging Infrastructure",
+      "BEST Mumbai E-Bus Fleet Charging Management System",
+      "Noida City Electric Feeder Charging Hub"
+    ],
+    "certifications": [
+      "ISO 9001:2015",
+      "ARAI Certified CMS",
+      "ISO 27001"
+    ],
+    "description": "Cloud-native municipal EV fleet depot charging management system with dynamic sub-station grid load balancing and automated billing.",
+    "weakness": "Integration requires open OCPP compliance on third-party charging hardware units.",
+    "prototype": true,
+    "stage": "Growth",
+    "location": "New Delhi, Delhi"
+  },
+  {
+    "id": 18,
+    "user_id": 19,
+    "name": "TransitPulse Mobility",
+    "sector": "Transport & Mobility",
+    "technologies": [
+      "GTFS Realtime",
+      "Bus Passenger Counter (APC)",
+      "Driver Telematics",
+      "Passenger Information System (PIS)",
+      "Mobile Transit App"
+    ],
+    "dpiit_number": "DIPP51829",
+    "incorporation_year": 2021,
+    "turnover": 5400000,
+    "team_size": 15,
+    "past_projects": [
+      "PMPML Pune Real-time Bus Arrival Prediction",
+      "KSRTC Kerala Feeder Route Passenger Density Analytics"
+    ],
+    "certifications": [
+      "ISO 9001:2015",
+      "Open Transit Data (GTFS) Compliant",
+      "ISO 27001"
+    ],
+    "description": "Real-time transit telemetry, automated passenger counting (APC), and GTFS-RT feed generation platform for state road transport corporations.",
+    "weakness": "Overcrowded buses during rush hours introduce +/- 6% error in overhead IR passenger counters.",
+    "prototype": true,
+    "stage": "Growth",
+    "location": "Pune, Maharashtra"
+  },
+  {
+    "id": 19,
+    "user_id": 20,
+    "name": "SafeStreet Vision",
+    "sector": "Transport & Mobility",
+    "technologies": [
+      "Road Surface AI",
+      "Pothole Detection",
+      "Mobile Phone LiDAR/Camera",
+      "GIS Pavement Management",
+      "Municipal Work Order Automation"
+    ],
+    "dpiit_number": "DIPP94381",
+    "incorporation_year": 2022,
+    "turnover": 3900000,
+    "team_size": 11,
+    "past_projects": [
+      "Greater Hyderabad Municipal Corporation Pothole Survey",
+      "Lucknow Municipal Corporation Road Surface Distress Mapping"
+    ],
+    "certifications": [
+      "ISO 9001:2015",
+      "IRC Pavement Quality Compliant"
+    ],
+    "description": "AI dashcam and smartphone-based automated road defect, pothole, and black-spot detection system feeding directly into municipal public works repair queues.",
+    "weakness": "Requires regular survey runs on patrol municipal vehicles across all arterial ward streets.",
+    "prototype": true,
+    "stage": "Pilot Ready",
+    "location": "Hyderabad, Telangana"
+  },
+  {
+    "id": 20,
+    "user_id": 21,
+    "name": "LastMile Micro",
+    "sector": "Transport & Mobility",
+    "technologies": [
+      "Smart Docking Station",
+      "IoT E-Bike Lock",
+      "App QR Unlock",
+      "Geofencing",
+      "Battery Swap Telemetry"
+    ],
+    "dpiit_number": "DIPP20847",
+    "incorporation_year": 2023,
+    "turnover": 2600000,
+    "team_size": 9,
+    "past_projects": [
+      "Metro Rail Station Last-Mile Feeder Feasibility Pilot - Kochi Metro"
+    ],
+    "certifications": [
+      "ISO 9001:2015",
+      "ARAI Electric 2-Wheeler Certified"
+    ],
+    "description": "Public bicycle and light EV sharing platform with solar dock stations, geofenced virtual drop zones, and metro transit smart card integration.",
+    "weakness": "High initial capital deployment required for street docking station hardware.",
+    "prototype": true,
+    "stage": "Early Stage",
+    "location": "Kochi, Kerala"
+  }
+]
