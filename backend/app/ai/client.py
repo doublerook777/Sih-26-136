@@ -13,8 +13,16 @@ load_dotenv()
 
 logger = logging.getLogger(__name__)
 
-# Default model
-DEFAULT_MODEL = "gemini-2.5-flash"
+# Default model and candidate fallback list
+DEFAULT_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.6-flash")
+FALLBACK_MODELS = [
+    os.getenv("GEMINI_MODEL", "gemini-3.6-flash"),
+    "gemini-3.7-flash",
+    "gemini-3.5-flash-lite",
+    "gemini-2.5-flash",
+    "gemini-1.5-flash",
+    "gemini-2.0-flash",
+]
 
 
 def get_gemini_client():
@@ -35,11 +43,11 @@ def generate_content(
     system_instruction: Optional[str] = None,
     response_mime_type: Optional[str] = None,
     response_schema: Optional[Any] = None,
-    model: str = DEFAULT_MODEL,
+    model: Optional[str] = None,
     timeout_seconds: int = 10,
 ) -> Dict[str, Any]:
     """
-    Generates content using Google Gemini with fallback handling and timeout.
+    Generates content using Google Gemini with model fallback handling and timeout.
     Returns a dictionary with status, text / json data, and metadata.
     """
     client = get_gemini_client()
@@ -52,49 +60,66 @@ def generate_content(
             "content": None,
         }
 
-    try:
-        from google.genai import types
+    from google.genai import types
 
-        config_args = {}
-        if system_instruction:
-            config_args["system_instruction"] = system_instruction
-        if response_mime_type:
-            config_args["response_mime_type"] = response_mime_type
-        if response_schema:
-            config_args["response_schema"] = response_schema
+    config_args = {}
+    if system_instruction:
+        config_args["system_instruction"] = system_instruction
+    if response_mime_type:
+        config_args["response_mime_type"] = response_mime_type
+    if response_schema:
+        config_args["response_schema"] = response_schema
 
-        config = types.GenerateContentConfig(**config_args) if config_args else None
+    config = types.GenerateContentConfig(**config_args) if config_args else None
 
-        response = client.models.generate_content(
-            model=model,
-            contents=prompt,
-            config=config,
-        )
+    # Candidate models to try if the requested model encounters 404 / deprecation
+    models_to_try = [model] if model else []
+    for m in FALLBACK_MODELS:
+        if m not in models_to_try:
+            models_to_try.append(m)
 
-        text_output = response.text or ""
-        parsed_json = None
-        if response_mime_type == "application/json" or response_schema is not None:
-            try:
-                parsed_json = json.loads(text_output)
-            except json.JSONDecodeError:
-                parsed_json = None
+    last_error = None
+    for candidate_model in models_to_try:
+        try:
+            response = client.models.generate_content(
+                model=candidate_model,
+                contents=prompt,
+                config=config,
+            )
 
-        return {
-            "success": True,
-            "fallback": False,
-            "text": text_output,
-            "json": parsed_json,
-            "model": model,
-        }
+            text_output = response.text or ""
+            parsed_json = None
+            if response_mime_type == "application/json" or response_schema is not None:
+                try:
+                    parsed_json = json.loads(text_output)
+                except json.JSONDecodeError:
+                    parsed_json = None
 
-    except Exception as e:
-        logger.error(f"Gemini API call failed: {e}")
-        return {
-            "success": False,
-            "fallback": True,
-            "error": str(e),
-            "content": None,
-        }
+            return {
+                "success": True,
+                "fallback": False,
+                "text": text_output,
+                "json": parsed_json,
+                "model": candidate_model,
+            }
+
+        except Exception as e:
+            err_str = str(e)
+            last_error = err_str
+            # If 404 NOT_FOUND (model deprecated/unavailable), try next model in candidate list
+            if "404" in err_str or "NOT_FOUND" in err_str:
+                logger.warning(f"Model {candidate_model} unavailable (404). Trying next fallback model...")
+                continue
+            else:
+                logger.error(f"Gemini API call failed with model {candidate_model}: {e}")
+                break
+
+    return {
+        "success": False,
+        "fallback": True,
+        "error": last_error,
+        "content": None,
+    }
 
 
 def test_gemini_connection() -> Dict[str, Any]:
