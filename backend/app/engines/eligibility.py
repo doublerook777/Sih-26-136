@@ -78,8 +78,8 @@ def check_eligibility(
             "failed_reasons": List[str]
         }
     """
-    # Extract challenge rules
-    eligibility_rules = _get_val(challenge, "eligibility_rules", {})
+    # Extract challenge rules (supports both field aliases)
+    eligibility_rules = _get_val(challenge, "eligibility_rules") or _get_val(challenge, "eligibility_rules_json", {})
     if isinstance(eligibility_rules, str):
         try:
             eligibility_rules = json.loads(eligibility_rules)
@@ -93,12 +93,19 @@ def check_eligibility(
     max_quote = eligibility_rules.get("max_quote") or _get_val(challenge, "budget")
     req_security = eligibility_rules.get("security_baseline", False)
 
-    # Extract startup properties
+    # Extract startup properties (supports both direct model attributes and JSON aliases)
     dpiit_number = _get_val(startup, "dpiit_number") or _get_val(startup, "dpiit")
     incorporation_year = _get_val(startup, "incorporation_year")
-    certifications = _normalize_list(_get_val(startup, "certifications", []))
-    startup_techs = _normalize_list(_get_val(startup, "technologies") or _get_val(startup, "tech", []))
-    challenge_techs = _normalize_list(_get_val(challenge, "required_tech", []))
+    certifications = _normalize_list(_get_val(startup, "certifications") or _get_val(startup, "certifications_json", []))
+    startup_techs = _normalize_list(
+        _get_val(startup, "technologies")
+        or _get_val(startup, "technologies_json")
+        or _get_val(startup, "tech", [])
+    )
+    challenge_techs = _normalize_list(
+        _get_val(challenge, "required_tech")
+        or _get_val(challenge, "required_tech_json", [])
+    )
 
     report = {}
     failed_reasons = []

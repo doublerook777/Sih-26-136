@@ -114,3 +114,38 @@ def test_json_string_rules_handling():
     result = check_eligibility(challenge, startup)
     assert result["eligible"] is True
     assert result["eligibility_report"]["technology_overlap"]["passed"] is True
+
+
+def test_sqlmodel_object_compatibility():
+    """Simulates real SQLModel class instances with _json column suffixes as in models.py."""
+    class FakeChallengeModel:
+        def __init__(self):
+            self.id = 1
+            self.title = "Clean Ganga Water Monitoring"
+            self.budget = 750000
+            self.required_tech = ["Sensors", "Telemetry"]
+            self.eligibility_rules_json = {
+                "registered_startup": True,
+                "required_certification": "ISO 9001",
+                "min_experience_years": 1,
+                "min_technology_overlap": 1,
+            }
+
+    class FakeStartupModel:
+        def __init__(self):
+            self.id = 4
+            self.name = "JalShuddh AI"
+            self.dpiit_number = "DIPP62041"
+            self.incorporation_year = 2021
+            self.technologies = ["Sensors", "Spectroscopy", "Edge AI"]
+            self.certifications = ["ISO 9001:2015", "NABL"]
+
+    challenge = FakeChallengeModel()
+    startup = FakeStartupModel()
+
+    result = check_eligibility(challenge, startup, current_year=2026)
+    assert result["eligible"] is True
+    assert result["eligibility_report"]["registered_startup"]["passed"] is True
+    assert result["eligibility_report"]["required_certification"]["passed"] is True
+    assert result["eligibility_report"]["technology_overlap"]["passed"] is True
+
