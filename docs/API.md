@@ -895,4 +895,3 @@ When you ask an AI for code that touches the API, **paste the relevant section o
 into the prompt** and tell it to match exactly. Otherwise it will confidently invent
 `matchScore` instead of `match_score` and you will spend an hour on a bug that was never
 in the code.
-
