@@ -1,0 +1,65 @@
+[
+  {
+    "id": 1,
+    "name": "R Kumar",
+    "email": "officer@water.gov.in",
+    "password": "demo1234",
+    "role": "government",
+    "department": "Urban Water Supply",
+    "district": "District A"
+  },
+  {
+    "id": 2,
+    "name": "Platform Admin",
+    "email": "admin@procura.gov.in",
+    "password": "demo1234",
+    "role": "admin",
+    "department": null,
+    "district": null
+  },
+  {
+    "id": 3,
+    "name": "AquaSense",
+    "email": "founder@aquasense.in",
+    "password": "demo1234",
+    "role": "startup",
+    "department": null,
+    "district": null
+  },
+  {
+    "id": 4,
+    "name": "Dr S Rao",
+    "email": "expert1@procura.gov.in",
+    "password": "demo1234",
+    "role": "expert",
+    "department": null,
+    "district": null
+  },
+  {
+    "id": 5,
+    "name": "Prof M Iyer",
+    "email": "expert2@procura.gov.in",
+    "password": "demo1234",
+    "role": "expert",
+    "department": null,
+    "district": null
+  },
+  {
+    "id": 6,
+    "name": "Dr A Banerjee",
+    "email": "expert3@procura.gov.in",
+    "password": "demo1234",
+    "role": "expert",
+    "department": null,
+    "district": null
+  },
+  {
+    "id": 7,
+    "name": "N Sharma",
+    "email": "validator@procura.gov.in",
+    "password": "demo1234",
+    "role": "validator",
+    "department": null,
+    "district": null
+  }
+]
