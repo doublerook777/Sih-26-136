@@ -24,7 +24,7 @@ def check_eligibility(
     Returns:
         {
             "eligible": bool,
-            "report": {
+            "eligibility_report": {
                 "registered_startup": {"passed": bool, "note": str},
                 "required_certification": {"passed": bool, "note": str},
                 "min_experience_years": {"passed": bool, "note": str},
@@ -174,5 +174,6 @@ def check_eligibility(
 
     return {
         "eligible": all_passed,
-        "report": report,
+        "eligibility_report": report,
+        "report": report,  # alias for backwards compatibility
     }

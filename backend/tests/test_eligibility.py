@@ -40,7 +40,8 @@ def perfect_startup():
 def test_perfect_startup_passes_all_gates(base_challenge, perfect_startup):
     result = check_eligibility(base_challenge, perfect_startup, quote=850000)
     assert result["eligible"] is True
-    report = result["report"]
+    assert "eligibility_report" in result
+    report = result["eligibility_report"]
 
     assert report["registered_startup"]["passed"] is True
     assert "DIPP12345" in report["registered_startup"]["note"]
