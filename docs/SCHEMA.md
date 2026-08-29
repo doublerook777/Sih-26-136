@@ -21,7 +21,7 @@ startups         id, user_id, name, sector, technologies[], dpiit_number,
 
 challenges       id, created_by, department, district, title, raw_description,
                  statement_json (the 15-section template), sector, required_tech[],
-                 eligibility_rules_json, kpi_targets_json, budget, timeline,
+                 eligibility_rules_json, kpi_targets_json, budget, timeline_days,
                  deadline, status, match_rubric_id, evaluation_rubric_id
 
 applications     id, challenge_id, startup_id, eligible (bool),
@@ -70,6 +70,12 @@ instead of separate tables. Fewer joins, fewer bugs, same demo output.
 
 ## Notes for Pair A (models.py)
 
+- Money fields (`budget`, `amount`, `turnover`) are integers, whole rupees, no decimals.
+  Matches `docs/API.md` section 0. Use `int`, not `float`, even though SQLite won't
+  enforce the difference, the API contract and any strict JSON consumer will notice.
+- The challenges table's duration field is `timeline_days` (an int, e.g. `90`), matching
+  `docs/API.md` section 3 exactly. Earlier drafts of this doc said `timeline`, which is
+  wrong, this was a documentation error, not a modeling one, now corrected.
 - `[]` suffix means a JSON list column (`technologies[]`), not a Postgres array type.
   Section 2b of the roadmap explains why: JSON works identically on SQLite and Postgres,
   Postgres arrays don't exist on SQLite.
@@ -79,4 +85,7 @@ instead of separate tables. Fewer joins, fewer bugs, same demo output.
 - `rubric_snapshot_json` on both `applications` and `evaluations` is a frozen copy of the
   weights used at scoring time. Never recompute a historical score from the live rubric.
   See roadmap section 2c.
+- `Pilot.security_status` defaults to `"pending"` and `Pilot.risk_level` is nullable.
+  A pilot is created before either is known, per `docs/API.md`'s `POST /pilots` response.
+  Do not make these required fields with no default, the insert will fail.
 - No migrations. Schema change means: delete the dev DB, run `seed.py` again.

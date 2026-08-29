@@ -24,7 +24,7 @@ class Startup(SQLModel, table=True):
     technologies: list = Field(default_factory=list, sa_type=JSON)
     dpiit_number: Optional[str] = None
     incorporation_year: Optional[int] = None
-    turnover: Optional[float] = None
+    turnover: Optional[int] = None
     team_size: Optional[int] = None
     past_projects: list = Field(default_factory=list, sa_type=JSON)
     certifications: list = Field(default_factory=list, sa_type=JSON)
@@ -44,8 +44,8 @@ class Challenge(SQLModel, table=True):
     required_tech: list = Field(default_factory=list, sa_type=JSON)
     eligibility_rules_json: dict = Field(default_factory=dict, sa_type=JSON)
     kpi_targets_json: dict = Field(default_factory=dict, sa_type=JSON)
-    budget: Optional[float] = None
-    timeline: Optional[str] = None
+    budget: Optional[int] = None
+    timeline_days: Optional[int] = None
     deadline: Optional[date] = None
     status: str
     match_rubric_id: Optional[int] = None
@@ -95,11 +95,11 @@ class Pilot(SQLModel, table=True):
     startup_id: int
     location: str
     duration_days: int
-    budget: float
+    budget: int
     objectives: str
     security_checklist_json: dict = Field(default_factory=dict, sa_type=JSON)
-    security_status: str
-    risk_level: str
+    security_status: str = "pending"
+    risk_level: Optional[str] = None
     status: str
 class Milestone(SQLModel, table=True):
     __tablename__ = "milestones"
@@ -109,7 +109,7 @@ class Milestone(SQLModel, table=True):
     seq: int
     title: str
     deliverable: str
-    amount: float
+    amount: int 
     due_date: Optional[date] = None
     status: str = "pending"
     evidence_text: Optional[str] = None
@@ -131,7 +131,7 @@ class Payment(SQLModel, table=True):
 
     id: Optional[int] = Field(default=None, primary_key=True)
     milestone_id: int
-    amount: float
+    amount: int
     status: str
     released_at: Optional[datetime] = None
     mock_txn_ref: Optional[str] = None
