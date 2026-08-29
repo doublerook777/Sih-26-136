@@ -1,8 +1,10 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
+from app.db import create_db_and_tables
 app = FastAPI()
-
+@app.on_event("startup")
+def on_startup():
+    create_db_and_tables()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173"],
