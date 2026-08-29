@@ -1,5 +1,8 @@
 import pytest
-from backend.app.ai.client import generate_content, test_gemini_connection as check_gemini_connection
+try:
+    from app.ai.client import generate_content, test_gemini_connection as check_gemini_connection
+except ImportError:
+    from backend.app.ai.client import generate_content, test_gemini_connection as check_gemini_connection
 
 def test_generate_content_fallback_without_key(monkeypatch):
     monkeypatch.delenv("GEMINI_API_KEY", raising=False)

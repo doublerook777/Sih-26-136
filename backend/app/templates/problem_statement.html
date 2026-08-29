@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Problem Statement — {{ title | default(challenge.title | default('Challenge Statement')) }}{% endblock %}
+
+{% block department %}{{ department | default(challenge.department | default('Department of Urban Development')) }}{% endblock %}
+{% block district %}{{ district | default(challenge.district | default('District A')) }}{% endblock %}
+{% block doc_badge %}Standard Problem Statement Specification (15-Section){% endblock %}
+
+{% block doc_ref %}CHAL-{{ challenge_id | default(challenge.id | default('001')) }}-STATEMENT{% endblock %}
+
+{% block extra_meta %}
+<tr>
+  <td class="doc-meta-label">Challenge Title:</td>
+  <td class="doc-meta-value" colspan="3"><strong>{{ title | default(challenge.title | default('Untitled Challenge')) }}</strong></td>
+</tr>
+<tr>
+  <td class="doc-meta-label">Sector:</td>
+  <td class="doc-meta-value">{{ sector | default(challenge.sector | default('General')) | upper }}</td>
+  <td class="doc-meta-label">Pilot Budget:</td>
+  <td class="doc-meta-value">₹{{ "{:,}".format(budget | default(challenge.budget | default(0))) }}</td>
+</tr>
+<tr>
+  <td class="doc-meta-label">Timeline:</td>
+  <td class="doc-meta-value">{{ timeline_days | default(challenge.timeline_days | default(90)) }} Days</td>
+  <td class="doc-meta-label">Deadline:</td>
+  <td class="doc-meta-value">{{ deadline | default(challenge.deadline | default('Open')) }}</td>
+</tr>
+{% endblock %}
+
+{% block content %}
+{% set s = statement | default(challenge.statement_json | default(challenge.statement | default({}))) %}
+
+<h2 class="section-heading">1. Problem Definition</h2>
+<p class="section-body">{{ s.problem | default('No problem statement defined.') }}</p>
+
+<h2 class="section-heading">2. Background & Administrative Context</h2>
+<p class="section-body">{{ s.background | default('No background details provided.') }}</p>
+
+<h2 class="section-heading">3. Existing System & Current Practices</h2>
+<p class="section-body">{{ s.existing_system | default('No existing system documented.') }}</p>
+
+<h2 class="section-heading">4. Identified Operational Gap</h2>
+<p class="section-body">{{ s.identified_gap | default('No gap identified.') }}</p>
+
+<h2 class="section-heading">5. Desired Innovation Solution</h2>
+<p class="section-body">{{ s.desired_solution | default('No solution scope specified.') }}</p>
+
+<h2 class="section-heading">6. Target Users & Stakeholders</h2>
+<p class="section-body">{{ s.target_users | default('Municipal officers, technical operators, and end citizens.') }}</p>
+
+<h2 class="section-heading">7. Technical Architecture & System Requirements</h2>
+<p class="section-body">{{ s.technical_requirements | default('General cloud and sensor interoperability.') }}</p>
+
+<h2 class="section-heading">8. Operational Constraints & Field Limitations</h2>
+<p class="section-body">{{ s.constraints | default('Must operate without disrupting existing utility services.') }}</p>
+
+<h2 class="section-heading">9. Budget Allocation & Financial Framework</h2>
+<p class="section-body">{{ s.budget | default('₹10,00,000 all-inclusive for full pilot phase.') }}</p>
+
+<h2 class="section-heading">10. Pilot Implementation Timeline & Phasing</h2>
+<p class="section-body">{{ s.timeline | default('90 calendar days across structured validation milestones.') }}</p>
+
+<h2 class="section-heading">11. Expected Outcomes & Deliverables</h2>
+<p class="section-body">{{ s.expected_outcomes | default('Measurable improvement in municipal service delivery.') }}</p>
+
+<h2 class="section-heading">12. Key Performance Indicators (KPIs)</h2>
+<p class="section-body">{{ s.kpis | default('Baseline vs target measurements verified by independent validator.') }}</p>
+
+<h2 class="section-heading">13. Startup Eligibility Requirements</h2>
+<p class="section-body">{{ s.eligibility_requirements | default('DPIIT registered startup with requisite domain experience.') }}</p>
+
+<h2 class="section-heading">14. Data Governance & Integration Requirements</h2>
+<p class="section-body">{{ s.data_requirements | default('Standard API integration and secure log retention.') }}</p>
+
+<h2 class="section-heading">15. Cybersecurity & Compliance Requirements</h2>
+<p class="section-body">{{ s.security_requirements | default('Compliance with government data protection and encryption baselines.') }}</p>
+
+{% endblock %}
