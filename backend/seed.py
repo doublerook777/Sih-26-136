@@ -6,7 +6,7 @@ Seeds the database from the real files in seed_data/. Run from backend/:
 Idempotent: safe to run multiple times, existing rows are left alone.
 """
 import json
-from datetime import date, datetime
+from datetime import date, datetime, timezone
 
 from sqlmodel import Session, select
 
@@ -63,7 +63,7 @@ def seed():
                 is_default=r["is_default"],
                 active=r["active"],
                 created_by=admin_id,
-                created_at=datetime.utcnow(),
+                created_at=datetime.now(timezone.utc),
             ))
         session.commit()
 
