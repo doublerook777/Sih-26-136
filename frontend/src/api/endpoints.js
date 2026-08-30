@@ -101,7 +101,7 @@ export const getStartups = async (params = {}) => {
     }
     if (params.tech) {
       filtered = filtered.filter(
-        (s) => s.technologies?.some((t) => t.toLowerCase() === params.tech.toLowerCase())
+        (s) => s.tech_tags?.some((t) => t.toLowerCase() === params.tech.toLowerCase())
       );
     }
     return filtered;

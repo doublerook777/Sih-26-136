@@ -37,7 +37,7 @@ export default function ProtectedRoute({ allowedRoles, children }) {
               Your account with role <strong>{user.role}</strong> does not have access to this view.
             </p>
             <div style={{ marginTop: "24px", display: "flex", gap: "12px", justifyContent: "center" }}>
-              <Link to={`/${user.role === "expert" ? "evaluator" : user.role}`} className="btn btn-primary">
+              <Link to={`/${["expert", "validator"].includes(user.role) ? "evaluator" : user.role}`} className="btn btn-primary">
                 Go to your dashboard
               </Link>
               <Link to="/" className="btn btn-ghost">
