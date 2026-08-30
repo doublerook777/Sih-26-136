@@ -71,7 +71,9 @@ export const challenges = [
     required_tech: ["iot", "sensors", "analytics", "gis"],
     application_count: 12,
     created_at: "2026-08-27T09:00:00Z",
-    match_score: 94.0,
+    created_by: 1,
+    match_rubric_id: 1,
+    evaluation_rubric_id: 5,
     eligibility_rules: {
       registered_startup: true,
       required_certification: "ISO 9001:2015",
@@ -116,7 +118,9 @@ export const challenges = [
     required_tech: ["ai", "analytics", "cloud", "mobile-app"],
     application_count: 8,
     created_at: "2026-08-28T10:30:00Z",
-    match_score: 76.5,
+    created_by: 1,
+    match_rubric_id: 3,
+    evaluation_rubric_id: 6,
     eligibility_rules: {
       registered_startup: true,
       required_certification: "ISO 27001",
@@ -160,7 +164,9 @@ export const challenges = [
     required_tech: ["iot", "gps", "optimization", "analytics"],
     application_count: 17,
     created_at: "2026-08-29T11:00:00Z",
-    match_score: 82.0,
+    created_by: 1,
+    match_rubric_id: 4,
+    evaluation_rubric_id: 5,
     eligibility_rules: {
       registered_startup: true,
       required_certification: "ISO 9001:2015",
@@ -200,6 +206,7 @@ export const startups = [
     name: "AquaSense Systems",
     sector: "water",
     technologies: ["iot", "sensors", "ai", "analytics", "gis"],
+    tech_tags: ["iot", "sensors", "ai", "analytics", "gis"],
     dpiit_number: "DIPP48291",
     incorporation_year: 2021,
     turnover: 6500000,
@@ -210,7 +217,6 @@ export const startups = [
     ],
     certifications: ["ISO 9001:2015", "ISO 27001", "CPRI Certified Hardware"],
     description: "End-to-end smart municipal water distribution monitoring platform with acoustic sensor nodes, GIS pressure mapping, and ML-based non-revenue water (NRW) leak detection algorithms.",
-    match_score: 94.0
   },
   {
     id: 2,
@@ -218,6 +224,7 @@ export const startups = [
     name: "PipeAI Technologies",
     sector: "water",
     technologies: ["ai", "analytics", "gis", "iot", "scada"],
+    tech_tags: ["ai", "analytics", "gis", "iot"],
     dpiit_number: "DIPP51902",
     incorporation_year: 2022,
     turnover: 4200000,
@@ -227,7 +234,6 @@ export const startups = [
     ],
     certifications: ["ISO 9001:2015"],
     description: "Predictive pipe burst and transient surge analysis platform for water utilities.",
-    match_score: 87.0
   },
   {
     id: 3,
@@ -235,6 +241,7 @@ export const startups = [
     name: "HydroTrack Telemetry",
     sector: "water",
     technologies: ["sensors", "iot", "telemetry"],
+    tech_tags: ["sensors", "iot"],
     dpiit_number: "DIPP63114",
     incorporation_year: 2023,
     turnover: 2800000,
@@ -242,7 +249,6 @@ export const startups = [
     past_projects: [],
     certifications: ["ISO 9001:2015"],
     description: "Low-cost water flow and reservoir level telemetry for district distribution.",
-    match_score: 81.0
   }
 ];
 

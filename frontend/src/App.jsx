@@ -106,6 +106,7 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+      <Route path="*" element={<div style={{ padding: "40px", textAlign: "center" }}>Page not found</div>} />
       </Routes>
     </AuthProvider>
   );

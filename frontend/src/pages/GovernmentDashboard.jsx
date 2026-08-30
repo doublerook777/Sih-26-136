@@ -34,7 +34,7 @@ export default function GovernmentDashboard() {
     (acc, curr) => acc + (curr.application_count || 0),
     0
   );
-  const activePilots = challenges.filter((c) => c.status === "piloting").length || 1;
+  const activePilots = challenges.filter((c) => c.status === "piloting").length;
 
   return (
     <DashboardLayout
@@ -52,7 +52,7 @@ export default function GovernmentDashboard() {
         <StatCard
           icon="↗"
           label="Applications"
-          value={String(totalApplications || 37).padStart(2, "0")}
+          value={String(totalApplications).padStart(2, "0")}
           hint="From DPIIT startups"
         />
         <StatCard

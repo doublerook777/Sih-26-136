@@ -49,6 +49,7 @@ export async function request(path, options = {}) {
     if (window.location.pathname !== "/login") {
       window.location.href = "/login";
     }
+    return new Promise(() => {}); // page is navigating away, never resolve
   }
 
   let data = null;
