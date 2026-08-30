@@ -1,11 +1,18 @@
-import json
-from datetime import date
+"""
+Seeds the database from the real files in seed_data/. Run from backend/:
 
-from sqlmodel import Session
+    python seed.py
+
+Idempotent: safe to run multiple times, existing rows are left alone.
+"""
+import json
+from datetime import date, datetime
+
+from sqlmodel import Session, select
 
 from app.auth import hash_password
 from app.db import engine, create_db_and_tables
-from app.models import User, Startup, Challenge
+from app.models import Challenge, Rubric, Startup, User
 
 
 def seed():
@@ -14,103 +21,68 @@ def seed():
     with Session(engine) as session:
 
         # -------------------------
-        # USERS
+        # USERS — the 7 documented demo accounts, from docs/API.md section 13
         # -------------------------
-        users = [
-            User(
-                id=1,
-                name="Admin User",
-                email="admin@procura.com",
-                password_hash=hash_password("admin123"),
-                role="admin",
-            ),
-            User(
-                id=2,
-                name="Startup User",
-                email="startup@procura.com",
-                password_hash=hash_password("startup123"),
-                role="startup",
-            ),
-            User(
-                id=3,
-                name="Government User",
-                email="gov@procura.com",
-                password_hash=hash_password("gov123"),
-                role="government",
-            ),
-            User(
-                id=4,
-                name="R Kumar",
-                email="officer@water.gov.in",
-                password_hash=hash_password("demo1234"),
-                role="government",
-            ),
-            User(
-                id=5,
-                name="Platform Admin",
-                email="admin@procura.gov.in",
-                password_hash=hash_password("demo1234"),
-                role="admin",
-            ),
-            User(
-                id=6,
-                name="AquaSense",
-                email="founder@aquasense.in",
-                password_hash=hash_password("demo1234"),
-                role="startup",
-            ),
-            User(
-                id=7,
-                name="Dr S Rao",
-                email="expert1@procura.gov.in",
-                password_hash=hash_password("demo1234"),
-                role="expert",
-            ),
-            User(
-                id=8,
-                name="Prof M Iyer",
-                email="expert2@procura.gov.in",
-                password_hash=hash_password("demo1234"),
-                role="expert",
-            ),
-            User(
-                id=9,
-                name="Dr A Banerjee",
-                email="expert3@procura.gov.in",
-                password_hash=hash_password("demo1234"),
-                role="expert",
-            ),
-            User(
-                id=10,
-                name="N Sharma",
-                email="validator@procura.gov.in",
-                password_hash=hash_password("demo1234"),
-                role="validator",
-            ),
-        ]
+        with open("seed_data/users.json") as f:
+            user_data = json.load(f)
 
-        for user in users:
-            if session.get(User, user.id) is None:
-                session.add(user)
-
+        for data in user_data:
+            if session.get(User, data["id"]) is not None:
+                continue
+            session.add(User(
+                id=data["id"],
+                name=data["name"],
+                email=data["email"],
+                password_hash=hash_password(data["password"]),
+                role=data["role"],
+                department=data.get("department"),
+                district=data.get("district"),
+            ))
         session.commit()
 
         # -------------------------
-        # STARTUPS
+        # RUBRICS — 4 match + 2 evaluation, from seed_data/rubrics.json
         # -------------------------
-        with open("seed_data/startups.json", "r") as f:
+        with open("seed_data/rubrics.json") as f:
+            rubric_data = json.load(f)
+
+        # admin user (id 2, "Platform Admin") owns the seeded rubrics
+        admin_id = next((u["id"] for u in user_data if u["role"] == "admin"), 1)
+
+        for r in rubric_data:
+            if session.get(Rubric, r["id"]) is not None:
+                continue
+            weights = {c["key"]: c["weight"] for c in r["criteria"]}
+            session.add(Rubric(
+                id=r["id"],
+                name=r["name"],
+                kind=r["kind"],
+                weights_json=weights,
+                criteria_json=r["criteria"],
+                version=r["version"],
+                is_default=r["is_default"],
+                active=r["active"],
+                created_by=admin_id,
+                created_at=datetime.utcnow(),
+            ))
+        session.commit()
+
+        # -------------------------
+        # STARTUPS — 20 across 4 sectors, from seed_data/startups.json
+        # -------------------------
+        with open("seed_data/startups.json") as f:
             startup_data = json.load(f)
 
         for data in startup_data:
             if session.get(Startup, data["id"]) is not None:
                 continue
-
-            startup = Startup(
+            session.add(Startup(
                 id=data["id"],
                 user_id=data["user_id"],
                 name=data["name"],
                 sector=data["sector"],
                 technologies=data.get("technologies", []),
+                tech_tags=data.get("tech_tags", []),
                 dpiit_number=data.get("dpiit_number"),
                 incorporation_year=data.get("incorporation_year"),
                 turnover=data.get("turnover"),
@@ -118,104 +90,26 @@ def seed():
                 past_projects=data.get("past_projects", []),
                 certifications=data.get("certifications", []),
                 description=data.get("description"),
-            )
-
-            session.add(startup)
-
+            ))
         session.commit()
 
         # -------------------------
-        # CHALLENGES
+        # CHALLENGES — 3 seeded challenges, from seed_data/challenges.json
+        # Field names in the file already match the Challenge model 1:1.
         # -------------------------
-        challenges = [
-            Challenge(
-                created_by=3,
-                department="Water Resources",
-                district="Bengaluru Urban",
-                title="Smart Water Leakage Detection",
-                raw_description="Detect and reduce water pipeline leakage using sensors and AI.",
-                statement_json={
-                    "problem": "Water loss due to undetected pipeline leakage.",
-                    "expected_solution": "Sensor-based monitoring with AI anomaly detection.",
-                },
-                sector="water",
-                required_tech=["IoT", "Sensors", "AI", "Analytics"],
-                eligibility_rules_json={
-                    "minimum_team_size": 2,
-                    "dpiit_registered": True,
-                },
-                kpi_targets_json={
-                    "leakage_reduction_percent": 20,
-                    "detection_time_hours": 24,
-                },
-                budget=5000000,
-                timeline_days=180,
-                deadline=date(2026, 12, 31),
-                status="open",
-            ),
-            Challenge(
-                created_by=3,
-                department="Urban Development",
-                district="Bengaluru Urban",
-                title="AI-Based Traffic Management",
-                raw_description="Improve traffic flow using real-time data and AI-based prediction.",
-                statement_json={
-                    "problem": "Traffic congestion causes delays and increased emissions.",
-                    "expected_solution": "AI-powered traffic monitoring and prediction.",
-                },
-                sector="smart_city",
-                required_tech=["AI", "Machine Learning", "IoT", "Analytics"],
-                eligibility_rules_json={
-                    "minimum_team_size": 2,
-                    "dpiit_registered": True,
-                },
-                kpi_targets_json={
-                    "travel_time_reduction_percent": 15,
-                    "congestion_reduction_percent": 20,
-                },
-                budget=7500000,
-                timeline_days=180,
-                deadline=date(2026, 12, 31),
-                status="open",
-            ),
-            Challenge(
-                created_by=3,
-                department="Environment",
-                district="Bengaluru Urban",
-                title="Smart Waste Management",
-                raw_description="Improve municipal waste collection and monitoring using technology.",
-                statement_json={
-                    "problem": "Inefficient waste collection and limited monitoring.",
-                    "expected_solution": "IoT-enabled collection monitoring and route optimization.",
-                },
-                sector="waste_management",
-                required_tech=["IoT", "GPS", "AI", "Analytics"],
-                eligibility_rules_json={
-                    "minimum_team_size": 2,
-                    "dpiit_registered": True,
-                },
-                kpi_targets_json={
-                    "collection_efficiency_percent": 25,
-                    "fuel_reduction_percent": 15,
-                },
-                budget=4000000,
-                timeline_days=150,
-                deadline=date(2026, 12, 31),
-                status="open",
-            ),
-        ]
+        with open("seed_data/challenges.json") as f:
+            challenge_data = json.load(f)
 
-        existing_challenges = session.exec(
-            Challenge.__table__.select()
-        ).all()
+        for c in challenge_data:
+            if session.get(Challenge, c["id"]) is not None:
+                continue
+            c = dict(c)
+            c["deadline"] = date.fromisoformat(c["deadline"])  # JSON gives a string, model needs a date
+            session.add(Challenge(**c))
+        session.commit()
 
-        if not existing_challenges:
-            session.add_all(challenges)
-            session.commit()
-
-        print(f"Seeded {len(startup_data)} startups.")
-        print("Users checked/created.")
-        print("3 challenges checked/created.")
+        print(f"Seeded {len(user_data)} users, {len(rubric_data)} rubrics, "
+              f"{len(startup_data)} startups, {len(challenge_data)} challenges.")
 
 
 if __name__ == "__main__":

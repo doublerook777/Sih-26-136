@@ -22,6 +22,7 @@ class Startup(SQLModel, table=True):
     name: str
     sector: str
     technologies: list = Field(default_factory=list, sa_type=JSON)
+    tech_tags: list = Field(default_factory=list, sa_type=JSON)
     dpiit_number: Optional[str] = None
     incorporation_year: Optional[int] = None
     turnover: Optional[int] = None
