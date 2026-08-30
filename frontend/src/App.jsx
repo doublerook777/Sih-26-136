@@ -1,4 +1,6 @@
 import { Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
@@ -13,22 +15,98 @@ import Placeholder from "./pages/Placeholder";
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Landing />} />
-      <Route path="/login" element={<Login />} />
+    <AuthProvider>
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<Landing />} />
+        <Route path="/login" element={<Login />} />
 
-      <Route path="/government" element={<GovernmentDashboard />} />
-      <Route path="/government/create" element={<CreateChallenge />} />
-      <Route path="/government/recommendations" element={<Recommendations />} />
-      <Route path="/government/pilot" element={<PilotDashboard />} />
-      <Route path="/government/challenges" element={<Placeholder role="government" title="Challenges" />} />
+        {/* Government Portal */}
+        <Route
+          path="/government"
+          element={
+            <ProtectedRoute allowedRoles={["government", "admin"]}>
+              <GovernmentDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/government/create"
+          element={
+            <ProtectedRoute allowedRoles={["government", "admin"]}>
+              <CreateChallenge />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/government/recommendations"
+          element={
+            <ProtectedRoute allowedRoles={["government", "admin"]}>
+              <Recommendations />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/government/pilot"
+          element={
+            <ProtectedRoute allowedRoles={["government", "admin"]}>
+              <PilotDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/government/challenges"
+          element={
+            <ProtectedRoute allowedRoles={["government", "admin"]}>
+              <Placeholder role="government" title="Challenges" />
+            </ProtectedRoute>
+          }
+        />
 
-      <Route path="/startup" element={<StartupDashboard />} />
-      <Route path="/startup/explore" element={<ExploreChallenges />} />
-      <Route path="/startup/applications" element={<Placeholder role="startup" title="My Applications" />} />
+        {/* Startup Portal */}
+        <Route
+          path="/startup"
+          element={
+            <ProtectedRoute allowedRoles={["startup"]}>
+              <StartupDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/startup/explore"
+          element={
+            <ProtectedRoute allowedRoles={["startup"]}>
+              <ExploreChallenges />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/startup/applications"
+          element={
+            <ProtectedRoute allowedRoles={["startup"]}>
+              <Placeholder role="startup" title="My Applications" />
+            </ProtectedRoute>
+          }
+        />
 
-      <Route path="/evaluator" element={<EvaluatorDashboard />} />
-      <Route path="/evaluator/reviews" element={<Placeholder role="evaluator" title="Pending Reviews" />} />
-    </Routes>
+        {/* Evaluator Portal */}
+        <Route
+          path="/evaluator"
+          element={
+            <ProtectedRoute allowedRoles={["expert", "validator", "admin"]}>
+              <EvaluatorDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/evaluator/reviews"
+          element={
+            <ProtectedRoute allowedRoles={["expert", "validator", "admin"]}>
+              <Placeholder role="evaluator" title="Pending Reviews" />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </AuthProvider>
   );
 }
