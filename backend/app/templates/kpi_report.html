@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block document_title %}
+KPI Performance & Target Achievement Report: Pilot #{{ pilot.id }}
+{% endblock %}
+
+{% block content %}
+<div class="section-card">
+  <h2 class="section-title">Key Performance Indicators</h2>
+  <table class="data-table">
+    <thead>
+      <tr><th>KPI Name</th><th>Category</th><th>Baseline</th><th>Target</th><th>Achieved</th><th>Met?</th></tr>
+    </thead>
+    <tbody>
+      {% for k in kpis | default([]) %}
+      <tr>
+        <td><strong>{{ k.name }}</strong></td>
+        <td>{{ k.category | capitalize }}</td>
+        <td>{{ k.baseline }} {{ k.unit }}</td>
+        <td>{{ k.target }} {{ k.unit }}</td>
+        <td>{{ k.achieved if k.achieved is not none else "Pending" }} {{ k.unit }}</td>
+        <td><span class="badge {{ 'badge-success' if k.met else 'badge-warning' }}">{{ "YES" if k.met else "IN PROGRESS" }}</span></td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6">KPIs configured for pilot tracking.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

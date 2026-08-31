@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block document_title %}
+Eligibility Criteria & Screening Checklist: {{ challenge.title }}
+{% endblock %}
+
+{% block metadata_table %}
+<table class="doc-meta-table">
+  <tr>
+    <th>Challenge ID</th>
+    <td>#{{ challenge.id }}</td>
+    <th>Department</th>
+    <td>{{ challenge.department }}</td>
+  </tr>
+  <tr>
+    <th>District</th>
+    <td>{{ challenge.district }}</td>
+    <th>Sector</th>
+    <td>{{ challenge.sector | capitalize }}</td>
+  </tr>
+</table>
+{% endblock %}
+
+{% block content %}
+<div class="section-card">
+  <h2 class="section-title">Mandatory Eligibility Framework</h2>
+  <p class="section-body">All participating startups must satisfy the following automated eligibility gates prior to evaluation and discovery matching.</p>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Rule / Condition</th>
+        <th>Mandatory Requirement</th>
+        <th>Verification Method</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% set rules = challenge.eligibility_rules_json or {} %}
+      <tr>
+        <td><strong>DPIIT Recognition</strong></td>
+        <td>{{ "Required (Active Certificate)" if rules.get("registered_startup", true) or rules.get("dpiit_registered") else "Optional" }}</td>
+        <td>Startup India Portal API / DPIIT Number Check</td>
+      </tr>
+      <tr>
+        <td><strong>Required Certifications</strong></td>
+        <td>{{ rules.get("required_certification", "ISO 27001 / Standard Industry Certification") }}</td>
+        <td>Document Verification & Audit Stamp</td>
+      </tr>
+      <tr>
+        <td><strong>Minimum Domain Experience</strong></td>
+        <td>{{ rules.get("min_experience_years", 2) }} Years in {{ challenge.sector }} sector</td>
+        <td>Incorporation Record & Project History</td>
+      </tr>
+      <tr>
+        <td><strong>Technology Stack Overlap</strong></td>
+        <td>Minimum {{ rules.get("min_technology_overlap", 1) }} matching core technology</td>
+        <td>TF-IDF Profile Keyword Intersection</td>
+      </tr>
+      <tr>
+        <td><strong>Commercial Quote Ceiling</strong></td>
+        <td>Maximum INR {{ "{:,}".format(rules.get("max_quote", challenge.budget or 1000000)) }}</td>
+        <td>Budget Cap Check</td>
+      </tr>
+      <tr>
+        <td><strong>Security Baseline</strong></td>
+        <td>{{ "Mandatory CERT-In self-declaration" if rules.get("security_baseline", true) else "Optional" }}</td>
+        <td>Security Self-Assessment Form</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+{% endblock %}

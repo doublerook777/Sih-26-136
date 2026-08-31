@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block document_title %}
+Evaluation Criteria & Rubric Weights: {{ challenge.title }}
+{% endblock %}
+
+{% block metadata_table %}
+<table class="doc-meta-table">
+  <tr>
+    <th>Challenge ID</th>
+    <td>#{{ challenge.id }}</td>
+    <th>Evaluation Rubric ID</th>
+    <td>#{{ challenge.evaluation_rubric_id | default(5) }}</td>
+  </tr>
+  <tr>
+    <th>Department</th>
+    <td>{{ challenge.department }}</td>
+    <th>Match Rubric ID</th>
+    <td>#{{ challenge.match_rubric_id | default(1) }}</td>
+  </tr>
+</table>
+{% endblock %}
+
+{% block content %}
+<div class="section-card">
+  <h2 class="section-title">Standardized Expert Scoring Rubric (7 Criteria)</h2>
+  <p class="section-body">Independent domain experts evaluate shortlisted applications across seven weighted criteria summing strictly to 100%.</p>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Criterion</th>
+        <th>Weight</th>
+        <th>Description & Evaluation Scope</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Technical Feasibility</strong></td>
+        <td><span class="badge badge-info">25%</span></td>
+        <td>Architecture soundness, maturity of tech stack, and scalability of proposed solution.</td>
+      </tr>
+      <tr>
+        <td><strong>Innovation & Differentiation</strong></td>
+        <td><span class="badge badge-info">15%</span></td>
+        <td>Novelty of algorithmic/hardware approach and competitive edge over existing legacy methods.</td>
+      </tr>
+      <tr>
+        <td><strong>Cost Effectiveness</strong></td>
+        <td><span class="badge badge-info">15%</span></td>
+        <td>Value for public money, quote reasonableness, and lifecycle maintenance cost fit.</td>
+      </tr>
+      <tr>
+        <td><strong>Scalability to District Scale</strong></td>
+        <td><span class="badge badge-info">15%</span></td>
+        <td>Ease of scaling deployment from pilot zone across state-wide municipal jurisdictions.</td>
+      </tr>
+      <tr>
+        <td><strong>Security & Data Governance</strong></td>
+        <td><span class="badge badge-info">10%</span></td>
+        <td>Data residency compliance, encryption standards, and threat surface mitigation.</td>
+      </tr>
+      <tr>
+        <td><strong>Implementation Capability</strong></td>
+        <td><span class="badge badge-info">10%</span></td>
+        <td>Team credentials, engineering bandwidth, and past track record in government pilots.</td>
+      </tr>
+      <tr>
+        <td><strong>Social & Environmental Impact</strong></td>
+        <td><span class="badge badge-info">10%</span></td>
+        <td>Direct citizen benefit, carbon/resource savings, and public accountability outcomes.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+{% endblock %}

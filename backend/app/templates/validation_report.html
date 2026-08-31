@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block document_title %}
+Milestone Validation Certificate: Milestone #{{ milestone.id }}
+{% endblock %}
+
+{% block content %}
+<div class="section-card">
+  <h2 class="section-title">Independent Milestone Verification</h2>
+  <table class="doc-meta-table">
+    <tr><th>Milestone Title</th><td>{{ milestone.title }}</td><th>Pilot ID</th><td>#{{ milestone.pilot_id }}</td></tr>
+    <tr><th>Deliverable</th><td>{{ milestone.deliverable }}</td><th>Tranche Value</th><td>INR {{ "{:,}".format(milestone.amount) }}</td></tr>
+    <tr><th>Status</th><td><span class="badge badge-success">{{ milestone.status | upper }}</span></td><th>Submitted At</th><td>{{ milestone.submitted_at | default("Recorded on Platform") }}</td></tr>
+  </table>
+  <p class="section-body"><strong>Claimed Evidence:</strong> {{ milestone.evidence_text | default("Evidence uploaded via vendor dashboard.") }}</p>
+</div>
+{% endblock %}

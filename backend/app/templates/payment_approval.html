@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block document_title %}
+Treasury Sanction Order & Payment Release: Milestone #{{ milestone.id }}
+{% endblock %}
+
+{% block content %}
+<div class="section-card">
+  <h2 class="section-title">Payment Disbursement Sanction</h2>
+  <p class="section-body">Sanction is hereby accorded for the release of payment for <strong>Milestone #{{ milestone.id }}</strong> ({{ milestone.title }}) amounting to <strong>INR {{ "{:,}".format(milestone.amount) }}</strong> following verified deliverable sign-off.</p>
+</div>
+{% endblock %}

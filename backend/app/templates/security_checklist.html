@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block document_title %}
+Cybersecurity Checklist & Audit Certificate: Pilot #{{ pilot.id }}
+{% endblock %}
+
+{% block content %}
+<div class="section-card">
+  <h2 class="section-title">Security Compliance Status: <span class="badge badge-success">{{ pilot.security_status | upper }}</span></h2>
+  <p class="section-body">Risk Level: <strong>{{ pilot.risk_level | default("LOW") | upper }}</strong></p>
+  <table class="data-table">
+    <thead>
+      <tr><th>Security Control</th><th>Standard</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Data Encryption in Transit</td><td>TLS 1.3 Mandatory</td><td><span class="badge badge-success">COMPLIANT</span></td></tr>
+      <tr><td>Data Encryption at Rest</td><td>AES-256 Sovereign Cloud</td><td><span class="badge badge-success">COMPLIANT</span></td></tr>
+      <tr><td>Vulnerability Assessment (VAPT)</td><td>CERT-In Empaneled Auditor</td><td><span class="badge badge-success">PASSED</span></td></tr>
+      <tr><td>Role-Based Access Control (RBAC)</td><td>OAuth 2.0 / JWT Auth</td><td><span class="badge badge-success">ENFORCED</span></td></tr>
+    </tbody>
+  </table>
+</div>
+{% endblock %}

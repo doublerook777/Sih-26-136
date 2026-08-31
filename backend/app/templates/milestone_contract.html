@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block document_title %}
+Milestone Schedule & Payment Tranches: Pilot #{{ pilot.id }}
+{% endblock %}
+
+{% block content %}
+<div class="section-card">
+  <h2 class="section-title">Milestone Schedule</h2>
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>Seq</th>
+        <th>Milestone Title</th>
+        <th>Deliverable</th>
+        <th>Tranche Amount</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for m in milestones | default([]) %}
+      <tr>
+        <td>#{{ m.seq }}</td>
+        <td><strong>{{ m.title }}</strong></td>
+        <td>{{ m.deliverable }}</td>
+        <td>INR {{ "{:,}".format(m.amount) }}</td>
+        <td><span class="badge badge-info">{{ m.status | upper }}</span></td>
+      </tr>
+      {% else %}
+      <tr><td colspan="5">Four standard milestone tranches configured upon pilot creation.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

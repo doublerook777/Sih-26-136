@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block document_title %}
+Master Pilot Agreement: Pilot #{{ pilot.id }}
+{% endblock %}
+
+{% block metadata_table %}
+<table class="doc-meta-table">
+  <tr>
+    <th>Pilot ID</th>
+    <td>#{{ pilot.id }}</td>
+    <th>Challenge ID</th>
+    <td>#{{ pilot.challenge_id }}</td>
+  </tr>
+  <tr>
+    <th>Deployment Location</th>
+    <td>{{ pilot.location }}</td>
+    <th>Duration</th>
+    <td>{{ pilot.duration_days }} Days</td>
+  </tr>
+  <tr>
+    <th>Total Sanctioned Value</th>
+    <td>INR {{ "{:,}".format(pilot.budget) }}</td>
+    <th>Status</th>
+    <td><span class="badge badge-success">{{ pilot.status | upper }}</span></td>
+  </tr>
+</table>
+{% endblock %}
+
+{% block content %}
+<div class="section-card">
+  <h2 class="section-title">16-Clause Master Agreement</h2>
+  <div class="section-body">
+    <p><strong>Clause 1 (Scope of Pilot):</strong> The Startup agrees to deploy, configure, and maintain the innovative solution in {{ pilot.location }} in accordance with the specifications in Challenge #{{ pilot.challenge_id }}.</p>
+    <p><strong>Clause 2 (Objectives):</strong> {{ pilot.objectives | default("Fulfill pilot operational outcomes and meet verified KPI targets.") }}</p>
+    <p><strong>Clause 3 (Milestone Phasing):</strong> Disbursements are strictly linked to four phased milestones subject to independent validation.</p>
+    <p><strong>Clause 4 (Independent Validation):</strong> Field audits and telemetry checks will be conducted by an authorized Validator prior to each payment tranche release.</p>
+    <p><strong>Clause 5 (Data Sovereignty):</strong> All data collected during the pilot remains the exclusive property of the Government.</p>
+    <p><strong>Clause 6 (Intellectual Property):</strong> Pre-existing IP remains with the Startup; platform integration interfaces remain open standard.</p>
+    <p><strong>Clause 7 (Cybersecurity Baseline):</strong> Startup warrants compliance with CERT-In guidelines and encryption standards.</p>
+    <p><strong>Clause 8 (Performance Guarantee):</strong> Failure to meet critical KPIs may result in remediation notice or pilot termination.</p>
+    <p><strong>Clause 9 (Liability & Indemnity):</strong> Neither party shall be liable for indirect or consequential damages.</p>
+    <p><strong>Clause 10 (Confidentiality):</strong> Mutual non-disclosure of sensitive infrastructure data and proprietary algorithms.</p>
+    <p><strong>Clause 11 (Term & Renewal):</strong> Agreement valid for {{ pilot.duration_days }} days from the date of official sanction.</p>
+    <p><strong>Clause 12 (Termination for Cause):</strong> Government may terminate upon 14 days written notice for breach of milestone commitments.</p>
+    <p><strong>Clause 13 (Dispute Resolution):</strong> Arbitration governed by the laws of India under the jurisdiction of the state High Court.</p>
+    <p><strong>Clause 14 (Force Majeure):</strong> Standard statutory force majeure protections apply.</p>
+    <p><strong>Clause 15 (Direct Procurement Pathway):</strong> Successful completion with score >= 85 unlocks direct scale-up sanction under GFR innovation clauses.</p>
+    <p><strong>Clause 16 (Entire Agreement):</strong> This document constitutes the sole agreement between the parties regarding the pilot.</p>
+  </div>
+</div>
+{% endblock %}

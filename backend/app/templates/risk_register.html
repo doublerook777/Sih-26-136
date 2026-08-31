@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block document_title %}
+Pilot Risk Register & Matrix: Pilot #{{ pilot.id }}
+{% endblock %}
+
+{% block content %}
+<div class="section-card">
+  <h2 class="section-title">Identified Risks & Mitigation Controls</h2>
+  <table class="data-table">
+    <thead>
+      <tr><th>Description</th><th>Probability</th><th>Impact</th><th>Score (P×I)</th><th>Mitigation</th><th>Owner</th></tr>
+    </thead>
+    <tbody>
+      {% for r in risks | default([]) %}
+      <tr>
+        <td>{{ r.description }}</td>
+        <td>{{ r.probability }} / 5</td>
+        <td>{{ r.impact }} / 5</td>
+        <td><strong>{{ r.score }}</strong></td>
+        <td>{{ r.mitigation | default("Active monitoring") }}</td>
+        <td>{{ r.owner | default("Project Lead") }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6">Risk matrix initialized at pilot commissioning.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

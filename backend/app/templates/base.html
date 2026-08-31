@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title | default("Government Procurement Document") }} — ProcuraAI</title>
+  <style>
+    @page {
+      size: A4;
+      margin: 20mm 15mm 20mm 15mm;
+    }
+    *, *:before, *:after {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: #1a202c;
+      background: #ffffff;
+      margin: 0;
+      padding: 32px;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+    .document-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: #fff;
+    }
+    .gov-header {
+      border-bottom: 2px solid #0f172a;
+      padding-bottom: 16px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+    .gov-brand {
+      display: flex;
+      flex-direction: column;
+    }
+    .gov-brand-title {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: #0f172a;
+      text-transform: uppercase;
+    }
+    .gov-brand-sub {
+      font-size: 12px;
+      color: #475569;
+      margin-top: 2px;
+    }
+    .doc-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 4px;
+      background: #f1f5f9;
+      color: #334155;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border: 1px solid #cbd5e1;
+    }
+    .doc-header-main {
+      margin-bottom: 24px;
+    }
+    .doc-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 0 0 6px 0;
+      line-height: 1.25;
+    }
+    .doc-meta-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0 24px 0;
+      font-size: 12px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .doc-meta-table td, .doc-meta-table th {
+      padding: 8px 12px;
+      border-bottom: 1px solid #e2e8f0;
+      text-align: left;
+    }
+    .doc-meta-table th {
+      color: #64748b;
+      font-weight: 600;
+      width: 25%;
+      background: #f1f5f9;
+    }
+    .doc-meta-table td {
+      color: #0f172a;
+      font-weight: 500;
+    }
+    .section-card {
+      margin-bottom: 20px;
+      page-break-inside: avoid;
+    }
+    .section-num {
+      color: #64748b;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 2px;
+    }
+    .section-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0f172a;
+      margin: 0 0 8px 0;
+      padding-bottom: 4px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .section-body {
+      font-size: 13.5px;
+      color: #334155;
+      line-height: 1.6;
+      margin: 0;
+      white-space: pre-wrap;
+    }
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+      font-size: 13px;
+    }
+    table.data-table th {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 8px 12px;
+      font-weight: 600;
+      text-align: left;
+    }
+    table.data-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid #e2e8f0;
+      color: #334155;
+    }
+    table.data-table tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+    .badge-success { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+    .badge-info { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+    .badge-warning { background: #fef9c3; color: #a16207; border: 1px solid #fef08a; }
+    .signatures-grid {
+      margin-top: 48px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      page-break-inside: avoid;
+    }
+    .signature-box {
+      border-top: 1px dashed #94a3b8;
+      padding-top: 10px;
+    }
+    .sig-title {
+      font-weight: 700;
+      font-size: 12px;
+      color: #0f172a;
+    }
+    .sig-sub {
+      font-size: 11px;
+      color: #64748b;
+    }
+    .doc-footer {
+      margin-top: 40px;
+      padding-top: 16px;
+      border-top: 1px solid #e2e8f0;
+      font-size: 11px;
+      color: #94a3b8;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .print-bar {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 9999;
+    }
+    .btn-print {
+      background: #0f172a;
+      color: #ffffff;
+      border: none;
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+    .btn-print:hover {
+      background: #334155;
+    }
+    @media print {
+      body {
+        padding: 0;
+      }
+      .print-bar {
+        display: none !important;
+      }
+      .document-container {
+        max-width: 100%;
+      }
+    }
+  </style>
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <div class="print-bar">
+    <button class="btn-print" onclick="window.print()">Print / Save PDF</button>
+  </div>
+
+  <div class="document-container">
+    <div class="gov-header">
+      <div class="gov-brand">
+        <div class="gov-brand-title">ProcuraAI — Public Procurement Platform</div>
+        <div class="gov-brand-sub">Government Agile Innovation Framework &bull; SIH 26136</div>
+      </div>
+      <div>
+        <span class="doc-badge">{{ doc_type | replace('_', ' ') }}</span>
+      </div>
+    </div>
+
+    <div class="doc-header-main">
+      <h1 class="doc-title">{% block document_title %}{{ title | default("Official Document") }}{% endblock %}</h1>
+    </div>
+
+    {% block metadata_table %}
+    {% endblock %}
+
+    <div class="document-content">
+      {% block content %}
+      {% endblock %}
+    </div>
+
+    {% block signatures %}
+    <div class="signatures-grid">
+      <div class="signature-box">
+        <div class="sig-title">Authorized Government Signatory</div>
+        <div class="sig-sub">Department of Public Procurement / Competent Authority</div>
+        <div class="sig-sub">Digitally generated & verified on {{ generated_at | default("Platform Live Record") }}</div>
+      </div>
+      <div class="signature-box">
+        <div class="sig-title">Vendor / Startup Representative</div>
+        <div class="sig-sub">Authorized Signatory &bull; DPIIT Recognized</div>
+        <div class="sig-sub">ProcuraAI Platform Electronic Audit Trail</div>
+      </div>
+    </div>
+    {% endblock %}
+
+    <div class="doc-footer">
+      <div>Reference ID: <strong>{{ doc_type | upper }}-{{ entity_id }}</strong></div>
+      <div>Official Document &bull; Confirmed via ProcuraAI Cryptographic Ledger</div>
+    </div>
+  </div>
+</body>
+</html>

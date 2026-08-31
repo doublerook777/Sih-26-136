@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block document_title %}
+Data Sovereignty & Intellectual Property Schedule: Pilot #{{ pilot.id }}
+{% endblock %}
+
+{% block content %}
+<div class="section-card">
+  <h2 class="section-title">1. Data Ownership & Storage</h2>
+  <p class="section-body">All operational telemetry, citizen feedback, and sensor logs generated in {{ pilot.location }} remain the sovereign property of the department. Cross-border transfer is strictly prohibited.</p>
+</div>
+<div class="section-card">
+  <h2 class="section-title">2. Intellectual Property Governance</h2>
+  <p class="section-body">The Startup retains ownership of its core underlying algorithms, proprietary models, and patents. The Government receives a perpetual, royalty-free license to use the solution within the state jurisdiction.</p>
+</div>
+{% endblock %}

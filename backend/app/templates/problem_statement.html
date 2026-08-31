@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block document_title %}
+Standard Problem Statement: {{ challenge.title }}
+{% endblock %}
+
+{% block metadata_table %}
+<table class="doc-meta-table">
+  <tr>
+    <th>Challenge ID</th>
+    <td>#{{ challenge.id }}</td>
+    <th>Department</th>
+    <td>{{ challenge.department }}</td>
+  </tr>
+  <tr>
+    <th>District / State</th>
+    <td>{{ challenge.district }}</td>
+    <th>Sector</th>
+    <td>{{ challenge.sector | capitalize }}</td>
+  </tr>
+  <tr>
+    <th>Sanctioned Budget</th>
+    <td>{% if challenge.budget %}INR {{ "{:,}".format(challenge.budget) }}{% else %}Not specified{% endif %}</td>
+    <th>Pilot Duration</th>
+    <td>{{ challenge.timeline_days | default(90) }} Days</td>
+  </tr>
+  <tr>
+    <th>Submission Deadline</th>
+    <td>{{ challenge.deadline | default("Rolling") }}</td>
+    <th>Status</th>
+    <td><span class="badge badge-info">{{ challenge.status | upper }}</span></td>
+  </tr>
+</table>
+{% endblock %}
+
+{% block content %}
+{% set s = challenge.statement_json or {} %}
+
+<div class="section-card">
+  <div class="section-num">Section 01</div>
+  <h2 class="section-title">Problem Description</h2>
+  <div class="section-body">{{ s.problem | default(challenge.raw_description) }}</div>
+</div>
+
+<div class="section-card">
+  <div class="section-num">Section 02</div>
+  <h2 class="section-title">Institutional Background & Context</h2>
+  <div class="section-body">{{ s.background | default("Context provided during challenge onboarding.") }}</div>
+</div>
+
+<div class="section-card">
+  <div class="section-num">Section 03</div>
+  <h2 class="section-title">Existing System & Current Workflows</h2>
+  <div class="section-body">{{ s.existing_system | default("Legacy manual operations and periodic inspections.") }}</div>
+</div>
+
+<div class="section-card">
+  <div class="section-num">Section 04</div>
+  <h2 class="section-title">Identified Operational Gaps</h2>
+  <div class="section-body">{{ s.identified_gap | default("Absence of automated monitoring and high response latency.") }}</div>
+</div>
+
+<div class="section-card">
+  <div class="section-num">Section 05</div>
+  <h2 class="section-title">Desired Innovation & Solution Scope</h2>
+  <div class="section-body">{{ s.desired_solution | default("Startup-led technology deployment with real-time analytics.") }}</div>
+</div>
+
+<div class="section-card">
+  <div class="section-num">Section 06</div>
+  <h2 class="section-title">Target Users & Beneficiaries</h2>
+  <div class="section-body">{{ s.target_users | default("Field officers, administrative supervisors, and citizen end-users.") }}</div>
+</div>
+
+<div class="section-card">
+  <div class="section-num">Section 07</div>
+  <h2 class="section-title">Technical Specifications & Required Technologies</h2>
+  <div class="section-body">{{ s.technical_requirements | default("Modular scalable architecture with open API integration.") }}</div>
+  {% if challenge.required_tech %}
+  <p style="margin-top: 6px;"><strong>Required Technologies:</strong>
+    {% for tech in challenge.required_tech %}
+      <span class="badge badge-info">{{ tech }}</span>
+    {% endfor %}
+  </p>
+  {% endif %}
+</div>
+
+<div class="section-card">
+  <div class="section-num">Section 08</div>
+  <h2 class="section-title">Deployment Constraints & Regulations</h2>
+  <div class="section-body">{{ s.constraints | default("Compliance with state procurement norms and legacy data standards.") }}</div>
+</div>
+
+<div class="section-card">
+  <div class="section-num">Section 09</div>
+  <h2 class="section-title">Budget Allocation & Disbursement Tranches</h2>
+  <div class="section-body">{{ s.budget | default("Milestone-linked disbursements upon independent validation.") }}</div>
+</div>
+
+<div class="section-card">
+  <div class="section-num">Section 10</div>
+  <h2 class="section-title">Implementation Timeline & Milestones</h2>
+  <div class="section-body">{{ s.timeline | default("Agile 4-phase deployment with milestone gate reviews.") }}</div>
+</div>
+
+<div class="section-card">
+  <div class="section-num">Section 11</div>
+  <h2 class="section-title">Expected Deliverables & Outcomes</h2>
+  <div class="section-body">{{ s.expected_outcomes | default("Measurable reduction in operational downtime and verified ROI.") }}</div>
+</div>
+
+<div class="section-card">
+  <div class="section-num">Section 12</div>
+  <h2 class="section-title">Target Key Performance Indicators (KPIs)</h2>
+  <div class="section-body">{{ s.kpis | default("Targeting 20%+ efficiency gain and under 24hr anomaly detection.") }}</div>
+</div>
+
+<div class="section-card">
+  <div class="section-num">Section 13</div>
+  <h2 class="section-title">Startup Eligibility Criteria</h2>
+  <div class="section-body">{{ s.eligibility_requirements | default("DPIIT registered startups with relevant domain experience.") }}</div>
+</div>
+
+<div class="section-card">
+  <div class="section-num">Section 14</div>
+  <h2 class="section-title">Data Privacy & Sovereignty Requirements</h2>
+  <div class="section-body">{{ s.data_requirements | default("All telemetry and operational data to reside in sovereign cloud.") }}</div>
+</div>
+
+<div class="section-card">
+  <div class="section-num">Section 15</div>
+  <h2 class="section-title">Security & Compliance Baseline</h2>
+  <div class="section-body">{{ s.security_requirements | default("End-to-end TLS 1.3 encryption, AES-256 data at rest, CERT-In compliance.") }}</div>
+</div>
+
+{% endblock %}
