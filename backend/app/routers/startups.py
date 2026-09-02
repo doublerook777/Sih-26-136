@@ -20,7 +20,7 @@ def list_startups(
 ):
     query = select(Startup)
     if sector:
-        query = query.where(Startup.sector == sector)
+        query = query.where(Startup.sector == sector.lower())
 
     startups = session.exec(query).all()
 
