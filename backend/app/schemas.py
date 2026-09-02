@@ -6,7 +6,7 @@ and to stop raw ORM objects (which would include password_hash) from being retur
 directly to the client.
 """
 from datetime import date, datetime
-from typing import Optional
+from typing import Literal, Optional
 
 from pydantic import BaseModel
 
@@ -62,7 +62,6 @@ class ChallengeListItem(BaseModel):
     required_tech: list
     application_count: int
     created_at: Optional[datetime] = None
-    raw_description: str  # added beyond the original 11 fields: Pair B's search needs it
 
 
 class ChallengeDetail(BaseModel):
@@ -78,7 +77,6 @@ class ChallengeDetail(BaseModel):
     required_tech: list
     application_count: int
     created_at: Optional[datetime] = None
-    raw_description: str
     created_by: int
     match_rubric_id: Optional[int] = None
     evaluation_rubric_id: Optional[int] = None
@@ -106,6 +104,35 @@ class ChallengeCreate(BaseModel):
     statement: Optional[dict] = None  # officer-approved statement from generate-statement
 
 
+class GenerateStatementIn(BaseModel):
+    raw_description: str
+    title: str
+    department: str
+    district: str
+    sector: str
+    budget: int
+    timeline_days: int
+
+
+class GenerateStatementOut(BaseModel):
+    problem: str
+    background: str
+    existing_system: str
+    identified_gap: str
+    desired_solution: str
+    target_users: str
+    technical_requirements: str
+    constraints: str
+    budget: str
+    timeline: str
+    expected_outcomes: str
+    kpis: str
+    eligibility_requirements: str
+    data_requirements: str
+    security_requirements: str
+    generated_by: Literal["llm", "template"]
+
+
 # ---------------------------------------------------------------------------
 # Startups
 # ---------------------------------------------------------------------------
@@ -127,8 +154,13 @@ class StartupRead(BaseModel):
 
 
 # ---------------------------------------------------------------------------
-# Applications (read-only today; POST /applications is a later task)
+# Applications
 # ---------------------------------------------------------------------------
+
+class ApplicationCreate(BaseModel):
+    challenge_id: int
+    quote: int
+    pitch: str
 
 class ApplicationRead(BaseModel):
     application_id: int
