@@ -2,13 +2,13 @@ import { useState } from "react";
 import { applyToChallenge } from "../api/endpoints";
 
 export default function ApplyModal({ challenge, isOpen, onClose, onSuccess }) {
-  if (!isOpen || !challenge) return null;
-
-  const [quote, setQuote] = useState(challenge.budget || 850000);
+  const [quote, setQuote] = useState(challenge?.budget || 850000);
   const [pitch, setPitch] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
+
+  if (!isOpen || !challenge) return null;
 
   const handleSubmit = async () => {
     if (!pitch.trim()) {
