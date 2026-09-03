@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../components/DashboardLayout";
 import RubricSelect from "../components/RubricSelect";
-import { generateStatement, createChallenge } from "../api/endpoints";
+import { generateStatement, createChallenge, publishChallenge } from "../api/endpoints";
 
 const SECTION_KEYS = [
   "problem",
@@ -142,10 +142,10 @@ export default function CreateChallenge() {
           },
         ],
         statement,
-        status: "open",
       };
 
-      await createChallenge(challengePayload);
+      const created = await createChallenge(challengePayload);
+      await publishChallenge(created.id);
       navigate("/government/challenges");
     } catch (err) {
       setError(err.detail || err.message || "Failed to publish challenge.");

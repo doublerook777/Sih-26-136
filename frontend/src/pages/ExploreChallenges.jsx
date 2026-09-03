@@ -175,7 +175,10 @@ export default function ExploreChallenges() {
         <ApplyModal
           challenge={selectedChallengeForApply}
           isOpen={isApplyModalOpen}
-          onClose={() => setIsApplyModalOpen(false)}
+          onClose={() => {
+            setIsApplyModalOpen(false);
+            setSelectedChallengeForApply(null);
+          }}
           onSuccess={handleApplySuccess}
         />
       )}
