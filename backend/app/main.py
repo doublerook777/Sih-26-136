@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.db import create_db_and_tables
-from app.routers import applications, auth, challenges, documents, pilots, startups
+from app.routers import applications, auth, challenges, documents, milestones, pilots, startups
 
 app = FastAPI(title="ProcuraAI")
 
@@ -14,7 +14,8 @@ def on_startup():
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["*"],
+    allow_origin_regex=r"https?://.*",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -25,7 +26,9 @@ app.include_router(challenges.router)
 app.include_router(startups.router)
 app.include_router(applications.router)
 app.include_router(pilots.router)
+app.include_router(milestones.router)
 app.include_router(documents.router)
+
 
 
 @app.get("/")

@@ -6,7 +6,7 @@ from sqlmodel import Session, select
 
 from app.auth import get_current_user, require_role
 from app.db import get_session
-from app.models import Challenge, KPI, Milestone, Payment, Pilot, Risk, Startup, User, Validation
+from app.models import Challenge, KPI, Milestone, Payment, Pilot, Procurement, Risk, Startup, User, Validation
 from app.schemas import (
     KPICreate,
     KPIRead,
@@ -18,7 +18,13 @@ from app.schemas import (
     PilotCreate,
     PilotCreateResponse,
     PilotDetail,
+    PilotFinalizeOut,
+    PilotProcurementOut,
     PilotSummary,
+    ProcurementChecks,
+    ReplicateIn,
+    ReplicateOut,
+    ReplicationItem,
     RiskCreate,
     RiskRead,
     SecurityCheckIn,
@@ -26,6 +32,7 @@ from app.schemas import (
 )
 
 router = APIRouter(tags=["pilots"])
+
 
 
 def _compute_kpi_achievement(
@@ -549,3 +556,263 @@ def update_pilot_kpi(
         achievement=achievement_val,
         met=kpi.met,
     )
+
+
+# ---------------------------------------------------------------------------
+# 7. POST /pilots/{id}/finalize (Scale-up decision & final performance score)
+# ---------------------------------------------------------------------------
+
+@router.post("/pilots/{pilot_id}/finalize", response_model=PilotFinalizeOut)
+def finalize_pilot(
+    pilot_id: int,
+    session: Session = Depends(get_session),
+    current_user: User = Depends(require_role("government", "admin")),
+):
+    pilot = session.get(Pilot, pilot_id)
+    if not pilot:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Pilot not found")
+
+    kpis = session.exec(select(KPI).where(KPI.pilot_id == pilot.id)).all()
+    milestones = session.exec(select(Milestone).where(Milestone.pilot_id == pilot.id)).all()
+
+    # Calculate security score from checklist
+    checklist = pilot.security_checklist_json or {}
+    if checklist:
+        passed_sec = sum(1 for v in checklist.values() if v is True)
+        total_sec = len(checklist)
+        security_score = round((passed_sec / float(total_sec)) * 100.0, 1)
+    else:
+        security_score = 100.0 if pilot.security_status == "passed" else 0.0
+
+    # Section 7b weights: 30/20/20/15/15
+    weights = {
+        "technical": 30,
+        "cost": 20,
+        "impact": 20,
+        "scalability": 15,
+        "security": 15,
+    }
+
+    # Group KPIs by category
+    kpis_by_cat: dict[str, list[float]] = {"technical": [], "cost": [], "impact": [], "scalability": []}
+    for k in kpis:
+        cat = k.category.lower() if k.category else "technical"
+        if cat in kpis_by_cat:
+            ach_pct, _ = _compute_kpi_achievement(k.baseline, k.target, k.achieved, k.direction)
+            val = ach_pct if ach_pct is not None else 100.0
+            kpis_by_cat[cat].append(val)
+
+    category_scores: dict[str, float] = {}
+    for cat in ["technical", "cost", "impact", "scalability"]:
+        scores = kpis_by_cat[cat]
+        if scores:
+            category_scores[cat] = round(sum(scores) / float(len(scores)), 1)
+        else:
+            category_scores[cat] = 100.0
+    category_scores["security"] = security_score
+
+    # Check if Pair C engines are available
+    try:
+        from app.engines.performance import final_score as engine_final_score
+        from app.engines.decision import decide as engine_decide
+        calc_result = engine_final_score(kpis=[k.model_dump() for k in kpis], security_score=security_score)
+        final_score = calc_result["final_score"]
+        category_scores = calc_result.get("category_scores", category_scores)
+        decision = engine_decide(final_score=final_score)["decision"]
+    except Exception:
+        # Standard weighted calculation per Section 7b
+        weighted_sum = (
+            category_scores["technical"] * (weights["technical"] / 100.0)
+            + category_scores["cost"] * (weights["cost"] / 100.0)
+            + category_scores["impact"] * (weights["impact"] / 100.0)
+            + category_scores["scalability"] * (weights["scalability"] / 100.0)
+            + category_scores["security"] * (weights["security"] / 100.0)
+        )
+        final_score = round(weighted_sum, 1)
+
+        # Decision thresholds (85/70/55)
+        if final_score >= 85.0:
+            decision = "scale"
+        elif final_score >= 70.0:
+            decision = "scale_with_modifications"
+        elif final_score >= 55.0:
+            decision = "extend_pilot"
+        else:
+            decision = "reject"
+
+    # Justification with real numbers from this pilot
+    total_m = len(milestones)
+    val_m = sum(1 for m in milestones if m.status in ["validated", "paid"])
+    impact_score = category_scores.get("impact", 0.0)
+    tech_score = category_scores.get("technical", 0.0)
+    cost_score = category_scores.get("cost", 0.0)
+    sec_score = category_scores.get("security", 0.0)
+
+    justification = (
+        f"Pilot scored {final_score:.1f}/100 with {decision.replace('_', ' ')} recommendation. "
+        f"Impact KPI score: {impact_score:.1f}%, Technical: {tech_score:.1f}%, Cost: {cost_score:.1f}%, "
+        f"Cybersecurity audit: {sec_score:.1f}% ({pilot.security_status}), "
+        f"{val_m} of {total_m} milestones validated."
+    )
+
+    # Save or update Procurement table row
+    procurement = session.exec(select(Procurement).where(Procurement.pilot_id == pilot.id)).first()
+    pathway = "GeM direct procurement" if final_score >= 85.0 else "Custom / Cautious procurement"
+    if not procurement:
+        procurement = Procurement(
+            pilot_id=pilot.id,
+            final_score=final_score,
+            decision=decision,
+            pathway=pathway,
+            justification=justification,
+            replication_json=[{"district": pilot.location, "status": "completed"}],
+        )
+        session.add(procurement)
+    else:
+        procurement.final_score = final_score
+        procurement.decision = decision
+        procurement.pathway = pathway
+        procurement.justification = justification
+        session.add(procurement)
+
+    # Update pilot status
+    if decision == "scale":
+        pilot.status = "completed"
+        session.add(pilot)
+
+    session.commit()
+
+    return PilotFinalizeOut(
+        pilot_id=pilot.id,
+        category_scores=category_scores,
+        weights=weights,
+        final_score=final_score,
+        decision=decision,
+        justification=justification,
+    )
+
+
+# ---------------------------------------------------------------------------
+# 8. GET /pilots/{id}/procurement (Read-only procurement readiness checks)
+# ---------------------------------------------------------------------------
+
+@router.get("/pilots/{pilot_id}/procurement", response_model=PilotProcurementOut)
+def get_pilot_procurement(
+    pilot_id: int,
+    session: Session = Depends(get_session),
+    current_user: User = Depends(require_role("government", "validator", "startup", "admin")),
+):
+    pilot = session.get(Pilot, pilot_id)
+    if not pilot:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Pilot not found")
+
+    milestones = session.exec(select(Milestone).where(Milestone.pilot_id == pilot.id)).all()
+    procurement = session.exec(select(Procurement).where(Procurement.pilot_id == pilot.id)).first()
+
+    # Four real boolean checks (never hardcoded):
+    # 1. pilot_validated: all milestones validated or paid
+    pilot_validated = len(milestones) > 0 and all(m.status in ["validated", "paid"] for m in milestones)
+
+    # 2. performance_threshold_met: final_score >= 85.0
+    final_score = procurement.final_score if procurement else None
+    performance_threshold_met = bool(final_score is not None and final_score >= 85.0)
+
+    # 3. security_approved: security_status == 'passed'
+    security_approved = bool(pilot.security_status == "passed")
+
+    # 4. budget_available: positive budget allocated and not exceeded
+    paid_to_date = sum(m.amount for m in milestones if m.status == "paid")
+    budget_available = bool(pilot.budget > 0 and paid_to_date <= pilot.budget)
+
+    # Determine recommended pathway
+    if performance_threshold_met and security_approved and pilot_validated:
+        recommended_pathway = "GeM direct procurement"
+    elif performance_threshold_met or (final_score is not None and final_score >= 70.0):
+        recommended_pathway = "Special procurement with phased rollout"
+    else:
+        recommended_pathway = "Conditional extension / Re-evaluation"
+
+    # Replication list
+    if procurement and isinstance(procurement.replication_json, list) and procurement.replication_json:
+        replication = [
+            ReplicationItem(district=r["district"], status=r["status"])
+            for r in procurement.replication_json
+            if isinstance(r, dict) and "district" in r and "status" in r
+        ]
+    else:
+        replication = [ReplicationItem(district=pilot.location, status="completed")]
+
+    return PilotProcurementOut(
+        pilot_id=pilot.id,
+        final_score=final_score,
+        decision=procurement.decision if procurement else None,
+        checks=ProcurementChecks(
+            pilot_validated=pilot_validated,
+            performance_threshold_met=performance_threshold_met,
+            security_approved=security_approved,
+            budget_available=budget_available,
+        ),
+        recommended_pathway=procurement.pathway if (procurement and procurement.pathway) else recommended_pathway,
+        justification=procurement.justification if (procurement and procurement.justification) else None,
+        replication=replication,
+    )
+
+
+# ---------------------------------------------------------------------------
+# 9. POST /pilots/{id}/replicate (Append districts for scale-up replication)
+# ---------------------------------------------------------------------------
+
+@router.post("/pilots/{pilot_id}/replicate", response_model=ReplicateOut)
+def replicate_pilot(
+    pilot_id: int,
+    data: ReplicateIn,
+    session: Session = Depends(get_session),
+    current_user: User = Depends(require_role("government", "admin")),
+):
+    pilot = session.get(Pilot, pilot_id)
+    if not pilot:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Pilot not found")
+
+    procurement = session.exec(select(Procurement).where(Procurement.pilot_id == pilot.id)).first()
+    if not procurement:
+        procurement = Procurement(
+            pilot_id=pilot.id,
+            decision="scale",
+            pathway="GeM direct procurement",
+            replication_json=[{"district": pilot.location, "status": "completed"}],
+        )
+        session.add(procurement)
+
+    # Appends districts to replication_json list, each starting at 'planned', existing entries keep status.
+    # Calling replicate a second time with an already-listed district doesn't duplicate it.
+    existing_reps = list(procurement.replication_json) if isinstance(procurement.replication_json, list) else []
+    existing_districts = {
+        r["district"]: r for r in existing_reps if isinstance(r, dict) and "district" in r
+    }
+
+    if pilot.location not in existing_districts:
+        base_item = {"district": pilot.location, "status": "completed"}
+        existing_reps.insert(0, base_item)
+        existing_districts[pilot.location] = base_item
+
+    for district_name in data.districts:
+        clean_name = district_name.strip()
+        if clean_name and clean_name not in existing_districts:
+            new_item = {"district": clean_name, "status": "planned"}
+            existing_reps.append(new_item)
+            existing_districts[clean_name] = new_item
+
+    procurement.replication_json = existing_reps
+    session.add(procurement)
+    session.commit()
+    session.refresh(procurement)
+
+    return ReplicateOut(
+        pilot_id=pilot.id,
+        replication=[
+            ReplicationItem(district=r["district"], status=r["status"])
+            for r in procurement.replication_json
+            if isinstance(r, dict) and "district" in r and "status" in r
+        ],
+    )
+

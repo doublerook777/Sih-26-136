@@ -218,6 +218,37 @@ class MilestoneCreate(BaseModel):
     due_date: Optional[date] = None
 
 
+class MilestoneSubmitIn(BaseModel):
+    evidence_text: str
+    evidence_url: Optional[str] = None
+    claimed_value: Optional[float] = None
+
+
+class MilestoneSubmitOut(BaseModel):
+    id: int
+    status: str
+    submitted_at: Optional[datetime] = None
+
+
+class MilestoneValidateIn(BaseModel):
+    verdict: str
+    verified_value: Optional[float] = None
+    notes: Optional[str] = None
+
+
+class MilestoneValidateOut(BaseModel):
+    milestone_id: int
+    status: str
+    validation: MilestoneValidationRead
+
+
+class MilestonePayOut(BaseModel):
+    milestone_id: int
+    status: str
+    payment: MilestonePaymentRead
+
+
+
 # ---------------------------------------------------------------------------
 # Governance: KPIs, Risks, Security
 # ---------------------------------------------------------------------------
@@ -350,4 +381,45 @@ class PilotCreateResponse(BaseModel):
     milestones: list[MilestoneRead]
     kpis: list[KPIRead]
     created_at: Optional[datetime] = None
+
+
+class PilotFinalizeOut(BaseModel):
+    pilot_id: int
+    category_scores: dict[str, float]
+    weights: dict[str, int]
+    final_score: float
+    decision: str
+    justification: str
+
+
+class ProcurementChecks(BaseModel):
+    pilot_validated: bool
+    performance_threshold_met: bool
+    security_approved: bool
+    budget_available: bool
+
+
+class ReplicationItem(BaseModel):
+    district: str
+    status: str
+
+
+class PilotProcurementOut(BaseModel):
+    pilot_id: int
+    final_score: Optional[float] = None
+    decision: Optional[str] = None
+    checks: ProcurementChecks
+    recommended_pathway: str
+    justification: Optional[str] = None
+    replication: list[ReplicationItem]
+
+
+class ReplicateIn(BaseModel):
+    districts: list[str]
+
+
+class ReplicateOut(BaseModel):
+    pilot_id: int
+    replication: list[ReplicationItem]
+
 
