@@ -1910,9 +1910,56 @@ textarea {
 .agreement-callout { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
 .agreement-callout h2, .agreement-callout p { margin: 0 0 6px; }
 
+/* Day 5 validation, payment, decision, and replication */
+.milestone-actions { display: flex; gap: 9px; flex-wrap: wrap; margin-top: 12px; }
+.milestone-evidence.submitted { background: #fff4de; color: #80500b; }
+.milestone-submit-form { max-width: 760px; display: grid; gap: 17px; }
+.milestone-submit-form label, .replication-form label { display: grid; gap: 7px; font-weight: 700; }
+.submission-context { padding: 14px; border-radius: 12px; background: var(--surface-soft); }
+.submission-context p { margin: 5px 0 0; color: var(--muted); }
+.kpi-chart-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.kpi-chart { padding: 16px; border: 1px solid var(--border); border-radius: 14px; background: white; }
+.kpi-chart-heading, .kpi-chart-values { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
+.kpi-chart-heading h3 { margin: 0 0 4px; }
+.kpi-chart-heading p { margin: 0; color: var(--muted); font-size: .78rem; }
+.kpi-chart-values { margin-top: 8px; font-size: .76rem; color: var(--muted); }
+.kpi-achievement { padding: 5px 8px; border-radius: 999px; background: var(--surface-soft); font-weight: 800; white-space: nowrap; }
+.validation-list { display: grid; gap: 16px; }
+.validation-evidence { border: 1px solid var(--border); border-radius: 15px; padding: 18px; background: white; }
+.validation-heading, .section-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.validation-heading h2, .validation-heading p, .section-heading h2, .section-heading p { margin: 0 0 5px; }
+.comparison-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 16px 0; }
+.claim-box, .validation-result { padding: 14px; border-radius: 12px; background: var(--surface-soft); }
+.claim-box span, .validation-result label { display: block; color: var(--muted); font-size: .76rem; font-weight: 700; margin-bottom: 7px; }
+.claim-box strong { font-size: 1.4rem; }
+.validation-result input, .validation-result textarea, .replication-form input { width: 100%; }
+.validation-result textarea { margin-top: 9px; }
+.validation-actions { display: flex; gap: 10px; }
+.decision-ready { border: 2px solid var(--primary); background: linear-gradient(135deg, #f0f2ff, white); }
+.decision-hero { display: flex; justify-content: space-between; gap: 24px; align-items: center; }
+.decision-hero h1 { font-size: 2.2rem; text-transform: capitalize; margin: 4px 0; }
+.decision-score { min-width: 120px; text-align: center; font-size: 2.4rem; font-weight: 900; color: var(--primary); }
+.decision-score small { display: block; font-size: .72rem; color: var(--muted); }
+.category-score-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.category-score-panel { text-align: center; }
+.category-score-panel strong { display: block; font-size: 1.5rem; margin: 5px 0; }
+.procurement-checks { margin-top: 18px; }
+.procurement-checks ul { display: grid; gap: 8px; padding-left: 20px; }
+.replication-panel { margin-top: 18px; }
+.replication-form { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: end; margin-top: 17px; }
+.template-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.template-card { display: flex; flex-direction: column; align-items: flex-start; gap: 9px; }
+.template-card h3, .template-card p { margin: 0; }
+.template-card p { color: var(--muted); flex: 1; }
+.template-entity { text-transform: uppercase; letter-spacing: .08em; font-size: .66rem; font-weight: 800; color: var(--primary); }
+.template-rubrics { margin-top: 22px; }
+.template-rubric-list { display: grid; gap: 8px; margin-top: 12px; }
+.template-rubric-list a { padding: 11px 13px; border: 1px solid var(--border); border-radius: 10px; text-decoration: none; color: var(--text); }
+
 @media (max-width: 900px) {
   .form-grid, .pilot-selection-summary { grid-template-columns: 1fr; }
   .risk-form { grid-template-columns: 1fr 1fr; }
+  .template-grid, .category-score-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 640px) {
@@ -1920,4 +1967,7 @@ textarea {
   .agreement-callout, .pilot-hero { align-items: flex-start; flex-direction: column; }
   .paid-summary { text-align: left; }
   .milestone-step { grid-template-columns: 1fr; }
+  .kpi-chart-grid, .comparison-grid, .template-grid, .category-score-grid, .replication-form { grid-template-columns: 1fr; }
+  .decision-hero, .validation-heading { align-items: flex-start; flex-direction: column; }
+  .decision-score { text-align: left; }
 }

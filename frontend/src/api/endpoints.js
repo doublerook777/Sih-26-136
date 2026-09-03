@@ -31,7 +31,7 @@ let mockPilots = [{
   milestones: [
     { id: 1, seq: 1, title: "Prototype", deliverable: "40-node sensor prototype", amount: 200000, due_date: "2026-09-20", status: "paid", evidence_text: "Deployed 40 nodes across pilot zone.", evidence_url: null, submitted_at: "2026-09-18T10:00:00Z", validation: { verdict: "approved", claimed_value: 25, verified_value: 22, validator_name: "N Sharma", notes: "Sampled 12 of 40 nodes.", validated_at: "2026-09-19T15:00:00Z" }, payment: { status: "released", amount: 200000, mock_txn_ref: "MOCK-PAY-0001", released_at: "2026-09-19T16:00:00Z" } },
     { id: 2, seq: 2, title: "Field trial", deliverable: "Live field data for two weeks", amount: 300000, due_date: "2026-10-10", status: "validated", evidence_text: "Continuous telemetry captured for 14 days.", evidence_url: null, submitted_at: "2026-10-08T10:00:00Z", validation: { verdict: "approved", claimed_value: 95, verified_value: 94, validator_name: "N Sharma", notes: "Telemetry and field samples verified.", validated_at: "2026-10-09T15:00:00Z" }, payment: null },
-    { id: 3, seq: 3, title: "Deployment", deliverable: "Full pilot-zone coverage", amount: 300000, due_date: "2026-11-01", status: "submitted", evidence_text: "Coverage evidence submitted for validation.", evidence_url: null, submitted_at: "2026-10-30T10:00:00Z", validation: null, payment: null },
+    { id: 3, seq: 3, title: "Deployment", deliverable: "Full pilot-zone coverage", amount: 300000, due_date: "2026-11-01", status: "submitted", evidence_text: "Coverage evidence submitted for validation.", evidence_url: null, claimed_value: 88, submitted_at: "2026-10-30T10:00:00Z", validation: null, payment: null },
     { id: 4, seq: 4, title: "Final results", deliverable: "Verified KPI report", amount: 200000, due_date: "2026-11-25", status: "pending", evidence_text: null, evidence_url: null, submitted_at: null, validation: null, payment: null },
   ],
   kpis: [
@@ -43,6 +43,33 @@ let mockPilots = [{
   risks: [{ id: 1, description: "Sensor failure during monsoon", probability: 3, impact: 4, score: 12, mitigation: "Maintain sealed spare sensor units", owner: "Pilot delivery lead" }],
   created_at: "2026-08-28T12:00:00Z",
 }];
+let mockProcurement = {
+  1: {
+    pilot_id: 1,
+    final_score: null,
+    decision: null,
+    checks: { pilot_validated: true, performance_threshold_met: true, security_approved: true, budget_available: true },
+    recommended_pathway: "GeM direct procurement",
+    justification: null,
+    replication: [{ district: "District A", status: "completed" }],
+  },
+};
+
+const MOCK_DOCUMENT_TEMPLATES = [
+  ["problem_statement", "Problem Statement", "Standard 15-section challenge specification.", "challenge"],
+  ["eligibility_criteria", "Eligibility Criteria", "Startup eligibility and screening requirements.", "challenge"],
+  ["evaluation_criteria", "Evaluation Criteria", "Expert scoring criteria and weights.", "challenge"],
+  ["pilot_agreement", "Pilot Agreement", "Agreement covering scope, IP, data, security, and termination.", "pilot"],
+  ["milestone_contract", "Milestone Contract", "Milestone deliverables and release conditions.", "pilot"],
+  ["data_ip", "Data and IP Agreement", "Data governance and intellectual-property clauses.", "pilot"],
+  ["security_checklist", "Security Checklist", "Cybersecurity control verification.", "pilot"],
+  ["risk_register", "Risk Register", "Risk scoring, ownership, and mitigation.", "pilot"],
+  ["kpi_report", "KPI Report", "Baseline, target, achieved, and attainment evidence.", "pilot"],
+  ["validation_report", "Validation Report", "Independent milestone validation record.", "milestone"],
+  ["payment_approval", "Payment Approval", "Validated milestone payment authorization.", "milestone"],
+  ["procurement_recommendation", "Procurement Recommendation", "Evidence-backed procurement pathway.", "pilot"],
+  ["scale_up_decision", "Scale-up Decision", "Final score and scale-up outcome.", "pilot"],
+].map(([doc_type, title, description, entity]) => ({ doc_type, title, description, entity }));
 
 const MOCK_STARTUP_NAMES = [
   "AquaSense Systems", "PipeAI Technologies", "HydroTrack Telemetry",
@@ -512,7 +539,7 @@ export const createPilot = async (body) => {
       created_at: new Date().toISOString(),
     };
     mockPilots.push(pilot);
-    return pilot;
+    return structuredClone(pilot);
   }
   return post("/pilots", body);
 };
@@ -522,7 +549,7 @@ export const getPilot = async (id) => {
     await new Promise((resolve) => setTimeout(resolve, 140));
     const pilot = mockPilots.find((item) => item.id === Number(id));
     if (!pilot) throw Object.assign(new Error("Pilot not found"), { detail: "Pilot not found", status: 404 });
-    return pilot;
+    return structuredClone(pilot);
   }
   return get(`/pilots/${id}`);
 };
@@ -585,6 +612,95 @@ export const updateKpi = async (id, body) => {
     return kpi;
   }
   return post(`/pilots/${id}/kpis`, body);
+};
+
+/**
+ * Day 5 milestone and procurement lifecycle (API sections 8 and 10)
+ */
+export const submitMilestone = async (id, body) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 350));
+    const pilot = mockPilots.find((item) => item.milestones.some((milestone) => milestone.id === Number(id)));
+    const milestone = pilot?.milestones.find((item) => item.id === Number(id));
+    if (!milestone) throw Object.assign(new Error("Milestone not found"), { detail: "Milestone not found", status: 404 });
+    milestone.evidence_text = body.evidence_text;
+    milestone.evidence_url = body.evidence_url || null;
+    milestone.claimed_value = body.claimed_value == null ? null : Number(body.claimed_value);
+    milestone.submitted_at = new Date().toISOString();
+    milestone.status = "submitted";
+    milestone.validation = null;
+    return { id: milestone.id, status: milestone.status, submitted_at: milestone.submitted_at };
+  }
+  return post(`/milestones/${id}/submit`, body);
+};
+
+export const validateMilestone = async (id, body) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 350));
+    const pilot = mockPilots.find((item) => item.milestones.some((milestone) => milestone.id === Number(id)));
+    const milestone = pilot?.milestones.find((item) => item.id === Number(id));
+    if (!milestone) throw Object.assign(new Error("Milestone not found"), { detail: "Milestone not found", status: 404 });
+    const verdict = body.verdict;
+    milestone.status = verdict === "approved" ? "validated" : "rejected";
+    milestone.validation = { verdict, claimed_value: milestone.claimed_value ?? null, verified_value: body.verified_value == null ? null : Number(body.verified_value), validator_name: "N Sharma", notes: body.notes || null, validated_at: new Date().toISOString() };
+    return { milestone_id: milestone.id, status: milestone.status, validation: milestone.validation };
+  }
+  return post(`/milestones/${id}/validate`, body);
+};
+
+export const payMilestone = async (id) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    const pilot = mockPilots.find((item) => item.milestones.some((milestone) => milestone.id === Number(id)));
+    const milestone = pilot?.milestones.find((item) => item.id === Number(id));
+    if (!milestone) throw Object.assign(new Error("Milestone not found"), { detail: "Milestone not found", status: 404 });
+    if (milestone.status !== "validated" && milestone.status !== "paid") throw Object.assign(new Error("milestone must be validated before payment"), { detail: "milestone must be validated before payment", status: 400 });
+    if (!milestone.payment) {
+      milestone.payment = { status: "released", amount: milestone.amount, mock_txn_ref: `MOCK-PAY-${String(milestone.id).padStart(4, "0")}`, released_at: new Date().toISOString() };
+      pilot.paid_to_date += milestone.amount;
+    }
+    milestone.status = "paid";
+    return { milestone_id: milestone.id, status: milestone.status, payment: milestone.payment };
+  }
+  return post(`/milestones/${id}/pay`);
+};
+
+export const finalizePilot = async (id) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 600));
+    const result = { pilot_id: Number(id), category_scores: { technical: 89, cost: 86, impact: 96, scalability: 88, security: 100 }, weights: { technical: 30, cost: 20, impact: 20, scalability: 15, security: 15 }, final_score: 91.2, decision: "scale", justification: "Verified KPI performance, completed validation, and full security clearance support scale-up." };
+    mockProcurement[id] = { ...(mockProcurement[id] || {}), pilot_id: Number(id), final_score: result.final_score, decision: result.decision, checks: { pilot_validated: true, performance_threshold_met: true, security_approved: true, budget_available: true }, recommended_pathway: "GeM direct procurement", justification: result.justification, replication: mockProcurement[id]?.replication || [{ district: "District A", status: "completed" }] };
+    return result;
+  }
+  return post(`/pilots/${id}/finalize`);
+};
+
+export const getProcurement = async (id) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    return mockProcurement[id] || { pilot_id: Number(id), final_score: null, decision: null, checks: { pilot_validated: false, performance_threshold_met: false, security_approved: false, budget_available: true }, recommended_pathway: "Pending finalization", justification: null, replication: [] };
+  }
+  return get(`/pilots/${id}/procurement`);
+};
+
+export const replicatePilot = async (id, districts) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    const procurement = await getProcurement(id);
+    const existing = new Set(procurement.replication.map((item) => item.district.toLowerCase()));
+    districts.filter((district) => district.trim() && !existing.has(district.trim().toLowerCase())).forEach((district) => procurement.replication.push({ district: district.trim(), status: "planned" }));
+    mockProcurement[id] = procurement;
+    return { pilot_id: Number(id), replication: procurement.replication };
+  }
+  return post(`/pilots/${id}/replicate`, { districts });
+};
+
+export const getDocumentTemplates = async () => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 120));
+    return MOCK_DOCUMENT_TEMPLATES;
+  }
+  return get("/documents/templates");
 };
 
 /**

@@ -19,7 +19,19 @@ const SUPPORTED_DOC_TYPES = {
     title: "Pilot Agreement",
     description: "Milestone-based pilot agreement covering scope, payment, data, and validation",
   },
+  evaluation_criteria: { title: "Evaluation Criteria", description: "Expert scoring criteria and weights" },
+  milestone_contract: { title: "Milestone Contract", description: "Milestone deliverables and release conditions" },
+  data_ip: { title: "Data and IP Agreement", description: "Data governance and intellectual-property clauses" },
+  security_checklist: { title: "Security Checklist", description: "Cybersecurity control verification" },
+  risk_register: { title: "Risk Register", description: "Risk scoring, ownership, and mitigation" },
+  kpi_report: { title: "KPI Report", description: "Baseline, target, achieved, and attainment evidence" },
+  validation_report: { title: "Validation Report", description: "Independent milestone validation record" },
+  payment_approval: { title: "Payment Approval", description: "Validated milestone payment authorization" },
+  procurement_recommendation: { title: "Procurement Recommendation", description: "Evidence-backed procurement pathway" },
+  scale_up_decision: { title: "Scale-up Decision", description: "Final score and scale-up outcome" },
 };
+
+const CHALLENGE_DOCUMENTS = new Set(["problem_statement", "eligibility_criteria", "evaluation_criteria"]);
 
 export default function DocumentViewer() {
   const { docType: initialDocType, id } = useParams();
@@ -36,7 +48,7 @@ export default function DocumentViewer() {
   useEffect(() => {
     async function loadMetadata() {
       try {
-        const c = activeDocType === "pilot_agreement" ? await getPilot(id) : await getChallenge(id);
+        const c = CHALLENGE_DOCUMENTS.has(activeDocType) ? await getChallenge(id) : await getPilot(id);
         setChallenge(c);
 
         // In mock mode, construct HTML for iframe so VITE_USE_MOCK=true renders document
@@ -131,6 +143,9 @@ export default function DocumentViewer() {
           } else if (activeDocType === "pilot_agreement") {
             const milestoneRows = (c.milestones || []).map((milestone) => `<tr><td>${milestone.seq}</td><td>${milestone.title}</td><td>${milestone.deliverable}</td><td>INR ${Number(milestone.amount).toLocaleString("en-IN")}</td><td>${milestone.due_date}</td></tr>`).join("");
             bodyContent = `<h1>Pilot Implementation Agreement</h1><h2>${title}</h2><div class="meta"><strong>Startup:</strong> ${c.startup_name} | <strong>Location:</strong> ${c.location} | <strong>Duration:</strong> ${c.duration_days} days | <strong>Budget:</strong> INR ${Number(c.budget).toLocaleString("en-IN")}</div><hr style="margin:20px 0;border:0;border-top:1px solid #ddd"/><h3>1. Objectives</h3><p>${c.objectives}</p><h3>2. Milestone-linked consideration</h3><table><thead><tr><th>Seq</th><th>Milestone</th><th>Deliverable</th><th>Amount</th><th>Due date</th></tr></thead><tbody>${milestoneRows}</tbody></table><h3>3. Validation and payment</h3><p>Each milestone payment is released only after evidence submission and independent validation. Rejected deliverables remain unpaid until corrected and approved.</p><h3>4. Data, security, and intellectual property</h3><p>The startup must follow the published security checklist, maintain auditable operational records, and provide exportable pilot data to the department. Pre-existing intellectual property remains with its owner; pilot outputs are licensed for government evaluation and approved public use.</p><h3>5. Acceptance</h3><p>This pilot remains outcome-based and does not guarantee scale-up procurement. Final procurement follows verified KPI performance, security clearance, and applicable public procurement rules.</p><div class="signature-grid"><div>For the Department<br/><br/><br/>Signature and date</div><div>For ${c.startup_name}<br/><br/><br/>Signature and date</div></div>`;
+          } else {
+            const metadata = SUPPORTED_DOC_TYPES[activeDocType];
+            bodyContent = `<h1>${metadata.title}</h1><h2>${title}</h2><div class="meta"><strong>Entity:</strong> #${id} | <strong>Department:</strong> ${dept}</div><hr style="margin:20px 0;border:0;border-top:1px solid #ddd"/><h3>Purpose</h3><p>${metadata.description}.</p><h3>Record</h3><p>This document is generated from the current procurement lifecycle record and is suitable for review and printing.</p><table><tbody><tr><th>Status</th><td>${c.status || "Draft"}</td></tr><tr><th>Location</th><td>${c.location || district}</td></tr><tr><th>Budget</th><td>${budgetFormatted || "Not specified"}</td></tr><tr><th>Security status</th><td>${c.security_status || "Not applicable"}</td></tr></tbody></table>`;
           }
 
           setMockHtml(`
@@ -198,10 +213,10 @@ export default function DocumentViewer() {
         <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
           <button
             type="button"
-            onClick={() => navigate(activeDocType === "pilot_agreement" ? `/government/pilots/${id}` : `/challenges/${id}`)}
+            onClick={() => navigate(CHALLENGE_DOCUMENTS.has(activeDocType) ? `/challenges/${id}` : `/government/pilots/${id}`)}
             className="btn btn-ghost"
           >
-            ← Back to {activeDocType === "pilot_agreement" ? "Pilot" : "Challenge"}
+            ← Back to {CHALLENGE_DOCUMENTS.has(activeDocType) ? "Challenge" : "Pilot"}
           </button>
 
           {/* Doc Type Selector */}
@@ -253,7 +268,7 @@ export default function DocumentViewer() {
             </small>
           </div>
           <span className="badge badge-blue">
-            {challenge?.title || `Challenge #${id}`}
+            {challenge?.title || challenge?.challenge_title || challenge?.startup_name || `Entity #${id}`}
           </span>
         </div>
 

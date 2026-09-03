@@ -9,11 +9,13 @@ const roleNav = {
     ["AI Recommendations", "/government/recommendations"],
     ["Rubric Library", "/government/rubrics"],
     ["Pilot Dashboard", "/government/pilot"],
+    ["Template Library", "/government/templates"],
   ],
   startup: [
     ["Overview", "/startup"],
     ["Explore Challenges", "/startup/explore"],
     ["My Applications", "/startup/applications"],
+    ["My Pilot", "/startup/pilots"],
   ],
   expert: [
     ["Overview", "/evaluator"],
@@ -24,13 +26,13 @@ const roleNav = {
     ["Pending Reviews", "/evaluator/reviews"],
   ],
   validator: [
-    ["Overview", "/evaluator"],
-    ["Pending Reviews", "/evaluator/reviews"],
+    ["Validation Queue", "/validator"],
   ],
   admin: [
     ["Overview", "/government"],
     ["Create Challenge", "/government/create"],
     ["Rubric Library", "/government/rubrics"],
+    ["Template Library", "/government/templates"],
   ],
 };
 

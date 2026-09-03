@@ -21,6 +21,12 @@ const DEMO_ACCOUNTS = {
     label: "Evaluator",
     icon: "🧾",
   },
+  validator: {
+    email: "validator@procura.gov.in",
+    password: "demo1234",
+    label: "Validator",
+    icon: "✓",
+  },
 };
 
 export default function Login() {
@@ -52,8 +58,10 @@ export default function Login() {
         navigate("/government");
       } else if (user.role === "startup") {
         navigate("/startup");
-      } else if (user.role === "expert" || user.role === "validator") {
+      } else if (user.role === "expert") {
         navigate("/evaluator");
+      } else if (user.role === "validator") {
+        navigate("/validator");
       } else {
         navigate("/government");
       }
