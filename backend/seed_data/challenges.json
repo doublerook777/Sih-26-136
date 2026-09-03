@@ -59,6 +59,30 @@
         "target": 25000,
         "category": "cost",
         "direction": "lower_is_better"
+      },
+      {
+        "name": "District telemetry coverage",
+        "unit": "%",
+        "baseline": 15,
+        "target": 85,
+        "category": "scalability",
+        "direction": "higher_is_better"
+      },
+      {
+        "name": "False positive alarm rate",
+        "unit": "%",
+        "baseline": 25,
+        "target": 5,
+        "category": "technical",
+        "direction": "lower_is_better"
+      },
+      {
+        "name": "Citizen low-pressure complaints",
+        "unit": "complaints/month",
+        "baseline": 120,
+        "target": 25,
+        "category": "impact",
+        "direction": "lower_is_better"
       }
     ],
     "statement_json": {
@@ -140,6 +164,30 @@
         "target": 35,
         "category": "cost",
         "direction": "lower_is_better"
+      },
+      {
+        "name": "Critical patient time-to-treatment",
+        "unit": "minutes",
+        "baseline": 45,
+        "target": 10,
+        "category": "impact",
+        "direction": "lower_is_better"
+      },
+      {
+        "name": "Queue balancing efficiency",
+        "unit": "%",
+        "baseline": 40,
+        "target": 85,
+        "category": "technical",
+        "direction": "higher_is_better"
+      },
+      {
+        "name": "District hospital replication readiness",
+        "unit": "facilities",
+        "baseline": 1,
+        "target": 4,
+        "category": "scalability",
+        "direction": "higher_is_better"
       }
     ],
     "statement_json": {
@@ -222,6 +270,30 @@
         "target": 15,
         "category": "scalability",
         "direction": "higher_is_better"
+      },
+      {
+        "name": "Landfill waste diversion rate",
+        "unit": "%",
+        "baseline": 10,
+        "target": 35,
+        "category": "impact",
+        "direction": "higher_is_better"
+      },
+      {
+        "name": "Sensor fill-level reporting accuracy",
+        "unit": "%",
+        "baseline": 65,
+        "target": 95,
+        "category": "technical",
+        "direction": "higher_is_better"
+      },
+      {
+        "name": "Fleet maintenance downtime",
+        "unit": "hours/month",
+        "baseline": 18,
+        "target": 5,
+        "category": "cost",
+        "direction": "lower_is_better"
       }
     ],
     "statement_json": {

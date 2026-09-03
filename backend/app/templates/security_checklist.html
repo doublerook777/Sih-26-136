@@ -1,0 +1,156 @@
+{% extends "base.html" %}
+
+{% block title %}Cybersecurity Baseline Compliance Audit — {{ challenge.title | default(pilot.challenge_title | default('Security Checklist')) }}{% endblock %}
+
+{% block department %}{{ challenge.department | default(pilot.department | default('Department of Urban Water Supply')) }}{% endblock %}
+{% block district %}{{ pilot.location | default(challenge.district | default('District A')) }}{% endblock %}
+{% block doc_badge %}8-Point Cybersecurity Baseline Audit Report{% endblock %}
+
+{% block doc_ref %}DOC-SEC-AUDIT-{{ pilot.id | default('001') }}{% endblock %}
+
+{% block extra_meta %}
+<tr>
+  <td class="doc-meta-label">Associated Pilot:</td>
+  <td class="doc-meta-value"><strong>PILOT-{{ pilot.id | default('001') }}</strong></td>
+  <td class="doc-meta-label">Audit Date:</td>
+  <td class="doc-meta-value">{{ generated_at | default('2026-09-01') }}</td>
+</tr>
+<tr>
+  <td class="doc-meta-label">Startup Partner:</td>
+  <td class="doc-meta-value"><strong>{{ startup.name | default(pilot.startup_name | default('AquaSense Systems')) }}</strong></td>
+  <td class="doc-meta-label">Security Compliance Status:</td>
+  <td class="doc-meta-value">
+    {% set status_val = security_status | default(pilot.security_status | default('needs_remediation')) %}
+    {% if status_val == 'passed' %}
+      <span style="display: inline-block; background: #dcfce7; color: #166534; padding: 3px 8px; border-radius: 4px; font-weight: bold; border: 1px solid #86efac;">PASSED (100%)</span>
+    {% else %}
+      <span style="display: inline-block; background: #fef3c7; color: #92400e; padding: 3px 8px; border-radius: 4px; font-weight: bold; border: 1px solid #fde68a;">NEEDS REMEDIATION</span>
+    {% endif %}
+  </td>
+</tr>
+{% endblock %}
+
+{% block content %}
+{% set cl = security_checklist | default(pilot.security_checklist_json | default(pilot.security_checklist | default({}))) %}
+{% set score_val = score | default(pilot.security_score | default(87.5)) %}
+
+<h2 class="section-heading">Executive Security Audit Summary</h2>
+<p class="section-body">
+  Prior to deploying hardware or establishing cloud integrations with municipal supervisory control systems, every innovation pilot is audited against the 8 statutory controls mandated by CERT-In and National Critical Information Infrastructure Protection Centre (NCIIPC) baselines.
+</p>
+
+<table class="doc-meta-table" style="margin-top: 15px; margin-bottom: 25px;">
+  <thead>
+    <tr style="background: #e5e7eb;">
+      <th style="padding: 10px; border: 1px solid #d1d5db; text-align: center; width: 8%;">#</th>
+      <th style="padding: 10px; border: 1px solid #d1d5db; text-align: left; width: 30%;">Control Domain</th>
+      <th style="padding: 10px; border: 1px solid #d1d5db; text-align: left; width: 44%;">Verification Standard & Audit Scope</th>
+      <th style="padding: 10px; border: 1px solid #d1d5db; text-align: center; width: 18%;">Audit Result</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: bold;">1</td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>Authentication</strong><br><small style="color: #6b7280; font-family: monospace;">authentication</small></td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;">Multi-factor authentication (MFA) on all administrative consoles with salted bcrypt password hashing.</td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center;">
+        {% if cl.authentication | default(true) %}
+          <span style="color: #166534; font-weight: bold;">✓ PASSED</span>
+        {% else %}
+          <span style="color: #dc2626; font-weight: bold;">✗ FAILED</span>
+        {% endif %}
+      </td>
+    </tr>
+    <tr>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: bold;">2</td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>Authorization & RBAC</strong><br><small style="color: #6b7280; font-family: monospace;">authorization</small></td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;">Role-based access control isolating government officers, startups, and validators.</td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center;">
+        {% if cl.authorization | default(true) %}
+          <span style="color: #166534; font-weight: bold;">✓ PASSED</span>
+        {% else %}
+          <span style="color: #dc2626; font-weight: bold;">✗ FAILED</span>
+        {% endif %}
+      </td>
+    </tr>
+    <tr>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: bold;">3</td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>Data Encryption</strong><br><small style="color: #6b7280; font-family: monospace;">data_encryption</small></td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;">AES-256 encryption at rest and TLS 1.3 in transit across all telemetry links.</td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center;">
+        {% if cl.data_encryption | default(true) %}
+          <span style="color: #166534; font-weight: bold;">✓ PASSED</span>
+        {% else %}
+          <span style="color: #dc2626; font-weight: bold;">✗ FAILED</span>
+        {% endif %}
+      </td>
+    </tr>
+    <tr>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: bold;">4</td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>Secure API Endpoints</strong><br><small style="color: #6b7280; font-family: monospace;">secure_api</small></td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;">HMAC API authentication, request rate-limiting, and Pydantic payload sanitization.</td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center;">
+        {% if cl.secure_api | default(true) %}
+          <span style="color: #166534; font-weight: bold;">✓ PASSED</span>
+        {% else %}
+          <span style="color: #dc2626; font-weight: bold;">✗ FAILED</span>
+        {% endif %}
+      </td>
+    </tr>
+    <tr>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: bold;">5</td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>Data Backup & Recovery</strong><br><small style="color: #6b7280; font-family: monospace;">data_backup</small></td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;">Automated daily off-site encrypted snapshot backups with RTO &lt; 2 hours.</td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center;">
+        {% if cl.data_backup | default(true) %}
+          <span style="color: #166534; font-weight: bold;">✓ PASSED</span>
+        {% else %}
+          <span style="color: #dc2626; font-weight: bold;">✗ FAILED</span>
+        {% endif %}
+      </td>
+    </tr>
+    <tr>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: bold;">6</td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>Vulnerability Assessment</strong><br><small style="color: #6b7280; font-family: monospace;">vulnerability_assessment</small></td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;">DAST/SAST vulnerability scan report with zero Critical/High CVEs.</td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center;">
+        {% if cl.vulnerability_assessment | default(true) %}
+          <span style="color: #166534; font-weight: bold;">✓ PASSED</span>
+        {% else %}
+          <span style="color: #dc2626; font-weight: bold;">✗ FAILED</span>
+        {% endif %}
+      </td>
+    </tr>
+    <tr>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: bold;">7</td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>Access Logging & Audit Trail</strong><br><small style="color: #6b7280; font-family: monospace;">access_logging</small></td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;">Append-only immutable audit log capturing user identity, IP address, and payload timestamps.</td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center;">
+        {% if cl.access_logging | default(true) %}
+          <span style="color: #166534; font-weight: bold;">✓ PASSED</span>
+        {% else %}
+          <span style="color: #dc2626; font-weight: bold;">✗ FAILED</span>
+        {% endif %}
+      </td>
+    </tr>
+    <tr>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: bold;">8</td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>Incident Response Plan</strong><br><small style="color: #6b7280; font-family: monospace;">incident_response_plan</small></td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;">Standard operating procedure for security breach notification within 6 hours to CERT-In.</td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center;">
+        {% if cl.incident_response_plan | default(false) %}
+          <span style="color: #166534; font-weight: bold;">✓ PASSED</span>
+        {% else %}
+          <span style="color: #dc2626; font-weight: bold;">✗ FAILED</span>
+        {% endif %}
+      </td>
+    </tr>
+    <tr style="background: #f9fafb; font-weight: bold;">
+      <td colspan="2" style="padding: 10px; border: 1px solid #d1d5db;">COMPOSITE CYBERSECURITY AUDIT SCORE</td>
+      <td colspan="2" style="padding: 10px; border: 1px solid #d1d5db; text-align: center; font-size: 16px; color: #1e3a8a;">
+        {{ score_val }}% (Calculated across all 8 controls)
+      </td>
+    </tr>
+  </tbody>
+</table>
+{% endblock %}
