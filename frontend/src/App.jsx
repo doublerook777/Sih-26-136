@@ -18,6 +18,11 @@ import DocumentViewer from "./pages/DocumentViewer";
 import EvaluationForm from "./pages/EvaluationForm";
 import RubricLibrary from "./pages/RubricLibrary";
 import CreatePilot from "./pages/CreatePilot";
+import MilestoneSubmit from "./pages/MilestoneSubmit";
+import ValidatorDashboard from "./pages/ValidatorDashboard";
+import ScaleUpDecision from "./pages/ScaleUpDecision";
+import Replication from "./pages/Replication";
+import TemplateLibrary from "./pages/TemplateLibrary";
 
 export default function App() {
   return (
@@ -78,6 +83,9 @@ export default function App() {
         />
         <Route path="/government/pilots/create" element={<ProtectedRoute allowedRoles={["government", "admin"]}><CreatePilot /></ProtectedRoute>} />
         <Route path="/government/pilots/:id" element={<ProtectedRoute allowedRoles={["government", "admin"]}><PilotDashboard /></ProtectedRoute>} />
+        <Route path="/government/pilots/:id/decision" element={<ProtectedRoute allowedRoles={["government", "admin"]}><ScaleUpDecision /></ProtectedRoute>} />
+        <Route path="/government/pilots/:id/replication" element={<ProtectedRoute allowedRoles={["government", "admin"]}><Replication /></ProtectedRoute>} />
+        <Route path="/government/templates" element={<ProtectedRoute allowedRoles={["government", "admin"]}><TemplateLibrary /></ProtectedRoute>} />
         <Route path="/government/rubrics" element={<ProtectedRoute allowedRoles={["government", "admin"]}><RubricLibrary /></ProtectedRoute>} />
 
         {/* Startup Portal */}
@@ -105,6 +113,9 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/startup/pilots" element={<ProtectedRoute allowedRoles={["startup"]}><PilotDashboard /></ProtectedRoute>} />
+        <Route path="/startup/pilots/:id" element={<ProtectedRoute allowedRoles={["startup"]}><PilotDashboard /></ProtectedRoute>} />
+        <Route path="/startup/pilots/:pilotId/milestones/:milestoneId/submit" element={<ProtectedRoute allowedRoles={["startup"]}><MilestoneSubmit /></ProtectedRoute>} />
 
         {/* Shared Challenge Detail and Document Viewer Routes */}
         <Route
@@ -142,6 +153,7 @@ export default function App() {
           }
         />
         <Route path="/evaluator/applications/:applicationId/evaluate" element={<ProtectedRoute allowedRoles={["expert", "admin"]}><EvaluationForm /></ProtectedRoute>} />
+        <Route path="/validator" element={<ProtectedRoute allowedRoles={["validator", "admin"]}><ValidatorDashboard /></ProtectedRoute>} />
 
         {/* Fallback 404 Route */}
         <Route

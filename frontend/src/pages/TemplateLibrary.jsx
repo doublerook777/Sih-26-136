@@ -1,0 +1,11 @@
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import DashboardLayout from "../components/DashboardLayout";
+import { getDocumentTemplates, getRubrics } from "../api/endpoints";
+
+export default function TemplateLibrary() {
+  const [templates, setTemplates] = useState([]); const [rubrics, setRubrics] = useState([]); const [loading, setLoading] = useState(true); const [error, setError] = useState("");
+  useEffect(() => { let active = true; Promise.all([getDocumentTemplates(), getRubrics()]).then(([docs, rubricData]) => { if (!active) return; setTemplates(Array.isArray(docs) ? docs : []); setRubrics(Array.isArray(rubricData) ? rubricData : []); }).catch((err) => active && setError(err.detail || err.message || "Unable to load template library")).finally(() => active && setLoading(false)); return () => { active = false; }; }, []);
+  const entityId = (entity) => entity === "challenge" ? 1 : 1;
+  return <DashboardLayout role="government" title="Template Library" subtitle="Open the official documents and configurable scoring frameworks used across procurement.">{loading ? <div className="state-message">Loading document and rubric templates…</div> : error ? <div className="state-message state-error">{error}</div> : <><section><div className="section-heading"><div><p className="eyebrow">Documents</p><h2>Official document templates</h2></div><span>{templates.length} available</span></div>{templates.length ? <div className="template-grid">{templates.map((item) => <article className="panel template-card" key={item.doc_type}><span className="template-entity">{item.entity}</span><h3>{item.title}</h3><p>{item.description}</p><Link className="btn btn-soft" to={`/documents/${item.doc_type}/${entityId(item.entity)}`}>Open document</Link></article>)}</div> : <div className="state-message">No document templates are available.</div>}</section><section className="template-rubrics"><div className="section-heading"><div><p className="eyebrow">Rubrics</p><h2>Scoring frameworks</h2></div><Link className="btn btn-soft" to="/government/rubrics">Open rubric library</Link></div><div className="template-rubric-list">{rubrics.map((rubric) => <div className="panel" key={rubric.id}><strong>{rubric.name}</strong><span>{rubric.kind} · version {rubric.version}</span></div>)}</div></section></>}</DashboardLayout>;
+}
