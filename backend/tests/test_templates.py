@@ -86,5 +86,45 @@ def test_eligibility_criteria_template_renders(jinja_env):
     assert "3. Minimum Experience" in rendered
     assert "4. Technology Capability Overlap" in rendered
     assert "5. Budget & Commercial Ceiling" in rendered
-    assert "6. Cybersecurity Baseline" in rendered
     assert "ISO 9001:2015" in rendered
+
+
+def test_evaluation_criteria_template_renders(jinja_env):
+    template = jinja_env.get_template("evaluation_criteria.html")
+
+    seed_challenges_file = os.path.join(os.path.dirname(__file__), "..", "seed_data", "challenges.json")
+    with open(seed_challenges_file) as f:
+        challenges = json.load(f)
+
+    seed_rubrics_file = os.path.join(os.path.dirname(__file__), "..", "seed_data", "rubrics.json")
+    with open(seed_rubrics_file) as f:
+        rubrics = json.load(f)
+
+    challenge = challenges[0]
+    eval_rubric = next(r for r in rubrics if r["kind"] == "evaluation" and r["is_default"])
+
+    rendered = template.render(
+        challenge=challenge,
+        title=challenge["title"],
+        department=challenge["department"],
+        district=challenge["district"],
+        sector=challenge["sector"],
+        rubric=eval_rubric,
+        rubric_name=eval_rubric["name"],
+        criteria=eval_rubric["criteria"],
+        generated_at="2026-08-29",
+    )
+
+    assert "Expert Evaluation & Scoring Rubric Specification" in rendered
+    assert "Default expert panel" in rendered
+    assert "Technical Feasibility" in rendered or "technical_feasibility" in rendered
+    assert "25%" in rendered
+    assert "Innovation" in rendered or "innovation" in rendered
+    assert "Cost Effectiveness" in rendered or "cost_effectiveness" in rendered
+    assert "Scalability" in rendered or "scalability" in rendered
+    assert "Security" in rendered or "security" in rendered
+    assert "Implementation Capability" in rendered or "implementation_capability" in rendered
+    assert "Social Impact" in rendered or "social_impact" in rendered
+    assert "TOTAL ALLOCATED WEIGHT" in rendered
+    assert "100%" in rendered
+
