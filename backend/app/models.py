@@ -115,6 +115,7 @@ class Milestone(SQLModel, table=True):
     status: str = "pending"
     evidence_text: Optional[str] = None
     evidence_url: Optional[str] = None
+    claimed_value: Optional[float] = None
     submitted_at: Optional[datetime] = None
 class Validation(SQLModel, table=True):
     __tablename__ = "validations"
@@ -169,4 +170,4 @@ class Procurement(SQLModel, table=True):
     decision: str
     pathway: Optional[str] = None
     justification: Optional[str] = None
-    replication_json: dict = Field(default_factory=dict, sa_type=JSON)
+    replication_json: list = Field(default_factory=list, sa_type=JSON)

@@ -173,3 +173,253 @@ class ApplicationRead(BaseModel):
     rubric_snapshot: dict
     explanation: Optional[str] = None
     status: str
+
+
+# ---------------------------------------------------------------------------
+# Milestones, Validation, Payment (Pilots Sub-objects)
+# ---------------------------------------------------------------------------
+
+class MilestoneValidationRead(BaseModel):
+    verdict: str
+    claimed_value: Optional[float] = None
+    verified_value: Optional[float] = None
+    validator_name: Optional[str] = None
+    notes: Optional[str] = None
+    validated_at: Optional[datetime] = None
+
+
+class MilestonePaymentRead(BaseModel):
+    status: str
+    amount: int
+    mock_txn_ref: Optional[str] = None
+    released_at: Optional[datetime] = None
+
+
+class MilestoneRead(BaseModel):
+    id: int
+    seq: int
+    title: str
+    deliverable: str
+    amount: int
+    due_date: Optional[date] = None
+    status: str
+    evidence_text: Optional[str] = None
+    evidence_url: Optional[str] = None
+    submitted_at: Optional[datetime] = None
+    validation: Optional[MilestoneValidationRead] = None
+    payment: Optional[MilestonePaymentRead] = None
+
+
+class MilestoneCreate(BaseModel):
+    seq: int
+    title: str
+    deliverable: str
+    amount: int
+    due_date: Optional[date] = None
+
+
+class MilestoneSubmitIn(BaseModel):
+    evidence_text: str
+    evidence_url: Optional[str] = None
+    claimed_value: Optional[float] = None
+
+
+class MilestoneSubmitOut(BaseModel):
+    id: int
+    status: str
+    submitted_at: Optional[datetime] = None
+
+
+class MilestoneValidateIn(BaseModel):
+    verdict: str
+    verified_value: Optional[float] = None
+    notes: Optional[str] = None
+
+
+class MilestoneValidateOut(BaseModel):
+    milestone_id: int
+    status: str
+    validation: MilestoneValidationRead
+
+
+class MilestonePayOut(BaseModel):
+    milestone_id: int
+    status: str
+    payment: MilestonePaymentRead
+
+
+
+# ---------------------------------------------------------------------------
+# Governance: KPIs, Risks, Security
+# ---------------------------------------------------------------------------
+
+class KPICreate(BaseModel):
+    name: str
+    unit: str
+    baseline: Optional[float] = None
+    target: Optional[float] = None
+    category: str
+    direction: str
+
+
+class KPIRead(BaseModel):
+    id: int
+    name: str
+    unit: str
+    baseline: Optional[float] = None
+    target: Optional[float] = None
+    achieved: Optional[float] = None
+    category: str
+    direction: str
+    achievement: Optional[float] = None
+    met: bool = False
+
+
+class KPIUpdate(BaseModel):
+    kpi_id: int
+    achieved: float
+
+
+class RiskCreate(BaseModel):
+    description: str
+    probability: int
+    impact: int
+    mitigation: Optional[str] = None
+    owner: Optional[str] = None
+
+
+class RiskRead(BaseModel):
+    id: int
+    description: str
+    probability: int
+    impact: int
+    score: int
+    mitigation: Optional[str] = None
+    owner: Optional[str] = None
+
+
+class SecurityCheckIn(BaseModel):
+    authentication: bool
+    authorization: bool
+    data_encryption: bool
+    secure_api: bool
+    data_backup: bool
+    vulnerability_assessment: bool
+    access_logging: bool
+    incident_response_plan: bool
+
+
+class SecurityCheckOut(BaseModel):
+    pilot_id: int
+    security_status: str
+    score: float
+    passed_count: int
+    total_count: int
+    failed: list[str]
+
+
+# ---------------------------------------------------------------------------
+# Pilots
+# ---------------------------------------------------------------------------
+
+class PilotCreate(BaseModel):
+    challenge_id: int
+    startup_id: int
+    location: str
+    duration_days: int
+    budget: int
+    objectives: str
+    milestones: list[MilestoneCreate]
+    kpis: list[KPICreate]
+
+
+class PilotSummary(BaseModel):
+    id: int
+    challenge_title: str
+    startup_name: str
+    location: str
+    status: str
+    budget: int
+    paid_to_date: int
+    milestones_total: int
+    milestones_paid: int
+    security_status: str
+    risk_level: Optional[str] = None
+
+
+class PilotDetail(BaseModel):
+    id: int
+    challenge_id: int
+    challenge_title: str
+    startup_id: int
+    startup_name: str
+    location: str
+    duration_days: int
+    budget: int
+    paid_to_date: int
+    status: str
+    security_status: str
+    risk_level: Optional[str] = None
+    milestones: list[MilestoneRead]
+    kpis: list[KPIRead]
+    risks: list[RiskRead]
+    security_checklist: dict
+
+
+class PilotCreateResponse(BaseModel):
+    id: int
+    challenge_id: int
+    startup_id: int
+    startup_name: str
+    location: str
+    duration_days: int
+    budget: int
+    objectives: str
+    status: str
+    security_status: str
+    risk_level: Optional[str] = None
+    milestones: list[MilestoneRead]
+    kpis: list[KPIRead]
+    created_at: Optional[datetime] = None
+
+
+class PilotFinalizeOut(BaseModel):
+    pilot_id: int
+    category_scores: dict[str, float]
+    weights: dict[str, int]
+    final_score: float
+    decision: str
+    justification: str
+
+
+class ProcurementChecks(BaseModel):
+    pilot_validated: bool
+    performance_threshold_met: bool
+    security_approved: bool
+    budget_available: bool
+
+
+class ReplicationItem(BaseModel):
+    district: str
+    status: str
+
+
+class PilotProcurementOut(BaseModel):
+    pilot_id: int
+    final_score: Optional[float] = None
+    decision: Optional[str] = None
+    checks: ProcurementChecks
+    recommended_pathway: str
+    justification: Optional[str] = None
+    replication: list[ReplicationItem]
+
+
+class ReplicateIn(BaseModel):
+    districts: list[str]
+
+
+class ReplicateOut(BaseModel):
+    pilot_id: int
+    replication: list[ReplicationItem]
+
+
