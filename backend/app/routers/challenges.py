@@ -190,6 +190,43 @@ def create_challenge(
     )
 
 
+@router.post("/challenges/{challenge_id}/publish", response_model=ChallengeDetail)
+def publish_challenge(
+    challenge_id: int,
+    session: Session = Depends(get_session),
+    current_user: User = Depends(require_role("government")),
+):
+    challenge = session.get(Challenge, challenge_id)
+    if not challenge:
+        raise HTTPException(status_code=404, detail="Challenge not found")
+
+    challenge.status = "open"
+    session.add(challenge)
+    session.commit()
+    session.refresh(challenge)
+
+    return ChallengeDetail(
+        id=challenge.id,
+        title=challenge.title,
+        department=challenge.department,
+        district=challenge.district,
+        sector=challenge.sector,
+        budget=challenge.budget,
+        timeline_days=challenge.timeline_days,
+        deadline=challenge.deadline,
+        status=challenge.status,
+        required_tech=challenge.required_tech,
+        application_count=_application_count(session, challenge.id),
+        created_at=None,
+        created_by=challenge.created_by,
+        match_rubric_id=challenge.match_rubric_id,
+        evaluation_rubric_id=challenge.evaluation_rubric_id,
+        statement=challenge.statement_json,
+        eligibility_rules=challenge.eligibility_rules_json,
+        kpi_targets=challenge.kpi_targets_json,
+    )
+
+
 @router.get("/challenges/{challenge_id}/applications", response_model=list[ApplicationRead])
 def get_challenge_applications(
     challenge_id: int,
