@@ -15,7 +15,8 @@ import ExploreChallenges from "./pages/ExploreChallenges";
 import MyApplications from "./pages/MyApplications";
 import EvaluatorDashboard from "./pages/EvaluatorDashboard";
 import DocumentViewer from "./pages/DocumentViewer";
-import Placeholder from "./pages/Placeholder";
+import EvaluationForm from "./pages/EvaluationForm";
+import RubricLibrary from "./pages/RubricLibrary";
 
 export default function App() {
   return (
@@ -74,6 +75,7 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/government/rubrics" element={<ProtectedRoute allowedRoles={["government", "admin"]}><RubricLibrary /></ProtectedRoute>} />
 
         {/* Startup Portal */}
         <Route
@@ -132,10 +134,11 @@ export default function App() {
           path="/evaluator/reviews"
           element={
             <ProtectedRoute allowedRoles={["expert", "validator", "admin"]}>
-              <Placeholder role="evaluator" title="Pending Reviews" />
+              <EvaluatorDashboard />
             </ProtectedRoute>
           }
         />
+        <Route path="/evaluator/applications/:applicationId/evaluate" element={<ProtectedRoute allowedRoles={["expert", "admin"]}><EvaluationForm /></ProtectedRoute>} />
 
         {/* Fallback 404 Route */}
         <Route

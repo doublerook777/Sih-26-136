@@ -974,6 +974,49 @@ textarea {
   gap: 14px;
 }
 
+.discovery-controls { display: flex; align-items: end; gap: 14px; margin-bottom: 18px; }
+.discovery-controls label { flex: 1; font-weight: 700; }
+.discovery-controls select { width: 100%; margin-top: 7px; }
+.startup-result-ineligible { opacity: 0.72; background: #f6f7fa; border-style: dashed; }
+.eligibility-failures { margin-top: 14px; padding: 13px; border-radius: 12px; background: #fff4e5; color: #7a4c09; }
+.eligibility-failures p { margin: 5px 0 0; font-size: 0.82rem; }
+.eligibility-failures span { text-transform: capitalize; font-weight: 700; }
+.result-actions { display: flex; align-items: center; gap: 10px; margin-top: 16px; }
+.state-message { padding: 18px; margin: 14px 0; border: 1px solid var(--border); border-radius: 14px; background: white; color: var(--muted); }
+.state-error { border-color: #efb1b1; background: #fff4f4; color: #9b2d30; }
+.state-success { border-color: #a7ddc7; background: #effaf5; color: #247454; }
+.score-breakdown { display: grid; gap: 10px; margin-top: 16px; }
+.score-breakdown-row { display: grid; gap: 6px; }
+.score-breakdown-meta { display: flex; justify-content: space-between; gap: 12px; font-size: 0.78rem; color: #67738b; }
+.score-breakdown-track { height: 8px; overflow: hidden; border-radius: 999px; background: #e9edf4; }
+.score-breakdown-track span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--primary), #6f7ff0); }
+.score-breakdown-empty { margin-top: 14px; }
+.evaluation-context { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 22px; }
+.evaluation-context div { padding: 13px; border-radius: 12px; background: #f7f8fc; }
+.evaluation-context span, .evaluation-context strong { display: block; }
+.evaluation-context span { color: var(--muted); font-size: 0.72rem; margin-bottom: 5px; }
+.evaluation-criterion { display: block; padding: 17px 0; border-bottom: 1px solid var(--border); }
+.evaluation-criterion > div { display: flex; justify-content: space-between; gap: 20px; }
+.evaluation-criterion > div span { color: var(--primary); font-weight: 700; }
+.evaluation-criterion p { color: var(--muted); font-size: 0.8rem; margin: 5px 0 11px; }
+.evaluation-criterion input { width: 100%; accent-color: var(--primary); }
+.evaluation-comments { display: grid; gap: 7px; margin-top: 20px; font-weight: 700; }
+.evaluation-comments textarea { resize: vertical; }
+.evaluation-form > .btn { margin-top: 18px; }
+.evaluation-confirmation { max-width: 680px; }
+.rubric-library-group { margin-bottom: 28px; }
+.rubric-library-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.rubric-library-heading { display: flex; justify-content: space-between; gap: 12px; }
+.rubric-library-heading h3, .rubric-library-heading p { margin: 0 0 5px; }
+.rubric-library-heading p { color: var(--muted); font-size: 0.78rem; }
+.rubric-library-heading > strong { color: var(--green); }
+
+@media (max-width: 760px) {
+  .discovery-controls { align-items: stretch; flex-direction: column; }
+  .evaluation-context, .rubric-library-grid { grid-template-columns: 1fr; }
+  .score-breakdown-meta, .evaluation-criterion > div { align-items: flex-start; flex-direction: column; gap: 4px; }
+}
+
 .startup-result {
   display: grid;
   grid-template-columns: 54px 1fr;
