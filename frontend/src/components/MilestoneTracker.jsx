@@ -1,0 +1,8 @@
+import Badge from "./Badge";
+
+const TONES = { pending: "blue", in_progress: "blue", submitted: "amber", validated: "green", rejected: "amber", paid: "green" };
+
+export default function MilestoneTracker({ milestones = [] }) {
+  if (!milestones.length) return <div className="state-message">No milestones have been created.</div>;
+  return <div className="milestone-tracker">{milestones.map((milestone) => <article className={`milestone-step milestone-${milestone.status}`} key={milestone.id || milestone.seq}><div className="milestone-step-marker">{milestone.seq}</div><div className="milestone-step-body"><div className="milestone-step-heading"><div><h3>{milestone.title}</h3><p>{milestone.deliverable}</p></div><Badge tone={TONES[milestone.status] || "blue"}>{milestone.status}</Badge></div><dl><div><dt>Amount</dt><dd>₹{Number(milestone.amount).toLocaleString("en-IN")}</dd></div><div><dt>Due</dt><dd>{milestone.due_date}</dd></div></dl>{milestone.validation ? <div className="milestone-evidence validated"><strong>Validation: {milestone.validation.verdict}</strong><p>{milestone.validation.notes}</p><small>Claimed {milestone.validation.claimed_value}; verified {milestone.validation.verified_value} by {milestone.validation.validator_name}</small></div> : <div className="milestone-evidence empty">Validation pending</div>}{milestone.payment ? <div className="milestone-evidence paid"><strong>Payment {milestone.payment.status}</strong><p>₹{Number(milestone.payment.amount).toLocaleString("en-IN")} · {milestone.payment.mock_txn_ref}</p></div> : <div className="milestone-evidence empty">Payment not released</div>}</div></article>)}</div>;
+}

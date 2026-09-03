@@ -17,6 +17,7 @@ import EvaluatorDashboard from "./pages/EvaluatorDashboard";
 import DocumentViewer from "./pages/DocumentViewer";
 import EvaluationForm from "./pages/EvaluationForm";
 import RubricLibrary from "./pages/RubricLibrary";
+import CreatePilot from "./pages/CreatePilot";
 
 export default function App() {
   return (
@@ -75,6 +76,8 @@ export default function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/government/pilots/create" element={<ProtectedRoute allowedRoles={["government", "admin"]}><CreatePilot /></ProtectedRoute>} />
+        <Route path="/government/pilots/:id" element={<ProtectedRoute allowedRoles={["government", "admin"]}><PilotDashboard /></ProtectedRoute>} />
         <Route path="/government/rubrics" element={<ProtectedRoute allowedRoles={["government", "admin"]}><RubricLibrary /></ProtectedRoute>} />
 
         {/* Startup Portal */}
