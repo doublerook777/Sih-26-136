@@ -128,3 +128,133 @@ def test_evaluation_criteria_template_renders(jinja_env):
     assert "TOTAL ALLOCATED WEIGHT" in rendered
     assert "100%" in rendered
 
+
+def test_pilot_agreement_template_renders_all_16_clauses(jinja_env):
+    template = jinja_env.get_template("pilot_agreement.html")
+
+    pilot = {
+        "id": 1,
+        "challenge_id": 1,
+        "challenge_title": "Reduce municipal water leakage",
+        "startup_id": 3,
+        "startup_name": "AquaSense Systems",
+        "location": "District A",
+        "duration_days": 90,
+        "budget": 1000000,
+        "department": "Urban Water Supply",
+    }
+    challenge = {
+        "id": 1,
+        "title": "Reduce municipal water leakage",
+        "department": "Urban Water Supply",
+        "district": "District A",
+        "budget": 1000000,
+    }
+    startup = {"id": 3, "name": "AquaSense Systems"}
+    milestones = [
+        {"seq": 1, "title": "Prototype", "deliverable": "40-node sensor prototype", "amount": 200000, "due_date": "2026-09-20"},
+        {"seq": 2, "title": "Field trial", "deliverable": "Live data for 2 weeks", "amount": 300000, "due_date": "2026-10-10"},
+        {"seq": 3, "title": "Deployment", "deliverable": "Full district coverage", "amount": 300000, "due_date": "2026-11-01"},
+        {"seq": 4, "title": "Final results", "deliverable": "Verified KPI report", "amount": 200000, "due_date": "2026-11-25"},
+    ]
+
+    rendered = template.render(
+        pilot=pilot,
+        challenge=challenge,
+        startup=startup,
+        milestones=milestones,
+        generated_at="2026-09-01",
+    )
+
+    assert "Innovation Pilot Implementation Agreement" in rendered
+    assert "AquaSense Systems" in rendered
+    assert "1,000,000" in rendered
+    assert "M1" in rendered and "M2" in rendered and "M3" in rendered and "M4" in rendered
+    assert "200,000" in rendered and "300,000" in rendered
+
+    # All 16 clauses present
+    for i in range(1, 17):
+        assert f"Clause {i}:" in rendered, f"Missing Clause {i}"
+
+
+def test_data_ip_template_renders(jinja_env):
+    template = jinja_env.get_template("data_ip.html")
+
+    pilot = {
+        "id": 1,
+        "challenge_title": "Reduce municipal water leakage",
+        "startup_name": "AquaSense Systems",
+        "location": "District A",
+        "department": "Urban Water Supply",
+    }
+    challenge = {"id": 1, "title": "Reduce municipal water leakage", "department": "Urban Water Supply"}
+    startup = {"id": 3, "name": "AquaSense Systems"}
+
+    rendered = template.render(pilot=pilot, challenge=challenge, startup=startup)
+
+    assert "Data Ownership & Intellectual Property Governance Terms" in rendered
+    assert "Pre-Existing Background Intellectual Property" in rendered
+    assert "Sovereign Ownership of Municipal & Public Data" in rendered
+    assert "Pilot-Developed Foreground Intellectual Property" in rendered
+    assert "Commercialization & National Replication Framework" in rendered
+
+
+def test_security_checklist_template_renders(jinja_env):
+    template = jinja_env.get_template("security_checklist.html")
+
+    pilot = {"id": 1, "startup_name": "AquaSense Systems", "location": "District A"}
+    challenge = {"id": 1, "title": "Reduce municipal water leakage", "department": "Urban Water Supply"}
+    startup = {"id": 3, "name": "AquaSense Systems"}
+    checklist = {
+        "authentication": True,
+        "authorization": True,
+        "data_encryption": True,
+        "secure_api": True,
+        "data_backup": True,
+        "vulnerability_assessment": True,
+        "access_logging": True,
+        "incident_response_plan": False,
+    }
+
+    rendered = template.render(
+        pilot=pilot,
+        challenge=challenge,
+        startup=startup,
+        security_checklist=checklist,
+        security_status="needs_remediation",
+        score=87.5,
+    )
+
+    assert "8-Point Cybersecurity Baseline Audit Report" in rendered
+    assert "NEEDS REMEDIATION" in rendered
+    assert "87.5%" in rendered
+    assert "Authentication" in rendered
+    assert "Incident Response Plan" in rendered
+
+
+def test_risk_register_template_renders(jinja_env):
+    template = jinja_env.get_template("risk_register.html")
+
+    pilot = {"id": 1, "startup_name": "AquaSense Systems", "location": "District A", "risk_level": "medium"}
+    challenge = {"id": 1, "title": "Reduce municipal water leakage", "department": "Urban Water Supply"}
+    startup = {"id": 3, "name": "AquaSense Systems"}
+    risks = [
+        {"description": "Sensor failure in monsoon", "probability": 3, "impact": 4, "score": 12, "mitigation": "Ship 10% spare nodes", "owner": "AquaSense"},
+        {"description": "Cellular blind spots", "probability": 2, "impact": 3, "score": 6, "mitigation": "Deploy LoRaWAN relay", "owner": "AquaSense"},
+    ]
+
+    rendered = template.render(
+        pilot=pilot,
+        challenge=challenge,
+        startup=startup,
+        risks=risks,
+        risk_level="medium",
+    )
+
+    assert "Pilot Risk Register & Governance Matrix" in rendered
+    assert "MEDIUM" in rendered
+    assert "Sensor failure in monsoon" in rendered
+    assert "Ship 10% spare nodes" in rendered
+    assert "12" in rendered
+
+
