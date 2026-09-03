@@ -1845,3 +1845,79 @@ textarea {
   border: none;
   background: white;
 }
+
+/* Day 4 pilot lifecycle */
+.pilot-badges { display: flex; gap: 8px; margin-top: 14px; }
+.paid-summary { display: grid; text-align: right; gap: 3px; }
+.paid-summary span, .paid-summary small { color: #c2cbe1; }
+.paid-summary strong { font-size: 1.7rem; }
+.pilot-section { margin: 24px 0; }
+.pilot-list { display: grid; gap: 14px; }
+.pilot-list-card { display: flex; align-items: center; justify-content: space-between; text-decoration: none; color: inherit; }
+.pilot-list-card h3, .pilot-list-card p { margin: 0 0 5px; }
+.pilot-list-card p { color: var(--muted); }
+.pilot-create-layout { display: grid; gap: 18px; }
+.pilot-selection-summary { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.pilot-selection-summary div { padding: 14px; background: #f7f8fc; border-radius: 12px; }
+.pilot-selection-summary span, .pilot-selection-summary strong { display: block; }
+.pilot-selection-summary span { color: var(--muted); font-size: .72rem; margin-bottom: 5px; }
+.form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.form-grid label { display: grid; gap: 7px; font-weight: 700; }
+.form-grid .full-width { grid-column: 1 / -1; }
+.milestone-preview { display: grid; gap: 10px; }
+.milestone-preview > div { display: grid; grid-template-columns: 34px 1fr auto; gap: 12px; align-items: center; padding: 12px; background: #f7f8fc; border-radius: 12px; }
+.milestone-preview > div > span { width: 30px; height: 30px; display: grid; place-items: center; border-radius: 50%; background: var(--primary); color: white; font-weight: 800; }
+.milestone-preview small { display: block; color: var(--muted); margin-top: 3px; }
+.budget-valid { color: var(--green); font-weight: 800; }
+.budget-invalid { color: #a43838; font-weight: 800; }
+.kpi-target-list { display: grid; gap: 8px; margin-bottom: 18px; }
+.kpi-target-list div { display: flex; justify-content: space-between; padding: 11px 13px; border: 1px solid var(--border); border-radius: 10px; }
+.milestone-tracker { display: grid; gap: 14px; }
+.milestone-step { display: grid; grid-template-columns: 42px 1fr; gap: 12px; padding: 16px; border: 1px solid var(--border); border-left: 5px solid #a6afc0; border-radius: 14px; }
+.milestone-validated, .milestone-paid { border-left-color: var(--green); }
+.milestone-submitted { border-left-color: #d28b1d; }
+.milestone-rejected { border-left-color: #b83a40; background: #fff7f7; }
+.milestone-in_progress { border-left-color: var(--primary); }
+.milestone-step-marker { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 50%; background: #eef1f6; font-weight: 800; }
+.milestone-step-heading { display: flex; justify-content: space-between; gap: 14px; }
+.milestone-step-heading h3, .milestone-step-heading p { margin: 0 0 5px; }
+.milestone-step-heading p { color: var(--muted); }
+.milestone-step dl { display: flex; gap: 28px; margin: 10px 0; }
+.milestone-step dl div { display: flex; gap: 7px; }
+.milestone-step dt { color: var(--muted); }
+.milestone-step dd { margin: 0; font-weight: 700; }
+.milestone-evidence { padding: 10px; border-radius: 10px; margin-top: 8px; font-size: .78rem; }
+.milestone-evidence p { margin: 4px 0; }
+.milestone-evidence.empty { background: #f5f6f9; color: var(--muted); }
+.milestone-evidence.validated, .milestone-evidence.paid { background: var(--green-soft); color: #23684f; }
+.risk-panel, .checklist-panel, .agreement-callout { margin-top: 20px; }
+.risk-table { min-width: 900px; }
+.risk-score { display: inline-grid; place-items: center; min-width: 34px; padding: 5px; border-radius: 8px; }
+.risk-low { background: #e3f7ef; color: #257153; }
+.risk-medium { background: #fff1d9; color: #8b5700; }
+.risk-high { background: #ffe5e6; color: #a33238; }
+.risk-form { display: grid; grid-template-columns: 1.4fr .8fr .8fr 1.4fr 1fr auto; gap: 9px; margin-top: 16px; }
+.security-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
+.security-toggle { display: flex; align-items: center; gap: 10px; padding: 12px; background: #f7f8fc; border-radius: 10px; font-weight: 700; }
+.security-toggle input { width: 18px; height: 18px; accent-color: var(--green); }
+.security-status { text-transform: capitalize; padding: 7px 11px; border-radius: 999px; }
+.security-passed { background: var(--green-soft); color: var(--green); }
+.security-needs_remediation { background: #fff1d9; color: #8b5700; }
+.security-result { margin: 14px 0; padding: 16px; border-radius: 12px; }
+.security-result p { margin: 5px 0 0; }
+.security-result.passed { background: var(--green-soft); color: #23684f; }
+.security-result.remediation { background: #fff1d9; color: #7a4c09; }
+.agreement-callout { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.agreement-callout h2, .agreement-callout p { margin: 0 0 6px; }
+
+@media (max-width: 900px) {
+  .form-grid, .pilot-selection-summary { grid-template-columns: 1fr; }
+  .risk-form { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 640px) {
+  .security-grid, .risk-form { grid-template-columns: 1fr; }
+  .agreement-callout, .pilot-hero { align-items: flex-start; flex-direction: column; }
+  .paid-summary { text-align: left; }
+  .milestone-step { grid-template-columns: 1fr; }
+}

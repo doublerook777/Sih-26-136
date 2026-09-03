@@ -13,6 +13,36 @@ const USE_MOCK = import.meta.env.VITE_USE_MOCK === "true";
 let mockChallenges = [...initialMockChallenges];
 let mockApplications = [...mockApplicationsList];
 let mockEvaluations = [];
+let mockPilots = [{
+  id: 1,
+  challenge_id: 1,
+  challenge_title: "Reduce Municipal Water Leakage in Distribution Networks",
+  startup_id: 3,
+  startup_name: "AquaSense Systems",
+  location: "District A",
+  duration_days: 90,
+  budget: 1000000,
+  paid_to_date: 200000,
+  objectives: "Reduce measured water loss by at least 10 percentage points.",
+  status: "active",
+  security_status: "passed",
+  security_checklist: { authentication: true, authorization: true, data_encryption: true, secure_api: true, data_backup: true, vulnerability_assessment: true, access_logging: true, incident_response_plan: true },
+  risk_level: "medium",
+  milestones: [
+    { id: 1, seq: 1, title: "Prototype", deliverable: "40-node sensor prototype", amount: 200000, due_date: "2026-09-20", status: "paid", evidence_text: "Deployed 40 nodes across pilot zone.", evidence_url: null, submitted_at: "2026-09-18T10:00:00Z", validation: { verdict: "approved", claimed_value: 25, verified_value: 22, validator_name: "N Sharma", notes: "Sampled 12 of 40 nodes.", validated_at: "2026-09-19T15:00:00Z" }, payment: { status: "released", amount: 200000, mock_txn_ref: "MOCK-PAY-0001", released_at: "2026-09-19T16:00:00Z" } },
+    { id: 2, seq: 2, title: "Field trial", deliverable: "Live field data for two weeks", amount: 300000, due_date: "2026-10-10", status: "validated", evidence_text: "Continuous telemetry captured for 14 days.", evidence_url: null, submitted_at: "2026-10-08T10:00:00Z", validation: { verdict: "approved", claimed_value: 95, verified_value: 94, validator_name: "N Sharma", notes: "Telemetry and field samples verified.", validated_at: "2026-10-09T15:00:00Z" }, payment: null },
+    { id: 3, seq: 3, title: "Deployment", deliverable: "Full pilot-zone coverage", amount: 300000, due_date: "2026-11-01", status: "submitted", evidence_text: "Coverage evidence submitted for validation.", evidence_url: null, submitted_at: "2026-10-30T10:00:00Z", validation: null, payment: null },
+    { id: 4, seq: 4, title: "Final results", deliverable: "Verified KPI report", amount: 200000, due_date: "2026-11-25", status: "pending", evidence_text: null, evidence_url: null, submitted_at: null, validation: null, payment: null },
+  ],
+  kpis: [
+    { id: 1, name: "Water wastage", unit: "%", baseline: 30, target: 20, achieved: 22, category: "impact", direction: "lower_is_better", achievement: 80, met: false },
+    { id: 2, name: "Leak detection time", unit: "hours", baseline: 72, target: 6, achieved: 8, category: "technical", direction: "lower_is_better", achievement: 97, met: false },
+    { id: 3, name: "System uptime", unit: "%", baseline: 0, target: 95, achieved: 96, category: "technical", direction: "higher_is_better", achievement: 101.1, met: true },
+    { id: 4, name: "Cost per km monitored", unit: "INR", baseline: 40000, target: 25000, achieved: 24000, category: "cost", direction: "lower_is_better", achievement: 106.7, met: true },
+  ],
+  risks: [{ id: 1, description: "Sensor failure during monsoon", probability: 3, impact: 4, score: 12, mitigation: "Maintain sealed spare sensor units", owner: "Pilot delivery lead" }],
+  created_at: "2026-08-28T12:00:00Z",
+}];
 
 const MOCK_STARTUP_NAMES = [
   "AquaSense Systems", "PipeAI Technologies", "HydroTrack Telemetry",
@@ -447,6 +477,114 @@ export const getEvaluations = async (applicationId) => {
     return { application_id: Number(applicationId), average_total, evaluation_count: evaluations.length, evaluations };
   }
   return get("/evaluations", { application_id: applicationId });
+};
+
+/**
+ * Pilot and governance endpoints (API sections 7 and 9)
+ */
+export const createPilot = async (body) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    const challenge = mockChallenges.find((item) => item.id === Number(body.challenge_id));
+    const application = mockApplications.find((item) => item.startup_id === Number(body.startup_id) && item.challenge_id === Number(body.challenge_id));
+    const total = body.milestones.reduce((sum, item) => sum + Number(item.amount), 0);
+    if (total !== Number(body.budget)) {
+      throw Object.assign(new Error("milestone amounts must sum to budget"), { detail: "milestone amounts must sum to budget", status: 400 });
+    }
+    const pilot = {
+      id: mockPilots.length + 1,
+      challenge_id: Number(body.challenge_id),
+      challenge_title: challenge?.title || "Pilot Challenge",
+      startup_id: Number(body.startup_id),
+      startup_name: application?.startup_name || "Selected Startup",
+      location: body.location,
+      duration_days: Number(body.duration_days),
+      budget: Number(body.budget),
+      paid_to_date: 0,
+      objectives: body.objectives,
+      status: "created",
+      security_status: "pending",
+      security_checklist: {},
+      risk_level: null,
+      milestones: body.milestones.map((item, index) => ({ id: index + 1, ...item, amount: Number(item.amount), status: "pending", evidence_text: null, evidence_url: null, submitted_at: null, validation: null, payment: null })),
+      kpis: body.kpis.map((item, index) => ({ id: index + 1, ...item, achieved: null, achievement: 0, met: false })),
+      risks: [],
+      created_at: new Date().toISOString(),
+    };
+    mockPilots.push(pilot);
+    return pilot;
+  }
+  return post("/pilots", body);
+};
+
+export const getPilot = async (id) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 140));
+    const pilot = mockPilots.find((item) => item.id === Number(id));
+    if (!pilot) throw Object.assign(new Error("Pilot not found"), { detail: "Pilot not found", status: 404 });
+    return pilot;
+  }
+  return get(`/pilots/${id}`);
+};
+
+export const getPilots = async () => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 120));
+    return mockPilots.map((pilot) => ({ id: pilot.id, challenge_title: pilot.challenge_title, startup_name: pilot.startup_name, location: pilot.location, status: pilot.status, budget: pilot.budget, paid_to_date: pilot.paid_to_date, milestones_total: pilot.milestones.length, milestones_paid: pilot.milestones.filter((item) => item.status === "paid").length, security_status: pilot.security_status, risk_level: pilot.risk_level }));
+  }
+  return get("/pilots");
+};
+
+export const runSecurityCheck = async (id, checklist) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    const pilot = await getPilot(id);
+    const failed = Object.entries(checklist).filter(([, passed]) => !passed).map(([key]) => key);
+    const passed_count = Object.keys(checklist).length - failed.length;
+    const result = { pilot_id: pilot.id, security_status: failed.length ? "needs_remediation" : "passed", score: Number((passed_count / Object.keys(checklist).length * 100).toFixed(1)), passed_count, total_count: Object.keys(checklist).length, failed };
+    pilot.security_status = result.security_status;
+    pilot.security_checklist = { ...checklist };
+    return result;
+  }
+  return post(`/pilots/${id}/security-check`, checklist);
+};
+
+export const getRisks = async (id) => {
+  if (USE_MOCK) return [...(await getPilot(id)).risks];
+  return get(`/pilots/${id}/risks`);
+};
+
+export const addRisk = async (id, body) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    const pilot = await getPilot(id);
+    const risk = { id: pilot.risks.length + 1, ...body, probability: Number(body.probability), impact: Number(body.impact), score: Number(body.probability) * Number(body.impact) };
+    pilot.risks.push(risk);
+    const highest = Math.max(...pilot.risks.map((item) => item.score));
+    pilot.risk_level = highest >= 15 ? "high" : highest >= 8 ? "medium" : "low";
+    return risk;
+  }
+  return post(`/pilots/${id}/risks`, body);
+};
+
+export const getKpis = async (id) => {
+  if (USE_MOCK) return [...(await getPilot(id)).kpis];
+  return get(`/pilots/${id}/kpis`);
+};
+
+export const updateKpi = async (id, body) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 250));
+    const pilot = await getPilot(id);
+    const kpi = pilot.kpis.find((item) => item.id === Number(body.kpi_id));
+    if (!kpi) throw Object.assign(new Error("KPI not found"), { detail: "KPI not found", status: 404 });
+    kpi.achieved = Number(body.achieved);
+    const improvement = kpi.direction === "lower_is_better" ? (kpi.baseline - kpi.achieved) / Math.max(kpi.baseline - kpi.target, 0.0001) : (kpi.achieved - kpi.baseline) / Math.max(kpi.target - kpi.baseline, 0.0001);
+    kpi.achievement = Number(Math.max(0, Math.min(120, improvement * 100)).toFixed(1));
+    kpi.met = kpi.direction === "lower_is_better" ? kpi.achieved <= kpi.target : kpi.achieved >= kpi.target;
+    return kpi;
+  }
+  return post(`/pilots/${id}/kpis`, body);
 };
 
 /**

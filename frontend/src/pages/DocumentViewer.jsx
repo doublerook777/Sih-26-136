@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import DashboardLayout from "../components/DashboardLayout";
-import { documentUrl, getChallenge } from "../api/endpoints";
+import { documentUrl, getChallenge, getPilot } from "../api/endpoints";
 import { useAuth } from "../context/AuthContext";
 
 const USE_MOCK = import.meta.env.VITE_USE_MOCK === "true";
@@ -14,6 +14,10 @@ const SUPPORTED_DOC_TYPES = {
   eligibility_criteria: {
     title: "Eligibility Criteria",
     description: "Startup eligibility gates and mandatory screening rules",
+  },
+  pilot_agreement: {
+    title: "Pilot Agreement",
+    description: "Milestone-based pilot agreement covering scope, payment, data, and validation",
   },
 };
 
@@ -32,12 +36,12 @@ export default function DocumentViewer() {
   useEffect(() => {
     async function loadMetadata() {
       try {
-        const c = await getChallenge(id);
+        const c = activeDocType === "pilot_agreement" ? await getPilot(id) : await getChallenge(id);
         setChallenge(c);
 
         // In mock mode, construct HTML for iframe so VITE_USE_MOCK=true renders document
         if (USE_MOCK && isSupported) {
-          const title = c.title || "Innovation Pilot Challenge";
+          const title = c.title || c.challenge_title || "Innovation Pilot Challenge";
           const dept = c.department || "Municipal Administration";
           const district = c.district || "District A";
           const sector = (c.sector || "water").toUpperCase();
@@ -124,6 +128,9 @@ export default function DocumentViewer() {
                 </tr>
               </table>
             `;
+          } else if (activeDocType === "pilot_agreement") {
+            const milestoneRows = (c.milestones || []).map((milestone) => `<tr><td>${milestone.seq}</td><td>${milestone.title}</td><td>${milestone.deliverable}</td><td>INR ${Number(milestone.amount).toLocaleString("en-IN")}</td><td>${milestone.due_date}</td></tr>`).join("");
+            bodyContent = `<h1>Pilot Implementation Agreement</h1><h2>${title}</h2><div class="meta"><strong>Startup:</strong> ${c.startup_name} | <strong>Location:</strong> ${c.location} | <strong>Duration:</strong> ${c.duration_days} days | <strong>Budget:</strong> INR ${Number(c.budget).toLocaleString("en-IN")}</div><hr style="margin:20px 0;border:0;border-top:1px solid #ddd"/><h3>1. Objectives</h3><p>${c.objectives}</p><h3>2. Milestone-linked consideration</h3><table><thead><tr><th>Seq</th><th>Milestone</th><th>Deliverable</th><th>Amount</th><th>Due date</th></tr></thead><tbody>${milestoneRows}</tbody></table><h3>3. Validation and payment</h3><p>Each milestone payment is released only after evidence submission and independent validation. Rejected deliverables remain unpaid until corrected and approved.</p><h3>4. Data, security, and intellectual property</h3><p>The startup must follow the published security checklist, maintain auditable operational records, and provide exportable pilot data to the department. Pre-existing intellectual property remains with its owner; pilot outputs are licensed for government evaluation and approved public use.</p><h3>5. Acceptance</h3><p>This pilot remains outcome-based and does not guarantee scale-up procurement. Final procurement follows verified KPI performance, security clearance, and applicable public procurement rules.</p><div class="signature-grid"><div>For the Department<br/><br/><br/>Signature and date</div><div>For ${c.startup_name}<br/><br/><br/>Signature and date</div></div>`;
           }
 
           setMockHtml(`
@@ -143,6 +150,10 @@ export default function DocumentViewer() {
                   h1 { font-size: 24px; margin-bottom: 8px; color: #0e1730; }
                   h2 { font-size: 18px; margin-top: 0; color: #475569; font-weight: normal; }
                   .meta { color: #64748b; font-size: 14px; margin-bottom: 16px; }
+                  table { width: 100%; border-collapse: collapse; margin: 14px 0 24px; font-size: 13px; }
+                  th, td { border: 1px solid #d8dee8; padding: 8px; text-align: left; vertical-align: top; }
+                  th { background: #f5f7fa; }
+                  .signature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; margin-top: 56px; }
                   @media print {
                     body { padding: 0; }
                     .no-print { display: none; }
@@ -180,17 +191,17 @@ export default function DocumentViewer() {
     <DashboardLayout
       role={currentRole}
       title="Official Document Viewer"
-      subtitle={`Viewing legal procurement documentation for Challenge #${id}`}
+      subtitle={`Viewing official procurement documentation for entity #${id}`}
     >
       {/* Top navigation & action bar */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px", flexWrap: "wrap", gap: "12px" }}>
         <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
           <button
             type="button"
-            onClick={() => navigate(`/challenges/${id}`)}
+            onClick={() => navigate(activeDocType === "pilot_agreement" ? `/government/pilots/${id}` : `/challenges/${id}`)}
             className="btn btn-ghost"
           >
-            ← Back to Challenge
+            ← Back to {activeDocType === "pilot_agreement" ? "Pilot" : "Challenge"}
           </button>
 
           {/* Doc Type Selector */}
@@ -252,8 +263,7 @@ export default function DocumentViewer() {
             <div style={{ fontSize: "2.6rem", marginBottom: "12px" }}>📄</div>
             <h3>Document Type Unavailable</h3>
             <p>
-              The document type <code>{activeDocType}</code> is scheduled for Day 4 release and has not been wired yet.
-              Today, only <strong>problem_statement</strong> and <strong>eligibility_criteria</strong> are available.
+              The document type <code>{activeDocType}</code> is not available in this viewer.
             </p>
             <div style={{ display: "flex", gap: "10px", justifyContent: "center", marginTop: "16px" }}>
               <button
