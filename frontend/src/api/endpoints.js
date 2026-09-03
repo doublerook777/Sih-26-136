@@ -12,6 +12,64 @@ const USE_MOCK = import.meta.env.VITE_USE_MOCK === "true";
 // Mutable in-memory store for mock mode
 let mockChallenges = [...initialMockChallenges];
 let mockApplications = [...mockApplicationsList];
+let mockEvaluations = [];
+
+const MOCK_STARTUP_NAMES = [
+  "AquaSense Systems", "PipeAI Technologies", "HydroTrack Telemetry",
+  "BlueGrid Innovations", "CivicFlow Labs", "JalDrishti Analytics",
+  "LeakLens Technologies", "UrbanPulse Systems", "FlowGuard Labs",
+  "AquaMetric Works", "District Digital Works", "SensorSpring Labs",
+  "Waterline Intelligence", "PublicGrid Systems", "CivicNode Technologies",
+  "InfraSight Labs", "FieldSignal Systems", "Municipal Metrics",
+  "OpenUtility Labs", "ImpactMesh Technologies",
+];
+
+function buildMockDiscovery(challengeId) {
+  const existing = mockApplications.filter((item) => Number(item.challenge_id) === Number(challengeId));
+  if (existing.length >= 20) return existing;
+
+  const challenge = mockChallenges.find((item) => item.id === Number(challengeId));
+  const baseId = mockApplications.reduce((max, item) => Math.max(max, item.application_id || 0), 0) + 1;
+  const generated = MOCK_STARTUP_NAMES.map((name, index) => {
+    const source = mockStartups[index % mockStartups.length] || {};
+    const eligible = index < 14;
+    const score = eligible ? Number((94 - index * 2.15).toFixed(1)) : 0;
+    const failedGate = index % 3 === 0 ? "required_certification" : index % 3 === 1 ? "min_experience_years" : "technology_overlap";
+    const eligibility_report = {
+      registered_startup: { passed: true, note: source.dpiit_number || `DIPP${48000 + index}` },
+      required_certification: { passed: eligible || failedGate !== "required_certification", note: eligible || failedGate !== "required_certification" ? "Required certification present" : "Required certification is missing" },
+      min_experience_years: { passed: eligible || failedGate !== "min_experience_years", note: eligible || failedGate !== "min_experience_years" ? "Experience threshold met" : "1 year experience, needs 2" },
+      technology_overlap: { passed: eligible || failedGate !== "technology_overlap", note: eligible || failedGate !== "technology_overlap" ? "3 required technologies matched" : "No required technology matched" },
+      budget_within_range: { passed: true, note: "Quote is within the published budget" },
+      security_baseline: { passed: true, note: "Security baseline self-declared" },
+    };
+    return {
+      application_id: baseId + index,
+      challenge_id: Number(challengeId),
+      challenge_title: challenge?.title || "Procurement Challenge",
+      startup_id: 100 + index,
+      startup_name: name,
+      eligible,
+      eligibility_report,
+      match_score: score,
+      match_breakdown: {
+        technology_match: eligible ? Math.max(52, 96 - index * 2) : 0,
+        domain_experience: eligible ? Math.max(48, 91 - index * 2) : 0,
+        past_projects: eligible ? Math.max(45, 87 - index * 2) : 0,
+        eligibility: eligible ? 100 : 0,
+        cost_fit: eligible ? Math.max(58, 89 - index) : 0,
+        scalability: eligible ? Math.max(55, 92 - index * 2) : 0,
+      },
+      rubric_snapshot: { technology_match: 30, domain_experience: 20, past_projects: 15, eligibility: 15, cost_fit: 10, scalability: 10 },
+      explanation: eligible
+        ? `${name} is ranked for relevant technology capability, public-sector delivery readiness, and a quote aligned with the pilot budget.`
+        : `${name} remains visible for auditability but cannot advance until the failed eligibility gate is resolved.`,
+      status: "screened",
+    };
+  });
+  mockApplications = [...mockApplications.filter((item) => Number(item.challenge_id) !== Number(challengeId)), ...generated];
+  return generated;
+}
 
 /**
  * Base URL for document preview and assets
@@ -136,6 +194,48 @@ export const getChallenge = async (id) => {
 };
 
 export const getChallengeById = getChallenge;
+
+export const discoverStartups = async (challengeId) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 900));
+    return buildMockDiscovery(challengeId);
+  }
+  return post(`/challenges/${challengeId}/discover`);
+};
+
+export const getChallengeApplications = async (challengeId) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 120));
+    return mockApplications.filter((item) => Number(item.challenge_id) === Number(challengeId));
+  }
+  return get(`/challenges/${challengeId}/applications`);
+};
+
+export const shortlistApplication = async (applicationId) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 180));
+    const application = mockApplications.find((item) => item.application_id === Number(applicationId));
+    if (!application) throw Object.assign(new Error("Application not found"), { detail: "Application not found", status: 404 });
+    application.status = "shortlisted";
+    return { application_id: application.application_id, status: application.status };
+  }
+  return post(`/applications/${applicationId}/shortlist`);
+};
+
+export const selectApplication = async (applicationId) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 180));
+    const selected = mockApplications.find((item) => item.application_id === Number(applicationId));
+    if (!selected) throw Object.assign(new Error("Application not found"), { detail: "Application not found", status: 404 });
+    mockApplications.forEach((item) => {
+      if (item.challenge_id === selected.challenge_id) item.status = item.application_id === selected.application_id ? "selected" : "rejected";
+    });
+    const challenge = mockChallenges.find((item) => item.id === selected.challenge_id);
+    if (challenge) challenge.status = "selected";
+    return { application_id: selected.application_id, status: "selected", challenge_status: "selected" };
+  }
+  return post(`/applications/${applicationId}/select`);
+};
 
 export const createChallenge = async (body) => {
   if (USE_MOCK) {
@@ -306,6 +406,47 @@ export const getMyApplications = async () => {
     }
     throw err;
   }
+};
+
+export const getApplication = async (applicationId) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 80));
+    const item = mockApplications.find((application) => application.application_id === Number(applicationId));
+    if (!item) throw Object.assign(new Error("Application not found"), { detail: "Application not found", status: 404 });
+    return item;
+  }
+  return get(`/applications/${applicationId}`);
+};
+
+export const submitEvaluation = async (body) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 650));
+    const rubric = mockRubrics.find((item) => item.kind === "evaluation" && item.is_default) || mockRubrics.find((item) => item.kind === "evaluation");
+    const weighted_total = Number(rubric.criteria.reduce((total, criterion) => total + body.scores[criterion.key] * criterion.weight / 100, 0).toFixed(1));
+    const record = {
+      id: mockEvaluations.length + 1,
+      application_id: Number(body.application_id),
+      expert_id: mockEvaluations.length + 4,
+      expert_name: `Demo Expert ${mockEvaluations.length + 1}`,
+      scores: body.scores,
+      weighted_total,
+      rubric_snapshot: rubric.weights,
+      comments: body.comments,
+      submitted_at: new Date().toISOString(),
+    };
+    mockEvaluations.push(record);
+    return record;
+  }
+  return post("/evaluations", body);
+};
+
+export const getEvaluations = async (applicationId) => {
+  if (USE_MOCK) {
+    const evaluations = mockEvaluations.filter((item) => item.application_id === Number(applicationId));
+    const average_total = evaluations.length ? Number((evaluations.reduce((sum, item) => sum + item.weighted_total, 0) / evaluations.length).toFixed(1)) : 0;
+    return { application_id: Number(applicationId), average_total, evaluation_count: evaluations.length, evaluations };
+  }
+  return get("/evaluations", { application_id: applicationId });
 };
 
 /**

@@ -7,6 +7,7 @@ const roleNav = {
     ["Create Challenge", "/government/create"],
     ["Challenges", "/government/challenges"],
     ["AI Recommendations", "/government/recommendations"],
+    ["Rubric Library", "/government/rubrics"],
     ["Pilot Dashboard", "/government/pilot"],
   ],
   startup: [
@@ -29,6 +30,7 @@ const roleNav = {
   admin: [
     ["Overview", "/government"],
     ["Create Challenge", "/government/create"],
+    ["Rubric Library", "/government/rubrics"],
   ],
 };
 

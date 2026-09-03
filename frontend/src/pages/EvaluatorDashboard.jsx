@@ -1,71 +1,11 @@
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import DashboardLayout from "../components/DashboardLayout";
 import Badge from "../components/Badge";
-import { evaluations } from "../data/mockData";
+import { getChallengeApplications, getChallenges } from "../api/endpoints";
 
 export default function EvaluatorDashboard() {
-  return (
-    <DashboardLayout
-      role="evaluator"
-      title="Evaluator Dashboard"
-      subtitle="Review proposals using transparent, predefined scoring criteria."
-    >
-      <div className="review-table-wrap">
-        <table className="review-table">
-          <thead>
-            <tr>
-              <th>Startup</th>
-              <th>Challenge</th>
-              <th>Status</th>
-              <th>Innovation</th>
-              <th>Feasibility</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {evaluations.map((item, idx) => (
-              <tr key={idx}>
-                <td><strong>{item.startup}</strong></td>
-                <td>{item.challenge}</td>
-                <td>
-                  <Badge tone={item.status === "Completed" ? "green" : "amber"}>
-                    {item.status}
-                  </Badge>
-                </td>
-                <td>{item.status === "Completed" ? "8/10" : "—"}</td>
-                <td>{item.status === "Completed" ? "9/10" : "—"}</td>
-                <td><button className="btn btn-soft">Review</button></td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <section className="panel evaluator-card">
-        <p className="eyebrow">Scoring framework</p>
-        <h2>Example evaluation</h2>
-
-        {[
-          ["Innovation", 8],
-          ["Technical feasibility", 9],
-          ["Scalability", 8],
-          ["Cost effectiveness", 7],
-          ["Expected impact", 9],
-        ].map(([label, value]) => (
-          <div className="score-row" key={label}>
-            <span>{label}</span>
-            <div className="score-input">
-              {[1,2,3,4,5,6,7,8,9,10].map((n) => (
-                <button key={n} className={n === value ? "selected" : ""}>{n}</button>
-              ))}
-            </div>
-          </div>
-        ))}
-
-        <div className="total-score">
-          <span>Calculated score</span>
-          <strong>82 / 100</strong>
-        </div>
-      </section>
-    </DashboardLayout>
-  );
+  const [items, setItems] = useState([]); const [loading, setLoading] = useState(true); const [error, setError] = useState("");
+  useEffect(() => { let active = true; (async () => { try { const challenges = await getChallenges(); const groups = await Promise.all((Array.isArray(challenges) ? challenges : []).map(async (challenge) => { const applications = await getChallengeApplications(challenge.id); return (Array.isArray(applications) ? applications : []).filter((item) => ["shortlisted", "evaluated"].includes(item.status)).map((item) => ({ ...item, challenge_title: challenge.title, challenge_id: challenge.id })); })); if (active) setItems(groups.flat()); } catch (err) { if (active) setError(err.detail || err.message || "Unable to load shortlisted applications"); } finally { if (active) setLoading(false); } })(); return () => { active = false; }; }, []);
+  return <DashboardLayout role="evaluator" title="Evaluator Dashboard" subtitle="Review shortlisted proposals using the challenge's predefined rubric.">{loading ? <div className="state-message">Loading shortlisted applications…</div> : error ? <div className="state-message state-error" role="alert">{error}</div> : items.length === 0 ? <div className="state-message">No shortlisted applications are ready for review.</div> : <div className="review-table-wrap"><table className="review-table"><thead><tr><th>Startup</th><th>Challenge</th><th>Eligibility</th><th>Match</th><th>Status</th><th>Action</th></tr></thead><tbody>{items.map((item) => <tr key={item.application_id}><td><strong>{item.startup_name}</strong></td><td>{item.challenge_title}</td><td><Badge tone={item.eligible ? "green" : "amber"}>{item.eligible ? "Passed" : "Failed"}</Badge></td><td>{Number(item.match_score || 0).toFixed(1)}</td><td><Badge tone={item.status === "evaluated" ? "green" : "blue"}>{item.status}</Badge></td><td><Link className="btn btn-soft" to={`/evaluator/applications/${item.application_id}/evaluate?challenge_id=${item.challenge_id}`}>{item.status === "evaluated" ? "Evaluate again" : "Review"}</Link></td></tr>)}</tbody></table></div>}</DashboardLayout>;
 }
