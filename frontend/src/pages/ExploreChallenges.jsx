@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import DashboardLayout from "../components/DashboardLayout";
 import ChallengeCard from "../components/ChallengeCard";
-import { getChallenges } from "../api/endpoints";
+import ApplyModal from "../components/ApplyModal";
+import { getChallenges, getMyApplications } from "../api/endpoints";
 
 export default function ExploreChallenges() {
   const [challenges, setChallenges] = useState([]);
@@ -11,6 +12,11 @@ export default function ExploreChallenges() {
   const [searchTerm, setSearchTerm] = useState("");
   const [sectorFilter, setSectorFilter] = useState("all");
   const [budgetFilter, setBudgetFilter] = useState("all");
+
+  // Apply modal state
+  const [selectedChallengeForApply, setSelectedChallengeForApply] = useState(null);
+  const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
+  const [appliedChallengeIds, setAppliedChallengeIds] = useState(new Set());
 
   const fetchChallengesList = async () => {
     setLoading(true);
@@ -22,6 +28,16 @@ export default function ExploreChallenges() {
       }
       const data = await getChallenges(params);
       setChallenges(Array.isArray(data) ? data : []);
+
+      // Also fetch user's applications to highlight already applied challenges
+      try {
+        const apps = await getMyApplications();
+        if (Array.isArray(apps)) {
+          setAppliedChallengeIds(new Set(apps.map((a) => Number(a.challenge_id))));
+        }
+      } catch {
+        // Non-blocking
+      }
     } catch (err) {
       setError(err.detail || err.message || "Failed to load challenges");
     } finally {
@@ -52,6 +68,17 @@ export default function ExploreChallenges() {
 
     return matchesSearch && matchesBudget;
   });
+
+  const handleOpenApply = (challenge) => {
+    setSelectedChallengeForApply(challenge);
+    setIsApplyModalOpen(true);
+  };
+
+  const handleApplySuccess = (newApp) => {
+    if (newApp && newApp.challenge_id) {
+      setAppliedChallengeIds((prev) => new Set([...prev, Number(newApp.challenge_id)]));
+    }
+  };
 
   return (
     <DashboardLayout
@@ -136,9 +163,21 @@ export default function ExploreChallenges() {
               key={challenge.id}
               challenge={challenge}
               startupView
+              onApply={handleOpenApply}
+              hasApplied={appliedChallengeIds.has(Number(challenge.id))}
             />
           ))}
         </div>
+      )}
+
+      {/* Apply Modal */}
+      {selectedChallengeForApply && (
+        <ApplyModal
+          challenge={selectedChallengeForApply}
+          isOpen={isApplyModalOpen}
+          onClose={() => setIsApplyModalOpen(false)}
+          onSuccess={handleApplySuccess}
+        />
       )}
     </DashboardLayout>
   );

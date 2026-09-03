@@ -257,3 +257,386 @@ export const evaluations = [
   { startup: "PipeAI Technologies", challenge: "Reduce Municipal Water Leakage in Distribution Networks", status: "pending" },
   { startup: "MedQueue Solutions", challenge: "AI-Based Hospital OPD Queue and Patient Triage Management", status: "evaluated" }
 ];
+
+export const rubrics = [
+  {
+    id: 1,
+    name: "Default (PS baseline)",
+    kind: "match",
+    version: 1,
+    is_default: true,
+    active: true,
+    weights: {
+      technology_match: 30,
+      domain_experience: 20,
+      past_projects: 15,
+      eligibility: 15,
+      cost_fit: 10,
+      scalability: 10
+    },
+    criteria: [
+      {
+        key: "technology_match",
+        label: "Technology match",
+        weight: 30,
+        help: "Overlap between the challenge's required technologies and the startup's tech_tags."
+      },
+      {
+        key: "domain_experience",
+        label: "Domain experience",
+        weight: 20,
+        help: "How closely the startup's sector matches the challenge's sector."
+      },
+      {
+        key: "past_projects",
+        label: "Past projects",
+        weight: 15,
+        help: "Number and relevance of the startup's prior deployments in this sector."
+      },
+      {
+        key: "eligibility",
+        label: "Eligibility",
+        weight: 15,
+        help: "Score from the eligibility gate checks, 100 if all six passed."
+      },
+      {
+        key: "cost_fit",
+        label: "Cost fit",
+        weight: 10,
+        help: "How closely the startup's quote fits within the challenge budget."
+      },
+      {
+        key: "scalability",
+        label: "Scalability",
+        weight: 10,
+        help: "Team size and prior deployment count as a proxy for scale-up capacity."
+      }
+    ]
+  },
+  {
+    id: 2,
+    name: "Infrastructure / IoT",
+    kind: "match",
+    version: 1,
+    is_default: false,
+    active: true,
+    weights: {
+      technology_match: 35,
+      domain_experience: 15,
+      past_projects: 15,
+      eligibility: 15,
+      cost_fit: 5,
+      scalability: 15
+    },
+    criteria: [
+      {
+        key: "technology_match",
+        label: "Technology match",
+        weight: 35,
+        help: "Overlap between required technologies and the startup's tech_tags. Weighted higher for hardware-heavy IoT deployments."
+      },
+      {
+        key: "domain_experience",
+        label: "Domain experience",
+        weight: 15,
+        help: "How closely the startup's sector matches the challenge's sector."
+      },
+      {
+        key: "past_projects",
+        label: "Past projects",
+        weight: 15,
+        help: "Number and relevance of the startup's prior deployments in this sector."
+      },
+      {
+        key: "eligibility",
+        label: "Eligibility",
+        weight: 15,
+        help: "Score from the eligibility gate checks, 100 if all six passed."
+      },
+      {
+        key: "cost_fit",
+        label: "Cost fit",
+        weight: 5,
+        help: "How closely the startup's quote fits within the challenge budget. Lower weight, since infrastructure pilots tolerate cost variance more."
+      },
+      {
+        key: "scalability",
+        label: "Scalability",
+        weight: 15,
+        help: "Team size and prior deployment count. Weighted higher, since IoT rollouts need to scale across many sites."
+      }
+    ]
+  },
+  {
+    id: 3,
+    name: "Healthcare",
+    kind: "match",
+    version: 1,
+    is_default: false,
+    active: true,
+    weights: {
+      technology_match: 25,
+      domain_experience: 20,
+      past_projects: 25,
+      eligibility: 15,
+      cost_fit: 5,
+      scalability: 10
+    },
+    criteria: [
+      {
+        key: "technology_match",
+        label: "Technology match",
+        weight: 25,
+        help: "Overlap between required technologies and the startup's tech_tags."
+      },
+      {
+        key: "domain_experience",
+        label: "Domain experience",
+        weight: 20,
+        help: "How closely the startup's sector matches the challenge's sector."
+      },
+      {
+        key: "past_projects",
+        label: "Past projects",
+        weight: 25,
+        help: "Weighted higher for healthcare, prior clinical or hospital deployments matter more than raw tech fit."
+      },
+      {
+        key: "eligibility",
+        label: "Eligibility",
+        weight: 15,
+        help: "Score from the eligibility gate checks, 100 if all six passed."
+      },
+      {
+        key: "cost_fit",
+        label: "Cost fit",
+        weight: 5,
+        help: "How closely the startup's quote fits within the challenge budget. Lower weight, patient outcomes matter more than cost here."
+      },
+      {
+        key: "scalability",
+        label: "Scalability",
+        weight: 10,
+        help: "Team size and prior deployment count as a proxy for scale-up capacity."
+      }
+    ]
+  },
+  {
+    id: 4,
+    name: "Low-budget municipal",
+    kind: "match",
+    version: 1,
+    is_default: false,
+    active: true,
+    weights: {
+      technology_match: 25,
+      domain_experience: 15,
+      past_projects: 10,
+      eligibility: 15,
+      cost_fit: 25,
+      scalability: 10
+    },
+    criteria: [
+      {
+        key: "technology_match",
+        label: "Technology match",
+        weight: 25,
+        help: "Overlap between required technologies and the startup's tech_tags."
+      },
+      {
+        key: "domain_experience",
+        label: "Domain experience",
+        weight: 15,
+        help: "How closely the startup's sector matches the challenge's sector."
+      },
+      {
+        key: "past_projects",
+        label: "Past projects",
+        weight: 10,
+        help: "Number and relevance of the startup's prior deployments. Lower weight, smaller municipalities have less prior work to point to."
+      },
+      {
+        key: "eligibility",
+        label: "Eligibility",
+        weight: 15,
+        help: "Score from the eligibility gate checks, 100 if all six passed."
+      },
+      {
+        key: "cost_fit",
+        label: "Cost fit",
+        weight: 25,
+        help: "How closely the startup's quote fits within the challenge budget. Weighted highest, since a tight municipal budget is the binding constraint."
+      },
+      {
+        key: "scalability",
+        label: "Scalability",
+        weight: 10,
+        help: "Team size and prior deployment count as a proxy for scale-up capacity."
+      }
+    ]
+  },
+  {
+    id: 5,
+    name: "Default expert panel",
+    kind: "evaluation",
+    version: 1,
+    is_default: true,
+    active: true,
+    weights: {
+      technical_feasibility: 25,
+      innovation: 15,
+      cost_effectiveness: 15,
+      scalability: 15,
+      security: 10,
+      implementation_capability: 10,
+      social_impact: 10
+    },
+    criteria: [
+      {
+        key: "technical_feasibility",
+        label: "Technical feasibility",
+        weight: 25,
+        help: "Can this actually be built and deployed within the pilot timeline?"
+      },
+      {
+        key: "innovation",
+        label: "Innovation",
+        weight: 15,
+        help: "How novel is the approach compared to existing solutions in this space?"
+      },
+      {
+        key: "cost_effectiveness",
+        label: "Cost effectiveness",
+        weight: 15,
+        help: "Value delivered per rupee against the proposed budget."
+      },
+      {
+        key: "scalability",
+        label: "Scalability",
+        weight: 15,
+        help: "Can this be replicated across other districts without redesign?"
+      },
+      {
+        key: "security",
+        label: "Security",
+        weight: 10,
+        help: "Does the proposal meet baseline data protection and cybersecurity expectations?"
+      },
+      {
+        key: "implementation_capability",
+        label: "Implementation capability",
+        weight: 10,
+        help: "Does the team have the experience and capacity to execute this pilot?"
+      },
+      {
+        key: "social_impact",
+        label: "Social impact",
+        weight: 10,
+        help: "Expected benefit to end users and the public if the pilot succeeds."
+      }
+    ]
+  },
+  {
+    id: 6,
+    name: "Security-weighted panel",
+    kind: "evaluation",
+    version: 1,
+    is_default: false,
+    active: true,
+    weights: {
+      technical_feasibility: 20,
+      innovation: 10,
+      cost_effectiveness: 15,
+      scalability: 15,
+      security: 25,
+      implementation_capability: 10,
+      social_impact: 5
+    },
+    criteria: [
+      {
+        key: "technical_feasibility",
+        label: "Technical feasibility",
+        weight: 20,
+        help: "Can this actually be built and deployed within the pilot timeline?"
+      },
+      {
+        key: "innovation",
+        label: "Innovation",
+        weight: 10,
+        help: "How novel is the approach compared to existing solutions in this space?"
+      },
+      {
+        key: "cost_effectiveness",
+        label: "Cost effectiveness",
+        weight: 15,
+        help: "Value delivered per rupee against the proposed budget."
+      },
+      {
+        key: "scalability",
+        label: "Scalability",
+        weight: 15,
+        help: "Can this be replicated across other districts without redesign?"
+      },
+      {
+        key: "security",
+        label: "Security",
+        weight: 25,
+        help: "Weighted highest, for challenges handling sensitive citizen data (health records, biometric, financial)."
+      },
+      {
+        key: "implementation_capability",
+        label: "Implementation capability",
+        weight: 10,
+        help: "Does the team have the experience and capacity to execute this pilot?"
+      },
+      {
+        key: "social_impact",
+        label: "Social impact",
+        weight: 5,
+        help: "Expected benefit to end users. Lower weight here, security compliance is the gating concern for this panel."
+      }
+    ]
+  }
+];
+
+export const mockApplicationsList = [
+  {
+    application_id: 14,
+    challenge_id: 1,
+    challenge_title: "Reduce Municipal Water Leakage in Distribution Networks",
+    challenge_sector: "water",
+    startup_id: 3,
+    startup_name: "AquaSense",
+    quote: 850000,
+    pitch: "We deploy real-time acoustic sensors and IoT pressure transducers with predictive leak mapping.",
+    eligible: true,
+    eligibility_report: {
+      registered_startup: { passed: true, note: "DIPP12345" },
+      required_certification: { passed: true, note: "ISO 9001:2015 present" },
+      min_experience_years: { passed: true, note: "4 years, needs 2" },
+      technology_overlap: { passed: true, note: "3 of 3 matched" },
+      budget_within_range: { passed: true, note: "quote 8.5L of 10L" },
+      security_baseline: { passed: true, note: "self-declared" }
+    },
+    match_score: 91.2,
+    match_breakdown: {
+      technology_match: 94.0,
+      domain_experience: 90.0,
+      past_projects: 85.0,
+      eligibility: 100.0,
+      cost_fit: 80.0,
+      scalability: 92.0
+    },
+    rubric_snapshot: {
+      technology_match: 30,
+      domain_experience: 20,
+      past_projects: 15,
+      eligibility: 15,
+      cost_fit: 10,
+      scalability: 10
+    },
+    explanation: "Recommended because the startup has IoT expertise, municipal infrastructure experience and two previous water-management deployments.",
+    status: "applied",
+    applied_at: "2026-08-30T10:00:00Z"
+  }
+];

@@ -8,9 +8,13 @@ import GovernmentDashboard from "./pages/GovernmentDashboard";
 import CreateChallenge from "./pages/CreateChallenge";
 import Recommendations from "./pages/Recommendations";
 import PilotDashboard from "./pages/PilotDashboard";
+import ChallengeList from "./pages/ChallengeList";
+import ChallengeDetail from "./pages/ChallengeDetail";
 import StartupDashboard from "./pages/StartupDashboard";
 import ExploreChallenges from "./pages/ExploreChallenges";
+import MyApplications from "./pages/MyApplications";
 import EvaluatorDashboard from "./pages/EvaluatorDashboard";
+import DocumentViewer from "./pages/DocumentViewer";
 import Placeholder from "./pages/Placeholder";
 
 export default function App() {
@@ -39,6 +43,22 @@ export default function App() {
           }
         />
         <Route
+          path="/government/challenges"
+          element={
+            <ProtectedRoute allowedRoles={["government", "admin"]}>
+              <ChallengeList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/government/challenges/:id"
+          element={
+            <ProtectedRoute allowedRoles={["government", "admin"]}>
+              <ChallengeDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/government/recommendations"
           element={
             <ProtectedRoute allowedRoles={["government", "admin"]}>
@@ -51,14 +71,6 @@ export default function App() {
           element={
             <ProtectedRoute allowedRoles={["government", "admin"]}>
               <PilotDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/government/challenges"
-          element={
-            <ProtectedRoute allowedRoles={["government", "admin"]}>
-              <Placeholder role="government" title="Challenges" />
             </ProtectedRoute>
           }
         />
@@ -84,7 +96,25 @@ export default function App() {
           path="/startup/applications"
           element={
             <ProtectedRoute allowedRoles={["startup"]}>
-              <Placeholder role="startup" title="My Applications" />
+              <MyApplications />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Shared Challenge Detail and Document Viewer Routes */}
+        <Route
+          path="/challenges/:id"
+          element={
+            <ProtectedRoute allowedRoles={["government", "startup", "expert", "validator", "admin"]}>
+              <ChallengeDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/documents/:docType/:id"
+          element={
+            <ProtectedRoute allowedRoles={["government", "startup", "expert", "validator", "admin"]}>
+              <DocumentViewer />
             </ProtectedRoute>
           }
         />
@@ -106,7 +136,12 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-      <Route path="*" element={<div style={{ padding: "40px", textAlign: "center" }}>Page not found</div>} />
+
+        {/* Fallback 404 Route */}
+        <Route
+          path="*"
+          element={<div style={{ padding: "40px", textAlign: "center" }}>Page not found</div>}
+        />
       </Routes>
     </AuthProvider>
   );
