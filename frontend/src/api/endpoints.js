@@ -68,15 +68,16 @@ export const getMe = async () => {
  * Rubrics Endpoints (Section 2)
  */
 export const getRubrics = async (kind) => {
+  const kindVal = typeof kind === "object" && kind !== null ? kind.kind : kind;
   if (USE_MOCK) {
     await new Promise((resolve) => setTimeout(resolve, 100));
-    return kind ? mockRubrics.filter((r) => r.kind === kind) : mockRubrics;
+    return kindVal ? mockRubrics.filter((r) => r.kind === kindVal) : mockRubrics;
   }
   try {
-    return await get("/rubrics", kind ? { kind } : undefined);
+    return await get("/rubrics", kindVal ? { kind: kindVal } : undefined);
   } catch (err) {
     if (err.status === 404) {
-      return kind ? mockRubrics.filter((r) => r.kind === kind) : mockRubrics;
+      return kindVal ? mockRubrics.filter((r) => r.kind === kindVal) : mockRubrics;
     }
     throw err;
   }

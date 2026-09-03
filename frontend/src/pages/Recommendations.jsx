@@ -20,7 +20,7 @@ export default function Recommendations() {
 
       <section className="recommendation-list">
         {startups.map((startup, index) => {
-          const matchScore = startup.match_score || startup.match || 90;
+          const match_score = startup.match_score || 90;
           const techList = startup.technologies || startup.tech || [];
           return (
             <article className="startup-result" key={startup.id}>
@@ -32,7 +32,7 @@ export default function Recommendations() {
                     <p className="muted">{startup.description}</p>
                   </div>
                   <div className="match-score">
-                    <strong>{matchScore}%</strong>
+                    <strong>{match_score}%</strong>
                     <small>AI match</small>
                   </div>
                 </div>
