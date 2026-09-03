@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Milestone Technical Validation & Audit Inspection Report — {{ challenge.title | default(pilot.challenge_title | default('Validation Report')) }}{% endblock %}
+
+{% block department %}{{ challenge.department | default(pilot.department | default('Department of Urban Water Supply')) }}{% endblock %}
+{% block district %}{{ pilot.location | default(challenge.district | default('District A')) }}{% endblock %}
+{% block doc_badge %}Independent Technical Validator Milestone Inspection Report{% endblock %}
+
+{% block doc_ref %}DOC-VAL-REP-{{ pilot.id | default('001') }}-M{{ milestone.seq | default('1') }}{% endblock %}
+
+{% block extra_meta %}
+<tr>
+  <td class="doc-meta-label">Associated Pilot:</td>
+  <td class="doc-meta-value"><strong>PILOT-{{ pilot.id | default('001') }}</strong></td>
+  <td class="doc-meta-label">Target Milestone:</td>
+  <td class="doc-meta-value"><strong>Milestone {{ milestone.seq | default(1) }}: {{ milestone.title | default('Prototype & Telemetry Setup') }}</strong></td>
+</tr>
+<tr>
+  <td class="doc-meta-label">Empanelled Validator:</td>
+  <td class="doc-meta-value"><strong>{{ validator_name | default(validation.validator_name | default('N Sharma (Independent Technical Validator)')) }}</strong></td>
+  <td class="doc-meta-label">Inspection Date:</td>
+  <td class="doc-meta-value">{{ validation.validated_at | default(generated_at | default('2026-09-19')) }}</td>
+</tr>
+{% endblock %}
+
+{% block content %}
+{% set val = validation | default(milestone.validation | default({'verdict': 'approved', 'claimed_value': 25, 'verified_value': 22, 'notes': 'Sampled 12 of 40 sensor nodes in Zone 3. Pressure drop alerts triggered within 45 minutes.', 'validator_name': 'N Sharma'})) %}
+{% set is_approved = (val.verdict | default('approved')) == 'approved' %}
+
+<div style="margin: 20px 0; padding: 15px; border-radius: 6px; background: {% if is_approved %}#f0fdf4; border: 1px solid #86efac; color: #166534;{% else %}#fef2f2; border: 1px solid #fca5a5; color: #991b1b;{% endif %} text-align: center;">
+  <span style="font-size: 13px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.1em;">Official Validator Verdict:</span>
+  <br>
+  <strong style="font-size: 22px;">{% if is_approved %}✓ MILESTONE VERIFIED & APPROVED FOR PAYMENT{% else %}✗ MILESTONE REJECTED (REMEDIATION REQUIRED){% endif %}</strong>
+</div>
+
+<h2 class="section-heading">1. Deliverable Verification Audit</h2>
+<table class="doc-meta-table" style="margin-top: 15px; margin-bottom: 25px;">
+  <tbody>
+    <tr>
+      <td class="doc-meta-label" style="width: 30%;">Milestone Deliverable:</td>
+      <td class="doc-meta-value">{{ milestone.deliverable | default('40-node sensor prototype deployed and calibrated in Zone 3') }}</td>
+    </tr>
+    <tr>
+      <td class="doc-meta-label">Startup Claimed Metric:</td>
+      <td class="doc-meta-value"><strong>{{ val.claimed_value | default('25') }}</strong> (as submitted by startup)</td>
+    </tr>
+    <tr>
+      <td class="doc-meta-label">Independently Verified Metric:</td>
+      <td class="doc-meta-value"><strong style="color: #1e3a8a;">{{ val.verified_value | default('22') }}</strong> (verified via digital telemetry sampling)</td>
+    </tr>
+    <tr>
+      <td class="doc-meta-label">Disbursement Authorization:</td>
+      <td class="doc-meta-value">
+        {% if is_approved %}
+          <span style="color: #166534; font-weight: bold;">₹{{ "{:,}".format(milestone.amount | default(200000)) }} approved for digital escrow release</span>
+        {% else %}
+          <span style="color: #dc2626; font-weight: bold;">Payment tranche withheld pending remediation</span>
+        {% endif %}
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 class="section-heading">2. Validator Findings & Inspection Notes</h2>
+<p class="section-body" style="background: #f9fafb; padding: 15px; border: 1px solid #e5e7eb; border-radius: 4px;">
+  "{{ val.notes | default('Conducted on-site sampling of 12 sensor nodes in Zone 3 distribution network. Telemetry packet arrival latency verified at under 2.5 seconds. Continuous data logging maintained for 14 calendar days without loss of signal. Recommended for tranche release.') }}"
+</p>
+{% endblock %}

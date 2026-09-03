@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Post-Pilot Statutory Procurement Pathway Recommendation — {{ challenge.title | default(pilot.challenge_title | default('Procurement Pathway')) }}{% endblock %}
+
+{% block department %}{{ challenge.department | default(pilot.department | default('Department of Urban Water Supply')) }}{% endblock %}
+{% block district %}{{ pilot.location | default(challenge.district | default('District A')) }}{% endblock %}
+{% block doc_badge %}Post-Pilot Statutory Procurement Vehicle Recommendation{% endblock %}
+
+{% block doc_ref %}DOC-PROC-REC-{{ pilot.id | default('001') }}{% endblock %}
+
+{% block extra_meta %}
+<tr>
+  <td class="doc-meta-label">Associated Pilot:</td>
+  <td class="doc-meta-value"><strong>PILOT-{{ pilot.id | default('001') }}</strong> (Final Score: <strong>{{ pilot.final_score | default('92.9') }}/100</strong>)</td>
+  <td class="doc-meta-label">Target Procurement Pathway:</td>
+  <td class="doc-meta-value"><strong style="color: #1e3a8a;">GeM Direct Award (Rule 149 / Innovation Exemption)</strong></td>
+</tr>
+<tr>
+  <td class="doc-meta-label">Selected Startup:</td>
+  <td class="doc-meta-value"><strong>{{ startup.name | default(pilot.startup_name | default('AquaSense Systems')) }}</strong></td>
+  <td class="doc-meta-label">Evaluation Determination:</td>
+  <td class="doc-meta-value"><span style="display: inline-block; background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 4px; font-weight: bold;">SCALE (Score &ge; 85.0)</span></td>
+</tr>
+{% endblock %}
+
+{% block content %}
+<h2 class="section-heading">1. Statutory Procurement Pathway Determination</h2>
+<p class="section-body">
+  Following the successful completion of innovation pilot <strong>PILOT-{{ pilot.id | default('001') }}</strong> with a verified final composite score of <strong>{{ pilot.final_score | default('92.9') }} / 100</strong>, the Evaluation Committee recommends proceeding with commercial procurement under the following statutory channel:
+</p>
+
+<table class="doc-meta-table" style="margin-top: 15px; margin-bottom: 25px;">
+  <tbody>
+    <tr>
+      <td class="doc-meta-label" style="width: 30%;">Recommended Procurement Route:</td>
+      <td class="doc-meta-value"><strong>Government e-Marketplace (GeM) Startup Runway Direct Purchase</strong></td>
+    </tr>
+    <tr>
+      <td class="doc-meta-label">Statutory Authorization:</td>
+      <td class="doc-meta-value">General Financial Rules (GFR 2017) Rule 149 & DPIIT Startup Public Procurement Exemption (Rule 173)</td>
+    </tr>
+    <tr>
+      <td class="doc-meta-label">Estimated Commercial Scale:</td>
+      <td class="doc-meta-value">₹45,00,000 (Covering 3 adjoining municipal districts: District A, District B, District C)</td>
+    </tr>
+    <tr>
+      <td class="doc-meta-label">Technical Justification:</td>
+      <td class="doc-meta-value">Proprietary proven technology meeting 100% of validated KPI benchmarks with zero unresolved cybersecurity vulnerabilities.</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 class="section-heading">2. Statewide Replication Strategy</h2>
+<p class="section-body">
+  Standardized deployment templates, telemetry interfaces, and KPI benchmarks established during this pilot shall be cloned directly across participating district urban authorities.
+</p>
+{% endblock %}

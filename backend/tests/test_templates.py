@@ -258,3 +258,128 @@ def test_risk_register_template_renders(jinja_env):
     assert "12" in rendered
 
 
+def test_scale_up_decision_template_renders_centerpiece(jinja_env):
+    template = jinja_env.get_template("scale_up_decision.html")
+
+    pilot = {
+        "id": 1,
+        "challenge_title": "Reduce municipal water leakage",
+        "startup_name": "AquaSense Systems",
+        "location": "District A",
+        "department": "Urban Water Supply",
+        "decision": "scale",
+        "final_score": 92.9,
+    }
+    challenge = {"id": 1, "title": "Reduce municipal water leakage", "department": "Urban Water Supply"}
+    startup = {"id": 3, "name": "AquaSense Systems"}
+    cat_scores = {"technical": 79.0, "cost": 87.0, "impact": 120.0, "scalability": 89.0, "security": 96.0}
+
+    rendered = template.render(
+        pilot=pilot,
+        challenge=challenge,
+        startup=startup,
+        decision="scale",
+        final_score=92.9,
+        category_scores=cat_scores,
+        justification="Exceeded impact target with score 120.0%, achieved technical reliability of 79.0%.",
+    )
+
+    assert "Statutory Scale-Up Decision & Final Evaluation Order" in rendered
+    assert "APPROVED FOR REPLICATION & SCALE" in rendered
+    assert "92.9 / 100" in rendered
+    assert "79.0" in rendered
+    assert "120.0" in rendered
+    assert "96.0" in rendered
+
+
+def test_validation_report_template_renders(jinja_env):
+    template = jinja_env.get_template("validation_report.html")
+
+    pilot = {"id": 1, "challenge_title": "Reduce municipal water leakage", "location": "District A"}
+    challenge = {"id": 1, "title": "Reduce municipal water leakage", "department": "Urban Water Supply"}
+    milestone = {"seq": 1, "title": "Prototype", "deliverable": "40-node sensor prototype", "amount": 200000}
+    validation = {
+        "verdict": "approved",
+        "claimed_value": 25,
+        "verified_value": 22,
+        "validator_name": "N Sharma",
+        "notes": "Sampled 12 of 40 sensor nodes in Zone 3.",
+    }
+
+    rendered = template.render(
+        pilot=pilot,
+        challenge=challenge,
+        milestone=milestone,
+        validation=validation,
+        validator_name="N Sharma",
+    )
+
+    assert "Milestone Technical Validation & Audit Inspection Report" in rendered
+    assert "APPROVED FOR PAYMENT" in rendered
+    assert "N Sharma" in rendered
+    assert "200,000" in rendered
+    assert "22" in rendered
+
+
+def test_payment_approval_template_renders(jinja_env):
+    template = jinja_env.get_template("payment_approval.html")
+
+    pilot = {"id": 1, "challenge_title": "Reduce municipal water leakage", "location": "District A"}
+    challenge = {"id": 1, "title": "Reduce municipal water leakage", "department": "Urban Water Supply"}
+    startup = {"id": 3, "name": "AquaSense Systems"}
+    milestone = {"seq": 1, "title": "Prototype", "deliverable": "40-node prototype", "amount": 200000}
+    payment = {"status": "released", "amount": 200000, "mock_txn_ref": "MOCK-PAY-0001"}
+
+    rendered = template.render(
+        pilot=pilot,
+        challenge=challenge,
+        startup=startup,
+        milestone=milestone,
+        payment=payment,
+    )
+
+    assert "Milestone Payment Sanction & Escrow Release Order" in rendered
+    assert "MOCK-PAY-0001" in rendered
+    assert "AquaSense Systems" in rendered
+    assert "200,000" in rendered
+
+
+def test_procurement_recommendation_template_renders(jinja_env):
+    template = jinja_env.get_template("procurement_recommendation.html")
+
+    pilot = {"id": 1, "challenge_title": "Reduce municipal water leakage", "location": "District A", "final_score": 92.9}
+    challenge = {"id": 1, "title": "Reduce municipal water leakage", "department": "Urban Water Supply"}
+    startup = {"id": 3, "name": "AquaSense Systems"}
+
+    rendered = template.render(pilot=pilot, challenge=challenge, startup=startup)
+
+    assert "Post-Pilot Statutory Procurement Pathway Recommendation" in rendered
+    assert "GeM Direct Award" in rendered or "GeM" in rendered
+    assert "AquaSense Systems" in rendered
+
+
+def test_kpi_report_template_renders(jinja_env):
+    template = jinja_env.get_template("kpi_report.html")
+
+    pilot = {"id": 1, "challenge_title": "Reduce municipal water leakage", "location": "District A", "duration_days": 90}
+    challenge = {"id": 1, "title": "Reduce municipal water leakage", "department": "Urban Water Supply"}
+    startup = {"id": 3, "name": "AquaSense Systems"}
+    kpis = [
+        {"name": "Water wastage", "unit": "%", "baseline": 30, "target": 20, "achieved": 17, "category": "impact", "direction": "lower_is_better", "achievement": 120.0},
+        {"name": "Leak detection time", "unit": "hours", "baseline": 72, "target": 6, "achieved": 5, "category": "technical", "direction": "lower_is_better", "achievement": 101.5},
+    ]
+
+    rendered = template.render(
+        pilot=pilot,
+        challenge=challenge,
+        startup=startup,
+        kpis=kpis,
+    )
+
+    assert "Comprehensive Key Performance Indicator (KPI) Audit Report" in rendered
+    assert "Water wastage" in rendered
+    assert "Leak detection time" in rendered
+    assert "120.0%" in rendered
+
+
+

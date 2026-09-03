@@ -1,0 +1,54 @@
+[
+  {
+    "id": 1,
+    "name": "District A",
+    "code": "DIST-A",
+    "state": "State Innovation Zone",
+    "division": "Central Division",
+    "headquarters": "Central Municipal City",
+    "population": 1250000,
+    "pilot_ready": true,
+    "sectors": ["water", "healthcare"],
+    "lead_officer": "R Kumar",
+    "contact_email": "officer@water.gov.in"
+  },
+  {
+    "id": 2,
+    "name": "District B",
+    "code": "DIST-B",
+    "state": "State Innovation Zone",
+    "division": "Eastern Division",
+    "headquarters": "East Industrial Town",
+    "population": 980000,
+    "pilot_ready": true,
+    "sectors": ["waste", "water", "infrastructure"],
+    "lead_officer": "V Raman",
+    "contact_email": "officer.distb@state.gov.in"
+  },
+  {
+    "id": 3,
+    "name": "District C",
+    "code": "DIST-C",
+    "state": "State Innovation Zone",
+    "division": "Northern Division",
+    "headquarters": "North Sub-Himalayan Junction",
+    "population": 740000,
+    "pilot_ready": true,
+    "sectors": ["water", "healthcare", "waste"],
+    "lead_officer": "S Mukherjee",
+    "contact_email": "officer.distc@state.gov.in"
+  },
+  {
+    "id": 4,
+    "name": "District D",
+    "code": "DIST-D",
+    "state": "State Innovation Zone",
+    "division": "Coastal Division",
+    "headquarters": "Port Metro City",
+    "population": 1420000,
+    "pilot_ready": true,
+    "sectors": ["infrastructure", "water", "logistics"],
+    "lead_officer": "K Patel",
+    "contact_email": "officer.distd@state.gov.in"
+  }
+]

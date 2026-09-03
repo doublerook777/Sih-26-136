@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+
+{% block title %}Statutory Scale-Up Decision & Final Evaluation Order — {{ challenge.title | default(pilot.challenge_title | default('Pilot Decision')) }}{% endblock %}
+
+{% block department %}{{ challenge.department | default(pilot.department | default('Department of Urban Water Supply')) }}{% endblock %}
+{% block district %}{{ pilot.location | default(challenge.district | default('District A')) }}{% endblock %}
+{% block doc_badge %}Statutory Pilot Scale-Up & Follow-On Procurement Determination{% endblock %}
+
+{% block doc_ref %}DOC-FINAL-DECISION-{{ pilot.id | default('001') }}{% endblock %}
+
+{% block extra_meta %}
+<tr>
+  <td class="doc-meta-label">Associated Pilot:</td>
+  <td class="doc-meta-value"><strong>PILOT-{{ pilot.id | default('001') }}</strong> ({{ challenge.title | default('Innovation Pilot') }})</td>
+  <td class="doc-meta-label">Selected Startup:</td>
+  <td class="doc-meta-value"><strong>{{ startup.name | default(pilot.startup_name | default('AquaSense Systems')) }}</strong></td>
+</tr>
+<tr>
+  <td class="doc-meta-label">Contracting Department:</td>
+  <td class="doc-meta-value">{{ challenge.department | default('Urban Water Supply Authority') }}</td>
+  <td class="doc-meta-label">Final Evaluation Date:</td>
+  <td class="doc-meta-value">{{ generated_at | default('2026-09-01') }}</td>
+</tr>
+{% endblock %}
+
+{% block content %}
+{% set dec = decision | default(pilot.decision | default('scale')) | lower %}
+{% set f_score = final_score | default(pilot.final_score | default(92.9)) %}
+{% set cat_scores = category_scores | default(pilot.category_scores | default({'technical': 79.0, 'cost': 87.0, 'impact': 120.0, 'scalability': 89.0, 'security': 96.0})) %}
+
+<!-- VISUAL CENTERPIECE: DECISION BANNER -->
+<div style="margin: 25px 0; padding: 25px 20px; text-align: center; border-radius: 8px; border: 2px solid {% if dec == 'scale' %}#16a34a; background: #f0fdf4;{% elif dec == 'scale_with_modifications' %}#d97706; background: #fffbeb;{% elif dec == 'extend_pilot' %}#2563eb; background: #eff6ff;{% else %}#dc2626; background: #fef2f2;{% endif %}">
+  <div style="font-size: 13px; font-weight: bold; letter-spacing: 0.12em; text-transform: uppercase; color: #4b5563; margin-bottom: 6px;">
+    Official Statutory Procurement Determination
+  </div>
+  <div style="font-size: 28px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: {% if dec == 'scale' %}#15803d{% elif dec == 'scale_with_modifications' %}#b45309{% elif dec == 'extend_pilot' %}#1d4ed8{% else %}#b91c1c{% endif %};">
+    {% if dec == 'scale' %}
+      ✓ APPROVED FOR REPLICATION & SCALE (SCALE)
+    {% elif dec == 'scale_with_modifications' %}
+      ⚠ CONDITIONAL SCALE WITH MODIFICATIONS
+    {% elif dec == 'extend_pilot' %}
+      ⟳ EXTEND PILOT (ADDITIONAL VALIDATION)
+    {% else %}
+      ✗ REJECTED / NOT RECOMMENDED FOR SCALE
+    {% endif %}
+  </div>
+  <div style="font-size: 16px; margin-top: 10px; color: #1f2937;">
+    Composite Final Pilot Performance Score: <strong style="font-size: 20px; color: #111827;">{{ f_score }} / 100</strong>
+    <span style="font-size: 13px; color: #6b7280;">(Threshold for Statewide Scale: &ge; 85.0)</span>
+  </div>
+</div>
+
+<h2 class="section-heading">1. Executive Justification & Explainability Audit</h2>
+<p class="section-body" style="background: #f9fafb; padding: 15px; border-left: 4px solid #1e3a8a; border-radius: 0 4px 4px 0; margin-bottom: 25px;">
+  <strong>Official Evaluation Finding:</strong> {{ justification | default(pilot.justification | default('Exceeded impact target with score 120.0%, achieved technical reliability of 79.0%, cost efficiency of 87.0%, and scalability rating of 89.0%. All 4/4 milestones verified and cybersecurity audit passed (96.0%). Recommended for accelerated statewide procurement scale.')) }}
+</p>
+
+<h2 class="section-heading">2. Standardized Category Score Breakdown</h2>
+<p class="section-body">
+  Category scoring applies the statutory, non-configurable 30/20/20/15/15 weighting model mandated by the State Innovation Procurement Policy:
+</p>
+
+<table class="doc-meta-table" style="margin-top: 15px; margin-bottom: 25px;">
+  <thead>
+    <tr style="background: #e5e7eb;">
+      <th style="padding: 10px; border: 1px solid #d1d5db; text-align: left; width: 28%;">Evaluation Dimension</th>
+      <th style="padding: 10px; border: 1px solid #d1d5db; text-align: center; width: 14%;">Statutory Weight</th>
+      <th style="padding: 10px; border: 1px solid #d1d5db; text-align: center; width: 18%;">Category Score</th>
+      <th style="padding: 10px; border: 1px solid #d1d5db; text-align: right; width: 18%;">Weighted Points</th>
+      <th style="padding: 10px; border: 1px solid #d1d5db; text-align: left; width: 22%;">Measurement Basis</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>Technical Reliability</strong></td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600;">30%</td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: bold;">{{ cat_scores.technical | default(79.0) }}%</td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: right;">{{ "{:.2f}".format((cat_scores.technical | default(79.0)) * 0.30) }}</td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; font-size: 12px; color: #4b5563;">Mean of validated technical KPIs</td>
+    </tr>
+    <tr>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>Cost Efficiency</strong></td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600;">20%</td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: bold;">{{ cat_scores.cost | default(87.0) }}%</td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: right;">{{ "{:.2f}".format((cat_scores.cost | default(87.0)) * 0.20) }}</td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; font-size: 12px; color: #4b5563;">Mean of validated cost KPIs</td>
+    </tr>
+    <tr>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>Public Impact & Service Delivery</strong></td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600;">20%</td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: bold;">{{ cat_scores.impact | default(120.0) }}%</td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: right;">{{ "{:.2f}".format((cat_scores.impact | default(120.0)) * 0.20) }}</td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; font-size: 12px; color: #4b5563;">Mean of impact KPIs (capped at 120%)</td>
+    </tr>
+    <tr>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>Scalability & Replicability</strong></td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600;">15%</td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: bold;">{{ cat_scores.scalability | default(89.0) }}%</td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: right;">{{ "{:.2f}".format((cat_scores.scalability | default(89.0)) * 0.15) }}</td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; font-size: 12px; color: #4b5563;">District replication scalability metrics</td>
+    </tr>
+    <tr>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>Cybersecurity & Data Hygiene</strong></td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600;">15%</td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: bold;">{{ cat_scores.security | default(96.0) }}%</td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: right;">{{ "{:.2f}".format((cat_scores.security | default(96.0)) * 0.15) }}</td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb; font-size: 12px; color: #4b5563;">8-point CERT-In baseline audit</td>
+    </tr>
+    <tr style="background: #f9fafb; font-weight: bold;">
+      <td style="padding: 10px; border: 1px solid #d1d5db;">COMPOSITE FINAL PILOT SCORE</td>
+      <td style="padding: 10px; border: 1px solid #d1d5db; text-align: center; color: #1e3a8a;">100%</td>
+      <td colspan="2" style="padding: 10px; border: 1px solid #d1d5db; text-align: right; font-size: 16px; color: #1e3a8a;">
+        {{ f_score }} / 100
+      </td>
+      <td style="padding: 10px; border: 1px solid #d1d5db; font-size: 12px; color: #15803d; font-weight: bold;">
+        {% if dec == 'scale' %}QUALIFIES FOR STATE SCALE{% else %}PROCEED PER DETERMINATION{% endif %}
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 class="section-heading">3. Milestone Execution & Audit History</h2>
+<p class="section-body">
+  All 4 structured milestone deliverables have completed physical and telemetry verification by empanelled Independent Validators with 100% funds disbursed against verified deliverables.
+</p>
+
+<h2 class="section-heading">4. Recommended Next Actions</h2>
+<p class="section-body">
+  {% if dec == 'scale' %}
+    <strong>Statewide Replication:</strong> Direct procurement transition via Government e-Marketplace (GeM) innovation portal across adjoining municipal districts (District B, District C) in accordance with GFR 2017 Rule 149/194.
+  {% elif dec == 'scale_with_modifications' %}
+    <strong>Conditional Scale:</strong> Execute minor hardware/software remediation within 30 days prior to issuing district expansion tenders.
+  {% elif dec == 'extend_pilot' %}
+    <strong>Pilot Extension:</strong> Issue 60-day operational extension to achieve remaining milestone metrics.
+  {% else %}
+    <strong>Pilot Closure:</strong> Formal pilot termination with final audit reconciliation.
+  {% endif %}
+</p>
+{% endblock %}
