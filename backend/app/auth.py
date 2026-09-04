@@ -7,12 +7,11 @@ from jose import JWTError, jwt
 from passlib.context import CryptContext
 from sqlmodel import Session, select
 
-from app.config import JWT_SECRET_KEY
 from app.db import get_session
 from app.models import User
 
 
-SECRET_KEY = JWT_SECRET_KEY
+SECRET_KEY = "dev-secret-key-change-later"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
