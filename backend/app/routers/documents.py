@@ -8,7 +8,19 @@ from sqlmodel import Session, select
 
 from app.auth import get_current_user
 from app.db import get_session
-from app.models import Challenge, KPI, Milestone, Pilot, Risk, Rubric, Startup, User
+from app.models import (
+    Challenge,
+    KPI,
+    Milestone,
+    Payment,
+    Pilot,
+    Procurement,
+    Risk,
+    Rubric,
+    Startup,
+    User,
+    Validation,
+)
 
 router = APIRouter(prefix="/documents", tags=["documents"])
 
@@ -58,6 +70,31 @@ _DOCUMENTS = {
         "title": "Risk Management Register",
         "description": "Probability-impact risk matrix, scoring, and mitigation strategies.",
         "entity": "pilot",
+    },
+    "kpi_report": {
+        "title": "KPI Report",
+        "description": "Baseline, target, achieved, and attainment evidence.",
+        "entity": "pilot",
+    },
+    "procurement_recommendation": {
+        "title": "Procurement Recommendation",
+        "description": "Evidence-backed procurement pathway.",
+        "entity": "pilot",
+    },
+    "scale_up_decision": {
+        "title": "Scale-up Decision",
+        "description": "Final score and scale-up outcome.",
+        "entity": "pilot",
+    },
+    "validation_report": {
+        "title": "Validation Report",
+        "description": "Independent milestone validation record.",
+        "entity": "milestone",
+    },
+    "payment_approval": {
+        "title": "Payment Approval",
+        "description": "Validated milestone payment authorization.",
+        "entity": "milestone",
     },
 }
 
@@ -126,6 +163,7 @@ def render_document(
         milestones = session.exec(select(Milestone).where(Milestone.pilot_id == pilot.id).order_by(Milestone.seq)).all()
         kpis = session.exec(select(KPI).where(KPI.pilot_id == pilot.id)).all()
         risks = session.exec(select(Risk).where(Risk.pilot_id == pilot.id)).all()
+        procurement = session.exec(select(Procurement).where(Procurement.pilot_id == pilot.id)).first()
 
         template = _env.get_template(f"{doc_type}.html")
         return HTMLResponse(
@@ -137,9 +175,56 @@ def render_document(
                 kpis=kpis,
                 risks=risks,
                 security_checklist=pilot.security_checklist_json or {},
+                decision=procurement.decision if procurement else None,
+                final_score=procurement.final_score if procurement else None,
+                justification=procurement.justification if procurement else None,
                 title=challenge.title if challenge else "Innovation Pilot",
                 department=challenge.department if challenge else "Department",
                 district=pilot.location,
+                generated_at=now_str,
+            )
+        )
+
+    elif entity_kind == "milestone" or doc_type in ["validation_report", "payment_approval"]:
+        milestone = session.get(Milestone, entity_id)
+        if not milestone:
+            raise HTTPException(status_code=404, detail="Milestone not found")
+
+        pilot = session.get(Pilot, milestone.pilot_id)
+        challenge = session.get(Challenge, pilot.challenge_id) if pilot else None
+        startup = session.get(Startup, pilot.startup_id) if pilot else None
+        validation = session.exec(
+            select(Validation).where(Validation.milestone_id == milestone.id).order_by(Validation.validated_at.desc())
+        ).first()
+        payment = session.exec(select(Payment).where(Payment.milestone_id == milestone.id)).first()
+
+        validation_dict = None
+        validator_name = None
+        if validation:
+            validator = session.get(User, validation.validator_id)
+            validator_name = validator.name if validator else None
+            validation_dict = {
+                "verdict": validation.verdict,
+                "claimed_value": validation.claimed_value,
+                "verified_value": validation.verified_value,
+                "notes": validation.evidence_notes,
+                "validator_name": validator_name,
+                "validated_at": validation.validated_at,
+            }
+
+        template = _env.get_template(f"{doc_type}.html")
+        return HTMLResponse(
+            content=template.render(
+                milestone=milestone,
+                pilot=pilot,
+                challenge=challenge,
+                startup=startup,
+                validation=validation_dict,
+                validator_name=validator_name,
+                payment=payment,
+                title=challenge.title if challenge else "Innovation Pilot",
+                department=challenge.department if challenge else "Department",
+                district=pilot.location if pilot else None,
                 generated_at=now_str,
             )
         )

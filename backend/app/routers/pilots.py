@@ -122,6 +122,7 @@ def _build_milestone_read(session: Session, m: Milestone) -> MilestoneRead:
         status=m.status,
         evidence_text=m.evidence_text,
         evidence_url=m.evidence_url,
+        claimed_value=m.claimed_value,
         submitted_at=m.submitted_at,
         validation=val_read,
         payment=pay_read,

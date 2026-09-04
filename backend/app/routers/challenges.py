@@ -14,6 +14,7 @@ from app.schemas import (
     GenerateStatementOut,
     ApplicationRead,
 )
+from app.scoring import resolve_rubric, score_application
 
 router = APIRouter(tags=["challenges"])
 
@@ -261,10 +262,67 @@ def get_challenge_applications(
     return results
 
 
-# NOTE: POST /challenges/{id}/discover is intentionally NOT included today.
-# It depends on Pair C's engines/matching.py, which is being written today
-# (Day 2) and does not exist yet on `dev` in its real form. It is also a
-# Day 3 task per the roadmap, not Day 1/2. Do not re-add a stub that calls a
-# hand-rolled matching function — wait for C1's real score_match() and wire
-# this properly once it lands, using a rubric's weights rather than a
-# hardcoded dict.
+@router.post("/challenges/{challenge_id}/discover", response_model=list[ApplicationRead])
+def discover_startups(
+    challenge_id: int,
+    session: Session = Depends(get_session),
+    current_user: User = Depends(require_role("government")),
+):
+    challenge = session.get(Challenge, challenge_id)
+    if not challenge:
+        raise HTTPException(status_code=404, detail="Challenge not found")
+
+    rubric = resolve_rubric(session, challenge.match_rubric_id, "match")
+    weights = rubric.weights_json if rubric else {}
+
+    existing_by_startup = {
+        a.startup_id: a
+        for a in session.exec(
+            select(Application).where(Application.challenge_id == challenge_id)
+        ).all()
+    }
+
+    startups = session.exec(select(Startup)).all()
+    rows: list[tuple[Application, Startup]] = []
+
+    for startup in startups:
+        application = existing_by_startup.get(startup.id)
+        scored = score_application(challenge, startup, weights, quote=application.quote if application else None)
+
+        if application is None:
+            application = Application(challenge_id=challenge_id, startup_id=startup.id, status="screened")
+        elif application.status == "applied":
+            application.status = "screened"
+
+        application.eligible = scored["eligible"]
+        application.eligibility_report_json = scored["eligibility_report"]
+        application.match_score = scored["match_score"]
+        application.match_breakdown_json = scored["match_breakdown"]
+        application.rubric_snapshot_json = scored["rubric_snapshot"]
+        application.explanation = scored["explanation"]
+
+        session.add(application)
+        rows.append((application, startup))
+
+    session.commit()
+    for application, _ in rows:
+        session.refresh(application)
+
+    results = [_to_application_read(application, startup) for application, startup in rows]
+    results.sort(key=lambda x: (x.eligible, x.match_score or 0), reverse=True)
+    return results
+
+
+def _to_application_read(application: Application, startup: Startup) -> ApplicationRead:
+    return ApplicationRead(
+        application_id=application.id,
+        startup_id=startup.id,
+        startup_name=startup.name,
+        eligible=application.eligible,
+        eligibility_report=application.eligibility_report_json,
+        match_score=application.match_score,
+        match_breakdown=application.match_breakdown_json,
+        rubric_snapshot=application.rubric_snapshot_json,
+        explanation=application.explanation,
+        status=application.status,
+    )
