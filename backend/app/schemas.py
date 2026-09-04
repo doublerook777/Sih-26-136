@@ -205,6 +205,7 @@ class MilestoneRead(BaseModel):
     status: str
     evidence_text: Optional[str] = None
     evidence_url: Optional[str] = None
+    claimed_value: Optional[float] = None
     submitted_at: Optional[datetime] = None
     validation: Optional[MilestoneValidationRead] = None
     payment: Optional[MilestonePaymentRead] = None
@@ -421,5 +422,77 @@ class ReplicateIn(BaseModel):
 class ReplicateOut(BaseModel):
     pilot_id: int
     replication: list[ReplicationItem]
+
+
+# ---------------------------------------------------------------------------
+# Rubrics
+# ---------------------------------------------------------------------------
+
+class RubricCriterion(BaseModel):
+    key: str
+    label: str
+    weight: float
+    help: Optional[str] = None
+
+
+class RubricRead(BaseModel):
+    id: int
+    name: str
+    kind: str
+    version: int
+    is_default: bool
+    active: bool
+    weights: dict[str, float]
+    criteria: list[RubricCriterion]
+
+
+class RubricCreate(BaseModel):
+    name: str
+    kind: str
+    criteria: list[RubricCriterion]
+
+
+# ---------------------------------------------------------------------------
+# Evaluations
+# ---------------------------------------------------------------------------
+
+class EvaluationCreate(BaseModel):
+    application_id: int
+    scores: dict[str, float]
+    comments: Optional[str] = None
+
+
+class EvaluationRead(BaseModel):
+    id: int
+    application_id: int
+    expert_id: int
+    expert_name: str
+    scores: dict[str, float]
+    weighted_total: float
+    rubric_snapshot: dict[str, float]
+    comments: Optional[str] = None
+    submitted_at: Optional[datetime] = None
+
+
+class EvaluationsListOut(BaseModel):
+    application_id: int
+    average_total: Optional[float] = None
+    evaluation_count: int
+    evaluations: list[EvaluationRead]
+
+
+# ---------------------------------------------------------------------------
+# Application status transitions
+# ---------------------------------------------------------------------------
+
+class ApplicationShortlistOut(BaseModel):
+    application_id: int
+    status: str
+
+
+class ApplicationSelectOut(BaseModel):
+    application_id: int
+    status: str
+    challenge_status: str
 
 

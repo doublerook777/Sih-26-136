@@ -559,6 +559,7 @@ kpis, risks, and the security checklist.
       "status": "paid",
       "evidence_text": "Deployed 40 nodes across zone 3.",
       "evidence_url": "https://example.com/report.pdf",
+      "claimed_value": 25,
       "submitted_at": "2026-09-18T10:00:00Z",
       "validation": {
         "verdict": "approved", "claimed_value": 25, "verified_value": 22,
@@ -578,7 +579,12 @@ kpis, risks, and the security checklist.
 }
 ```
 Milestone `status` is one of `pending`, `in_progress`, `submitted`, `validated`,
-`rejected`, `paid`. `validation` and `payment` are `null` until they happen.
+`rejected`, `paid`. `validation` and `payment` are `null` until they happen. The milestone's
+top-level `claimed_value` is set by `POST /milestones/{id}/submit` and is visible to validators
+(and everyone else with read access) before a decision is made — it is the pre-review number the
+validator is comparing against. `validation.claimed_value` is a frozen copy of that same number
+taken at the moment of `POST /milestones/{id}/validate`, so the audit trail still shows what was
+claimed even after later edits.
 
 ### GET /pilots (list)
 Roles: government, validator, startup. Returns a summary array, no nested milestones.
@@ -877,7 +883,7 @@ Password for all of them: `demo1234`
 |---|---|---|
 | officer@water.gov.in | government | R Kumar |
 | admin@procura.gov.in | admin | Platform Admin |
-| founder@aquasense.in | startup | AquaSense (startup id 3) |
+| founder@aquasense.in | startup | AquaSense (startup id 1) |
 | expert1@procura.gov.in | expert | Dr S Rao |
 | expert2@procura.gov.in | expert | Prof M Iyer |
 | expert3@procura.gov.in | expert | Dr A Banerjee |

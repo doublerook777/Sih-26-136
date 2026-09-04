@@ -57,6 +57,8 @@ class Application(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     challenge_id: int
     startup_id: int
+    quote: Optional[int] = None
+    pitch: Optional[str] = None
     eligible: bool = False
     eligibility_report_json: dict = Field(default_factory=dict, sa_type=JSON)
     match_score: Optional[float] = None
@@ -64,6 +66,7 @@ class Application(SQLModel, table=True):
     rubric_snapshot_json: dict = Field(default_factory=dict, sa_type=JSON)
     explanation: Optional[str] = None
     status: str = "applied"
+    applied_at: Optional[datetime] = None
 class Evaluation(SQLModel, table=True):
     __tablename__ = "evaluations"
 

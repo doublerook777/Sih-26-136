@@ -710,6 +710,12 @@ export const getDocumentTemplates = async () => {
 export const documentUrl = (docType, id) => `${BASE}/documents/${docType}/${id}`;
 
 /**
+ * Fetches rendered document HTML through the authenticated client, since a bare
+ * <iframe src> to the backend can't carry the Authorization header and 401s.
+ */
+export const getDocumentHtml = (docType, id) => get(`/documents/${docType}/${id}`);
+
+/**
  * Startups Endpoints (Section 4)
  */
 export const getStartups = async (params = {}) => {

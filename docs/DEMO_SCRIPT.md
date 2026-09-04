@@ -19,7 +19,7 @@
 
 ### Step 1: Officer Login
 * **Action:** Navigate to `http://localhost:5173/login`.
-* **Click:** Select role shortcut **"Government Officer"** (prefills `officer@water.gov.in` / `secret123`).
+* **Click:** Select role shortcut **"Government Officer"** (prefills `officer@water.gov.in` / `demo1234`).
 * **Click:** **"Sign In"** button.
 * **What Audience Sees:** Redirects to `/government` dashboard showing active municipal challenges, budget allocations, and status summary cards ("Draft", "Active", "Evaluation").
 
@@ -33,7 +33,10 @@
   * District: `District A`
   * Budget (INR): `1000000` (₹10 Lakhs)
   * Timeline (Days): `90`
-  * Required Technologies: `IoT, Pressure Sensors, Acoustic Sensors, AI Anomaly Detection`
+  * Required Technologies: `iot, sensors, ai, analytics` (must be drawn from the platform's
+    fixed 12-tag technology vocabulary — see `docs/API.md` §5 — not free text; typing
+    natural-language tech names like "Pressure Sensors" or "Acoustic Sensors" will not match
+    any startup's `tech_tags` and tanks the match score)
   * Raw Problem Description:
     > *"Our municipal distribution network experiences 35% non-revenue water losses due to undetected subterranean pipeline bursts. We currently only find out when roads flood or citizen complaints arrive days later. We need real-time pressure sensor nodes and acoustic anomaly detection to pinpoint leaks within 2 hours."*
 
@@ -99,7 +102,7 @@
 * **What Audience Sees:** Status transitions to `shortlisted`. Applications are now dispatched to the independent technical expert pool.
 
 ### Step 8: Expert Review & Scoring (Expert Persona)
-* **Action:** Log out and log in as **Technical Expert** (`expert1@gov.in` / `secret123`).
+* **Action:** Log out and log in as **Technical Expert** (`expert1@procura.gov.in` / `demo1234`).
 * **What Audience Sees:** `/evaluator` dashboard showing assigned applications waiting for review.
 * **Click:** Click **"Evaluate AquaSense Systems"**.
 * **What Audience Sees:** The Dynamic Evaluation Form populated from the active **"Default expert panel"** rubric (7 criteria):
