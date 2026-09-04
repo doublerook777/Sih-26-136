@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import DashboardLayout from "../components/DashboardLayout";
-import { documentUrl, getChallenge, getPilot } from "../api/endpoints";
+import { getChallenge, getDocumentHtml, getPilot } from "../api/endpoints";
 import { useAuth } from "../context/AuthContext";
 
 const USE_MOCK = import.meta.env.VITE_USE_MOCK === "true";
@@ -42,6 +42,8 @@ export default function DocumentViewer() {
   const [activeDocType, setActiveDocType] = useState(initialDocType || "problem_statement");
   const [challenge, setChallenge] = useState(null);
   const [mockHtml, setMockHtml] = useState(null);
+  const [liveHtml, setLiveHtml] = useState(null);
+  const [liveError, setLiveError] = useState("");
 
   const isSupported = Boolean(SUPPORTED_DOC_TYPES[activeDocType]);
 
@@ -188,6 +190,17 @@ export default function DocumentViewer() {
     loadMetadata();
   }, [id, activeDocType, isSupported]);
 
+  useEffect(() => {
+    if (USE_MOCK || !isSupported) return;
+    let active = true;
+    setLiveHtml(null);
+    setLiveError("");
+    getDocumentHtml(activeDocType, id)
+      .then((html) => { if (active) setLiveHtml(html); })
+      .catch((err) => { if (active) setLiveError(err.detail || err.message || "Unable to load document"); });
+    return () => { active = false; };
+  }, [id, activeDocType, isSupported]);
+
   const handlePrint = () => {
     if (iframeRef.current && iframeRef.current.contentWindow) {
       try {
@@ -304,13 +317,17 @@ export default function DocumentViewer() {
             title={SUPPORTED_DOC_TYPES[activeDocType].title}
             className="doc-viewer-iframe"
           />
-        ) : (
+        ) : liveError ? (
+          <div className="state-message state-error" style={{ margin: "auto" }}>{liveError}</div>
+        ) : liveHtml ? (
           <iframe
             ref={iframeRef}
-            src={documentUrl(activeDocType, id)}
+            srcDoc={liveHtml}
             title={SUPPORTED_DOC_TYPES[activeDocType].title}
             className="doc-viewer-iframe"
           />
+        ) : (
+          <div className="state-message" style={{ margin: "auto" }}>Loading document…</div>
         )}
       </div>
     </DashboardLayout>

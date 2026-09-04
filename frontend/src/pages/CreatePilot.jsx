@@ -21,6 +21,7 @@ export default function CreatePilot() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const applicationId = searchParams.get("application_id");
+  const challengeIdParam = searchParams.get("challenge_id");
   const [application, setApplication] = useState(null);
   const [challenge, setChallenge] = useState(null);
   const [form, setForm] = useState({ location: "", duration_days: 90, budget: 0, objectives: "" });
@@ -33,8 +34,9 @@ export default function CreatePilot() {
     (async () => {
       try {
         if (!applicationId) throw new Error("A selected application is required to create a pilot");
+        if (!challengeIdParam) throw new Error("A challenge is required to create a pilot");
         const selected = await getApplication(applicationId);
-        const details = await getChallenge(selected.challenge_id);
+        const details = await getChallenge(challengeIdParam);
         if (!active) return;
         setApplication(selected);
         setChallenge(details);
@@ -51,7 +53,7 @@ export default function CreatePilot() {
       }
     })();
     return () => { active = false; };
-  }, [applicationId]);
+  }, [applicationId, challengeIdParam]);
 
   const amounts = useMemo(() => splitBudget(form.budget), [form.budget]);
   const milestones = useMemo(() => [
@@ -68,7 +70,7 @@ export default function CreatePilot() {
     setSubmitting(true); setError("");
     try {
       const pilot = await createPilot({
-        challenge_id: Number(application.challenge_id),
+        challenge_id: Number(challengeIdParam),
         startup_id: Number(application.startup_id),
         location: form.location,
         duration_days: Number(form.duration_days),
