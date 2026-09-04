@@ -1087,6 +1087,25 @@ textarea {
   font-size: 0.82rem;
 }
 
+.expert-eval-summary {
+  background: #f2f6ff;
+  border-radius: 14px;
+  padding: 14px;
+  margin-top: 14px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.expert-eval-summary strong {
+  color: var(--green);
+}
+
+.expert-eval-summary small {
+  color: var(--muted);
+}
+
 /* Pilot */
 
 .pilot-hero {

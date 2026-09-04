@@ -3,20 +3,32 @@ import { Link } from "react-router-dom";
 import DashboardLayout from "../components/DashboardLayout";
 import Badge from "../components/Badge";
 import ScoreBreakdown from "../components/ScoreBreakdown";
-import { discoverStartups, getChallengeApplications, getChallenges, selectApplication, shortlistApplication } from "../api/endpoints";
+import { discoverStartups, getChallengeApplications, getChallenges, getEvaluations, selectApplication, shortlistApplication } from "../api/endpoints";
 
 const message = (error) => error?.detail || error?.message || "Something went wrong";
+const EVAL_STATUSES = ["shortlisted", "evaluated", "selected", "rejected"];
 
 export default function Recommendations() {
   const [challenges, setChallenges] = useState([]);
   const [challengeId, setChallengeId] = useState("");
   const [applications, setApplications] = useState([]);
+  const [evalSummaries, setEvalSummaries] = useState({});
   const [loading, setLoading] = useState(true);
   const [discovering, setDiscovering] = useState(false);
   const [actingId, setActingId] = useState(null);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
   const challenge = useMemo(() => challenges.find((item) => item.id === Number(challengeId)), [challenges, challengeId]);
+
+  async function loadEvalSummaries(apps) {
+    const targets = apps.filter((item) => EVAL_STATUSES.includes(item.status));
+    const summaries = await Promise.all(targets.map((item) => getEvaluations(item.application_id).catch(() => null)));
+    setEvalSummaries((current) => {
+      const next = { ...current };
+      summaries.forEach((summary) => { if (summary) next[summary.application_id] = summary; });
+      return next;
+    });
+  }
 
   useEffect(() => {
     let active = true;
@@ -34,7 +46,7 @@ export default function Recommendations() {
     let active = true;
     setLoading(true);
     setError("");
-    getChallengeApplications(challengeId).then((data) => active && setApplications(Array.isArray(data) ? data : []))
+    getChallengeApplications(challengeId).then((data) => { if (!active) return; const list = Array.isArray(data) ? data : []; setApplications(list); loadEvalSummaries(list); })
       .catch((err) => active && setError(message(err))).finally(() => active && setLoading(false));
     return () => { active = false; };
   }, [challengeId]);
@@ -43,8 +55,10 @@ export default function Recommendations() {
     setDiscovering(true); setError(""); setNotice("");
     try {
       const data = await discoverStartups(challengeId);
-      setApplications(Array.isArray(data) ? data : []);
-      setNotice(`${Array.isArray(data) ? data.length : 0} startups screened and ranked.`);
+      const list = Array.isArray(data) ? data : [];
+      setApplications(list);
+      loadEvalSummaries(list);
+      setNotice(`${list.length} startups screened and ranked.`);
     } catch (err) { setError(message(err)); } finally { setDiscovering(false); }
   }
 
@@ -62,7 +76,9 @@ export default function Recommendations() {
     try {
       await selectApplication(id);
       const refreshed = await getChallengeApplications(challengeId);
-      setApplications(Array.isArray(refreshed) ? refreshed : []);
+      const list = Array.isArray(refreshed) ? refreshed : [];
+      setApplications(list);
+      loadEvalSummaries(list);
       setChallenges((items) => items.map((item) => item.id === Number(challengeId) ? { ...item, status: "selected" } : item));
       setNotice("Winner selected. All other applications were marked rejected.");
     } catch (err) { setError(message(err)); } finally { setActingId(null); }
@@ -78,6 +94,7 @@ export default function Recommendations() {
       return <article className={`startup-result ${application.eligible ? "" : "startup-result-ineligible"}`} key={application.application_id}><div className="rank">{String(index + 1).padStart(2, "0")}</div><div className="startup-main"><div className="startup-title-row"><div><h3>{application.startup_name}</h3><Badge tone={application.eligible ? "green" : "amber"}>{application.eligible ? "Eligible" : "Ineligible"}</Badge></div><div className="match-score"><strong>{Number(application.match_score || 0).toFixed(1)}%</strong><small>match score</small></div></div>
         {failures.length > 0 && <div className="eligibility-failures"><strong>Eligibility checks requiring action</strong>{failures.map(([key, result]) => <p key={key}><span>{key.replaceAll("_", " ")}:</span> {result.note}</p>)}</div>}
         <div className="why-box"><strong>Why this ranking?</strong><p>{application.explanation || "No explanation supplied."}</p></div><ScoreBreakdown breakdown={application.match_breakdown} snapshot={application.rubric_snapshot} />
+        {EVAL_STATUSES.includes(application.status) && <div className="expert-eval-summary">{(() => { const summary = evalSummaries[application.application_id]; if (!summary) return <small>Loading expert scores…</small>; if (!summary.evaluation_count) return <small>No expert evaluations submitted yet.</small>; return <><strong>Expert average: {Number(summary.average_total).toFixed(1)}/100</strong><small>{summary.evaluation_count} evaluation{summary.evaluation_count === 1 ? "" : "s"} · {summary.evaluations.map((item) => item.expert_name).join(", ")}</small></>; })()}</div>}
         <div className="result-actions">{canShortlist && <button className="btn btn-soft" disabled={actingId === application.application_id} onClick={() => shortlist(application.application_id)}>{actingId === application.application_id ? "Updating…" : "Shortlist"}</button>}{["shortlisted", "evaluated"].includes(application.status) && <button className="btn btn-primary" disabled={actingId === application.application_id} onClick={() => selectWinner(application.application_id)}>{actingId === application.application_id ? "Selecting…" : "Select winner"}</button>}{["shortlisted", "evaluated", "selected", "rejected"].includes(application.status) && <Badge tone={application.status === "selected" ? "green" : application.status === "rejected" ? "amber" : "blue"}>{application.status}</Badge>}{application.status === "selected" && <Link className="btn btn-primary" to={`/government/pilots/create?application_id=${application.application_id}&challenge_id=${challengeId}`}>Create pilot</Link>}</div>
       </div></article>;
     })}</section>}
