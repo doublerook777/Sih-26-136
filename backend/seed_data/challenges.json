@@ -1,0 +1,318 @@
+[
+  {
+    "id": 1,
+    "created_by": 1,
+    "department": "Urban Water Supply",
+    "district": "District A",
+    "title": "Reduce Municipal Water Leakage in Distribution Networks",
+    "raw_description": "Our municipal distribution pipes leak silently underground and we only find out when a road floods or citizen complaints spike. We need real-time leak detection and pressure monitoring.",
+    "sector": "water",
+    "required_tech": [
+      "iot",
+      "sensors",
+      "analytics",
+      "gis"
+    ],
+    "budget": 1000000,
+    "timeline_days": 90,
+    "deadline": "2026-09-15",
+    "status": "open",
+    "match_rubric_id": 1,
+    "evaluation_rubric_id": 5,
+    "eligibility_rules_json": {
+      "registered_startup": true,
+      "required_certification": "ISO 9001:2015",
+      "min_experience_years": 2,
+      "min_technology_overlap": 1,
+      "max_quote": 1000000,
+      "security_baseline": true
+    },
+    "kpi_targets_json": [
+      {
+        "name": "Water wastage",
+        "unit": "%",
+        "baseline": 30,
+        "target": 20,
+        "category": "impact",
+        "direction": "lower_is_better"
+      },
+      {
+        "name": "Leak detection time",
+        "unit": "hours",
+        "baseline": 72,
+        "target": 6,
+        "category": "technical",
+        "direction": "lower_is_better"
+      },
+      {
+        "name": "System uptime",
+        "unit": "%",
+        "baseline": 0,
+        "target": 95,
+        "category": "technical",
+        "direction": "higher_is_better"
+      },
+      {
+        "name": "Cost per km monitored",
+        "unit": "INR",
+        "baseline": 40000,
+        "target": 25000,
+        "category": "cost",
+        "direction": "lower_is_better"
+      },
+      {
+        "name": "District telemetry coverage",
+        "unit": "%",
+        "baseline": 15,
+        "target": 85,
+        "category": "scalability",
+        "direction": "higher_is_better"
+      },
+      {
+        "name": "False positive alarm rate",
+        "unit": "%",
+        "baseline": 25,
+        "target": 5,
+        "category": "technical",
+        "direction": "lower_is_better"
+      },
+      {
+        "name": "Citizen low-pressure complaints",
+        "unit": "complaints/month",
+        "baseline": 120,
+        "target": 25,
+        "category": "impact",
+        "direction": "lower_is_better"
+      }
+    ],
+    "statement_json": {
+      "problem": "High non-revenue water loss caused by undetected pipeline leakages across municipal distribution zones.",
+      "background": "Aging underground water pipeline infrastructure in District A suffers from recurring pressure drops and physical fractures.",
+      "existing_system": "Manual acoustic stick inspections conducted reactively after citizen complaints or surface flooding.",
+      "identified_gap": "Absence of real-time continuous telemetry and predictive acoustic anomaly monitoring.",
+      "desired_solution": "Deploy IoT sensor nodes and AI-driven pressure and acoustic analytics to pinpoint leaks within 6 hours.",
+      "target_users": "Municipal water supply engineers, field maintenance crews, and district administration.",
+      "technical_requirements": "Battery-powered acoustic/pressure sensors, cellular/LoRaWAN telemetry, GIS map dashboard, REST APIs.",
+      "constraints": "Sensors must fit existing valve chambers without interrupting municipal water supply during deployment.",
+      "budget": "₹10,00,000 all-inclusive for hardware, cloud infrastructure, and 90-day pilot validation.",
+      "timeline": "90 calendar days across 4 phased milestone deliveries.",
+      "expected_outcomes": "Reduction in non-revenue water loss from 30% to under 20% across the pilot distribution zone.",
+      "kpis": "Leak detection time < 6 hrs; water wastage <= 20%; uptime >= 95%; cost per km <= ₹25,000.",
+      "eligibility_requirements": "DPIIT-recognized startup with ISO 9001:2015 certification and at least 2 years operational track record.",
+      "data_requirements": "Daily pressure and acoustic time-series logs exported securely in CSV/JSON format.",
+      "security_requirements": "End-to-end encrypted telemetry transmission, role-based access control, and adherence to municipal data guidelines.",
+      "generated_by": "template"
+    }
+  },
+  {
+    "id": 2,
+    "created_by": 1,
+    "department": "District Health Administration",
+    "district": "District A",
+    "title": "AI-Based Hospital OPD Queue and Patient Triage Management",
+    "raw_description": "District civil hospitals face severe overcrowding and long OPD waiting queues leading to patient dissatisfaction and delayed critical care triage.",
+    "sector": "healthcare",
+    "required_tech": [
+      "ai",
+      "analytics",
+      "cloud",
+      "mobile-app"
+    ],
+    "budget": 750000,
+    "timeline_days": 120,
+    "deadline": "2026-09-28",
+    "status": "open",
+    "match_rubric_id": 3,
+    "evaluation_rubric_id": 6,
+    "eligibility_rules_json": {
+      "registered_startup": true,
+      "required_certification": "ISO 27001",
+      "min_experience_years": 2,
+      "min_technology_overlap": 1,
+      "max_quote": 750000,
+      "security_baseline": true
+    },
+    "kpi_targets_json": [
+      {
+        "name": "Average OPD wait time",
+        "unit": "minutes",
+        "baseline": 150,
+        "target": 45,
+        "category": "impact",
+        "direction": "lower_is_better"
+      },
+      {
+        "name": "Triage classification accuracy",
+        "unit": "%",
+        "baseline": 60,
+        "target": 90,
+        "category": "technical",
+        "direction": "higher_is_better"
+      },
+      {
+        "name": "Daily patient throughput",
+        "unit": "patients/day",
+        "baseline": 400,
+        "target": 650,
+        "category": "scalability",
+        "direction": "higher_is_better"
+      },
+      {
+        "name": "Operating cost per consultation",
+        "unit": "INR",
+        "baseline": 65,
+        "target": 35,
+        "category": "cost",
+        "direction": "lower_is_better"
+      },
+      {
+        "name": "Critical patient time-to-treatment",
+        "unit": "minutes",
+        "baseline": 45,
+        "target": 10,
+        "category": "impact",
+        "direction": "lower_is_better"
+      },
+      {
+        "name": "Queue balancing efficiency",
+        "unit": "%",
+        "baseline": 40,
+        "target": 85,
+        "category": "technical",
+        "direction": "higher_is_better"
+      },
+      {
+        "name": "District hospital replication readiness",
+        "unit": "facilities",
+        "baseline": 1,
+        "target": 4,
+        "category": "scalability",
+        "direction": "higher_is_better"
+      }
+    ],
+    "statement_json": {
+      "problem": "Unmanaged patient influx causing bottlenecks at civil hospital OPD registration and consultation counters.",
+      "background": "Peak morning arrivals overwhelm hospital staff, causing 2-3 hour wait times and delayed emergency identification.",
+      "existing_system": "Physical paper tokens issued manually at single registration window.",
+      "identified_gap": "No dynamic queue balancing, priority triage categorisation, or digital slot allocation.",
+      "desired_solution": "AI-assisted digital queue token management system with automated priority triage and SMS/kiosk notifications.",
+      "target_users": "OPD patients, medical officers, nursing staff, and hospital administrators.",
+      "technical_requirements": "Cloud-hosted triage engine, multilingual kiosk interface, SMS gateway integration, ABDM health ID compliance.",
+      "constraints": "Must work reliably during internet intermittent periods with local offline queue fallback.",
+      "budget": "₹7,50,000 for software deployment, kiosk setup, and 120-day pilot testing.",
+      "timeline": "120 calendar days across 4 milestone phases.",
+      "expected_outcomes": "Average wait times reduced below 45 minutes and high-risk patients triaged within 10 minutes.",
+      "kpis": "Average wait time <= 45 min; triage accuracy >= 90%; throughput >= 650 patients/day.",
+      "eligibility_requirements": "DPIIT-registered healthtech startup with ISO 27001 certification and experience in clinical workflow software.",
+      "data_requirements": "Anonymized patient queue timestamps and triage priority categorizations.",
+      "security_requirements": "Strict patient data confidentiality, DISHA/ABDM healthcare security compliance, and encrypted storage.",
+      "generated_by": "template"
+    }
+  },
+  {
+    "id": 3,
+    "created_by": 1,
+    "department": "Municipal Solid Waste Department",
+    "district": "District B",
+    "title": "Smart Municipal Waste Collection Fleet Route Optimisation",
+    "raw_description": "Inefficient municipal waste vehicle routing results in missed collection bins, high fuel consumption, and overflowing community dumpsters.",
+    "sector": "waste",
+    "required_tech": [
+      "iot",
+      "sensors",
+      "gis",
+      "telematics",
+      "analytics"
+    ],
+    "budget": 600000,
+    "timeline_days": 90,
+    "deadline": "2026-10-05",
+    "status": "open",
+    "match_rubric_id": 4,
+    "evaluation_rubric_id": 5,
+    "eligibility_rules_json": {
+      "registered_startup": true,
+      "required_certification": "ISO 9001:2015",
+      "min_experience_years": 1,
+      "min_technology_overlap": 1,
+      "max_quote": 600000,
+      "security_baseline": true
+    },
+    "kpi_targets_json": [
+      {
+        "name": "Bin overflow incidents",
+        "unit": "incidents/week",
+        "baseline": 85,
+        "target": 15,
+        "category": "impact",
+        "direction": "lower_is_better"
+      },
+      {
+        "name": "Fuel consumption per ton",
+        "unit": "litres",
+        "baseline": 14,
+        "target": 9.5,
+        "category": "cost",
+        "direction": "lower_is_better"
+      },
+      {
+        "name": "On-time collection route adherence",
+        "unit": "%",
+        "baseline": 55,
+        "target": 92,
+        "category": "technical",
+        "direction": "higher_is_better"
+      },
+      {
+        "name": "Ward coverage scalability",
+        "unit": "wards",
+        "baseline": 5,
+        "target": 15,
+        "category": "scalability",
+        "direction": "higher_is_better"
+      },
+      {
+        "name": "Landfill waste diversion rate",
+        "unit": "%",
+        "baseline": 10,
+        "target": 35,
+        "category": "impact",
+        "direction": "higher_is_better"
+      },
+      {
+        "name": "Sensor fill-level reporting accuracy",
+        "unit": "%",
+        "baseline": 65,
+        "target": 95,
+        "category": "technical",
+        "direction": "higher_is_better"
+      },
+      {
+        "name": "Fleet maintenance downtime",
+        "unit": "hours/month",
+        "baseline": 18,
+        "target": 5,
+        "category": "cost",
+        "direction": "lower_is_better"
+      }
+    ],
+    "statement_json": {
+      "problem": "Unoptimized static garbage truck routes causing delayed collections and excessive fuel expenditures.",
+      "background": "Solid waste collection across 15 municipal wards currently runs on rigid legacy timetables regardless of bin fill levels.",
+      "existing_system": "Fixed daily truck rounds with manual paper logbooks.",
+      "identified_gap": "Lack of dynamic fill-level monitoring and automated GPS route optimization based on real-time bin status.",
+      "desired_solution": "Ultrasonic bin level sensors combined with GPS vehicle telematics and dynamic route dispatch engine.",
+      "target_users": "Sanitation supervisors, truck drivers, ward corporators, and municipal health officers.",
+      "technical_requirements": "Ruggedized ultrasonic bin sensors, GPS vehicle trackers, dynamic routing algorithm, driver mobile app.",
+      "constraints": "Sensor enclosures must be IP67 rated and vandal-resistant against weather and physical impact.",
+      "budget": "₹6,00,000 covering 100 smart bin sensors, 15 vehicle telematics units, and cloud routing engine.",
+      "timeline": "90 calendar days across 4 milestone phases.",
+      "expected_outcomes": "30% reduction in fleet fuel consumption and near-elimination of uncollected overflowing community bins.",
+      "kpis": "Overflow incidents < 15/week; fuel <= 9.5 L/ton; route adherence >= 92%; ward coverage >= 15 wards.",
+      "eligibility_requirements": "DPIIT-recognized cleantech/IoT startup with ISO 9001:2015 certification and at least 1 year operational experience.",
+      "data_requirements": "Real-time bin fill percentage feeds, GPS vehicle track coordinates, and fuel consumption logs.",
+      "security_requirements": "Secure vehicle telemetry transmission and authenticated supervisory dashboard access.",
+      "generated_by": "template"
+    }
+  }
+]

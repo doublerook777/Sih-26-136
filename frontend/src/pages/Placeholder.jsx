@@ -7,7 +7,7 @@ export default function Placeholder({ role, title }) {
         <div className="ai-orb">↗</div>
         <h2>{title}</h2>
         <p className="muted">
-          Add your API-connected records here once FastAPI and Supabase are wired.
+          Add your API-connected records here once the backend is wired.
         </p>
       </section>
     </DashboardLayout>

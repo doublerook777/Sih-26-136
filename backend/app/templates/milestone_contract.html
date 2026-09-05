@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Milestone Delivery & Disbursement Schedule — {{ challenge.title | default(pilot.challenge_title | default('Milestone Contract')) }}{% endblock %}
+
+{% block department %}{{ challenge.department | default(pilot.department | default('Department of Urban Water Supply')) }}{% endblock %}
+{% block district %}{{ pilot.location | default(challenge.district | default('District A')) }}{% endblock %}
+{% block doc_badge %}Milestone Schedule & Tranche Disbursement Contract{% endblock %}
+
+{% block doc_ref %}DOC-MS-SCHED-{{ pilot.id | default('001') }}{% endblock %}
+
+{% block extra_meta %}
+<tr>
+  <td class="doc-meta-label">Associated Pilot:</td>
+  <td class="doc-meta-value"><strong>PILOT-{{ pilot.id | default('001') }}</strong></td>
+  <td class="doc-meta-label">Total Contract Value:</td>
+  <td class="doc-meta-value"><strong>₹{{ "{:,}".format(pilot.budget | default(1000000)) }}</strong></td>
+</tr>
+<tr>
+  <td class="doc-meta-label">Startup Partner:</td>
+  <td class="doc-meta-value"><strong>{{ startup.name | default(pilot.startup_name | default('AquaSense Systems')) }}</strong></td>
+  <td class="doc-meta-label">Disbursement Mechanism:</td>
+  <td class="doc-meta-value">Verified Milestone Escrow Tranches</td>
+</tr>
+{% endblock %}
+
+{% block content %}
+<h2 class="section-heading">Milestone Delivery Framework</h2>
+<p class="section-body">
+  In accordance with GFR 2017 milestone-based public procurement rules, pilot funding is disbursed strictly across 4 performance tranches upon physical and digital audit verification.
+</p>
+
+{% set ms_list = milestones | default(pilot.milestones | default([])) %}
+<table class="doc-meta-table" style="margin-top: 15px; margin-bottom: 25px;">
+  <thead>
+    <tr style="background: #e5e7eb;">
+      <th style="padding: 10px; border: 1px solid #d1d5db; text-align: center; width: 8%;">Seq</th>
+      <th style="padding: 10px; border: 1px solid #d1d5db; text-align: left; width: 25%;">Milestone Name</th>
+      <th style="padding: 10px; border: 1px solid #d1d5db; text-align: left; width: 35%;">Deliverable Standard</th>
+      <th style="padding: 10px; border: 1px solid #d1d5db; text-align: right; width: 17%;">Tranche Value</th>
+      <th style="padding: 10px; border: 1px solid #d1d5db; text-align: center; width: 15%;">Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% if ms_list and ms_list | length > 0 %}
+      {% for m in ms_list %}
+      <tr>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: bold;">M{{ m.seq }}</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>{{ m.title }}</strong></td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;">{{ m.deliverable }}</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: right; font-weight: 600;">₹{{ "{:,}".format(m.amount) }}</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center;">
+          <span style="font-size: 12px; font-weight: bold; text-transform: uppercase;">{{ m.status | default('pending') }}</span>
+        </td>
+      </tr>
+      {% endfor %}
+    {% else %}
+      <tr>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: bold;">M1</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>Prototype & Hardware Setup</strong></td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;">40-node sensor prototype deployed and calibrated in Zone 3</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: right; font-weight: 600;">₹200,000</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center;">PENDING</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: bold;">M2</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>Field Trial & Data Logging</strong></td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;">2 weeks of continuous telemetry and automated leak alerts</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: right; font-weight: 600;">₹300,000</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center;">PENDING</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: bold;">M3</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>District Scale Deployment</strong></td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;">Full district pipeline telemetry with SCADA integration</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: right; font-weight: 600;">₹300,000</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center;">PENDING</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: bold;">M4</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>Final Evaluation & KPI Audit</strong></td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;">Independent validator report verifying achieved KPI thresholds</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: right; font-weight: 600;">₹200,000</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center;">PENDING</td>
+      </tr>
+    {% endif %}
+    <tr style="background: #f9fafb; font-weight: bold;">
+      <td colspan="3" style="padding: 10px; border: 1px solid #d1d5db;">TOTAL ALLOCATED CONTRACT AMOUNT</td>
+      <td style="padding: 10px; border: 1px solid #d1d5db; text-align: right; color: #1e3a8a;">₹{{ "{:,}".format(pilot.budget | default(1000000)) }}</td>
+      <td style="padding: 10px; border: 1px solid #d1d5db; text-align: center;">100% Total</td>
+    </tr>
+  </tbody>
+</table>
+{% endblock %}

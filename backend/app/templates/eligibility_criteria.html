@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Eligibility Criteria — {{ title | default(challenge.title | default('Challenge Specification')) }}{% endblock %}
+
+{% block department %}{{ department | default(challenge.department | default('Department of Urban Development')) }}{% endblock %}
+{% block district %}{{ district | default(challenge.district | default('District A')) }}{% endblock %}
+{% block doc_badge %}Startup Eligibility & Mandatory Screening Gate Specification{% endblock %}
+
+{% block doc_ref %}CHAL-{{ challenge_id | default(challenge.id | default('001')) }}-ELIGIBILITY{% endblock %}
+
+{% block extra_meta %}
+<tr>
+  <td class="doc-meta-label">Challenge Title:</td>
+  <td class="doc-meta-value" colspan="3"><strong>{{ title | default(challenge.title | default('Untitled Challenge')) }}</strong></td>
+</tr>
+<tr>
+  <td class="doc-meta-label">Sector:</td>
+  <td class="doc-meta-value">{{ sector | default(challenge.sector | default('General')) | upper }}</td>
+  <td class="doc-meta-label">Budget Cap:</td>
+  <td class="doc-meta-value">₹{{ "{:,}".format(budget | default(challenge.budget | default(0))) }}</td>
+</tr>
+{% endblock %}
+
+{% block content %}
+{% set rules = eligibility_rules | default(challenge.eligibility_rules_json | default(challenge.eligibility_rules | default({}))) %}
+
+<h2 class="section-heading">Overview of Mandatory Eligibility Gates</h2>
+<p class="section-body">
+  All applicants must satisfy the following six statutory and technical compliance gates prior to entering the automated AI-assisted matching and expert evaluation rounds. Failure on any single gate results in automated rejection with specific reason logging.
+</p>
+
+<table class="doc-meta-table" style="margin-top: 15px; margin-bottom: 25px;">
+  <thead>
+    <tr style="background: #e5e7eb;">
+      <th style="padding: 10px; border: 1px solid #d1d5db; text-align: left; width: 30%;">Compliance Gate</th>
+      <th style="padding: 10px; border: 1px solid #d1d5db; text-align: left; width: 35%;">Requirement Specification</th>
+      <th style="padding: 10px; border: 1px solid #d1d5db; text-align: left; width: 35%;">Verification Standard</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>1. DPIIT Registration</strong></td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;">
+        {% if rules.registered_startup | default(true) %}
+          Mandatory Startup India DPIIT recognition
+        {% else %}
+          Open to all entities (Registration waived)
+        {% endif %}
+      </td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;">Valid DIPP Certificate Number</td>
+    </tr>
+    <tr>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>2. Required Certification</strong></td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;">
+        {{ rules.required_certification | default('ISO 9001:2015') }}
+      </td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;">Accredited third-party certification documentation</td>
+    </tr>
+    <tr>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>3. Minimum Experience</strong></td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;">
+        {{ rules.min_experience_years | default(2) }} Years of operational track record
+      </td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;">Date of Incorporation from MCA records</td>
+    </tr>
+    <tr>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>4. Technology Capability Overlap</strong></td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;">
+        Minimum {{ rules.min_technology_overlap | default(1) }} overlapping technology tags
+      </td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;">
+        Matching required technologies: {{ (challenge.required_tech | default(['IoT', 'Sensors'])) | join(', ') }}
+      </td>
+    </tr>
+    <tr>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>5. Budget & Commercial Ceiling</strong></td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;">
+        Quote must not exceed maximum budget of ₹{{ "{:,}".format(rules.max_quote | default(budget | default(challenge.budget | default(1000000)))) }}
+      </td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;">Verified commercial proposal submission</td>
+    </tr>
+    <tr>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>6. Cybersecurity Baseline</strong></td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;">
+        {% if rules.security_baseline | default(true) %}
+          Mandatory compliance with 8-point cybersecurity baseline
+        {% else %}
+          Standard baseline advisory
+        {% endif %}
+      </td>
+      <td style="padding: 10px; border: 1px solid #e5e7eb;">Self-declaration and security architecture review</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 class="section-heading">Legal & Compliance Notice</h2>
+<p class="section-body">
+  In accordance with public procurement guidelines and SIH 26136 transparent governance protocols, all eligibility evaluations are recorded immutably with full per-factor audit trails.
+</p>
+{% endblock %}

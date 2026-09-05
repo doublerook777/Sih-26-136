@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}Evaluation Criteria & Scoring Rubric — {{ title | default(challenge.title | default('Challenge Specification')) }}{% endblock %}
+
+{% block department %}{{ department | default(challenge.department | default('Department of Urban Development')) }}{% endblock %}
+{% block district %}{{ district | default(challenge.district | default('District A')) }}{% endblock %}
+{% block doc_badge %}Expert Evaluation & Scoring Rubric Specification{% endblock %}
+
+{% block doc_ref %}CHAL-{{ challenge_id | default(challenge.id | default('001')) }}-EVAL-RUBRIC{% endblock %}
+
+{% block extra_meta %}
+<tr>
+  <td class="doc-meta-label">Challenge Title:</td>
+  <td class="doc-meta-value" colspan="3"><strong>{{ title | default(challenge.title | default('Untitled Challenge')) }}</strong></td>
+</tr>
+<tr>
+  <td class="doc-meta-label">Sector:</td>
+  <td class="doc-meta-value">{{ sector | default(challenge.sector | default('General')) | upper }}</td>
+  <td class="doc-meta-label">Evaluation Rubric:</td>
+  <td class="doc-meta-value"><strong>{{ rubric_name | default(rubric.name | default('Default expert panel')) }} (v{{ rubric_version | default(rubric.version | default('1')) }})</strong></td>
+</tr>
+{% endblock %}
+
+{% block content %}
+<h2 class="section-heading">1. Purpose & Scoring Framework</h2>
+<p class="section-body">
+  This document sets out the transparent, multi-expert evaluation rubric used by empanelled independent technical and domain experts to assess shortlisted startup applications. Each expert independently evaluates shortlisted proposals on a 0–100 scale across seven standardized dimensions. The final evaluation score is computed as the weighted arithmetic mean across all assigned experts.
+</p>
+
+<h2 class="section-heading">2. Standardized Evaluation Criteria & Percentage Weights</h2>
+<p class="section-body">
+  Scoring weights are calibrated for this challenge category to reflect domain-specific priorities (e.g., technical feasibility, scalability, and security posture). All weights strictly sum to 100%.
+</p>
+
+{% set eval_criteria = criteria | default(rubric.criteria | default([])) %}
+
+<table class="doc-meta-table" style="margin-top: 15px; margin-bottom: 25px;">
+  <thead>
+    <tr style="background: #e5e7eb;">
+      <th style="padding: 10px; border: 1px solid #d1d5db; text-align: left; width: 25%;">Evaluation Dimension</th>
+      <th style="padding: 10px; border: 1px solid #d1d5db; text-align: center; width: 12%;">Weight</th>
+      <th style="padding: 10px; border: 1px solid #d1d5db; text-align: left; width: 38%;">Scope & Guiding Description</th>
+      <th style="padding: 10px; border: 1px solid #d1d5db; text-align: left; width: 25%;">Scoring Benchmark (0–100)</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% if eval_criteria and eval_criteria | length > 0 %}
+      {% for crit in eval_criteria %}
+      <tr>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;">
+          <strong>{{ crit.label | default(crit.key | replace('_', ' ') | title) }}</strong>
+          <br><small style="color: #6b7280; font-family: monospace;">{{ crit.key }}</small>
+        </td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-size: 15px; font-weight: 600;">
+          {{ crit.weight }}%
+        </td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;">
+          {{ crit.help | default('Evaluation against standardized department operational benchmarks.') }}
+        </td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; font-size: 12px; color: #374151;">
+          {% if crit.key == 'technical_feasibility' %}
+            Feasibility within pilot timeframe & architecture robustness
+          {% elif crit.key == 'innovation' %}
+            Novelty, uniqueness & differentiation vs status quo
+          {% elif crit.key == 'cost_effectiveness' %}
+            Cost per unit output & budget utilization efficiency
+          {% elif crit.key == 'scalability' %}
+            Replicability across districts & multi-tier scale
+          {% elif crit.key == 'security' %}
+            Data protection, access control & cyber hygiene
+          {% elif crit.key == 'implementation_capability' %}
+            Team track record & execution capacity
+          {% elif crit.key == 'social_impact' %}
+            Public welfare, citizen accessibility & environmental gain
+          {% else %}
+            Standard merit-based expert scoring
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    {% else %}
+      <!-- Fallback Default 7 Criteria if no dynamic criteria array passed -->
+      <tr>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>Technical Feasibility</strong><br><small style="color: #6b7280; font-family: monospace;">technical_feasibility</small></td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600;">25%</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;">Can this actually be built and deployed within the pilot timeline?</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; font-size: 12px;">Architecture maturity & milestone feasibility</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>Innovation</strong><br><small style="color: #6b7280; font-family: monospace;">innovation</small></td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600;">15%</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;">How novel is the approach compared to existing solutions in this space?</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; font-size: 12px;">Novel methodology & IP defensibility</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>Cost Effectiveness</strong><br><small style="color: #6b7280; font-family: monospace;">cost_effectiveness</small></td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600;">15%</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;">Value delivered per rupee against the proposed budget.</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; font-size: 12px;">Return on public procurement expenditure</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>Scalability</strong><br><small style="color: #6b7280; font-family: monospace;">scalability</small></td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600;">15%</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;">Can this be replicated across other districts without redesign?</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; font-size: 12px;">Modularity & district replication readiness</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>Security</strong><br><small style="color: #6b7280; font-family: monospace;">security</small></td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600;">10%</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;">Does the proposal meet baseline data protection and cybersecurity expectations?</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; font-size: 12px;">Data encryption & audit compliance</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>Implementation Capability</strong><br><small style="color: #6b7280; font-family: monospace;">implementation_capability</small></td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600;">10%</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;">Does the team have the experience and capacity to execute this pilot?</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; font-size: 12px;">Execution history & team qualifications</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>Social Impact</strong><br><small style="color: #6b7280; font-family: monospace;">social_impact</small></td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: 600;">10%</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;">Expected benefit to end users and the public if the pilot succeeds.</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; font-size: 12px;">Direct citizen benefit & equity gain</td>
+      </tr>
+    {% endif %}
+    <tr style="background: #f9fafb; font-weight: bold;">
+      <td style="padding: 10px; border: 1px solid #d1d5db;">TOTAL ALLOCATED WEIGHT</td>
+      <td style="padding: 10px; border: 1px solid #d1d5db; text-align: center; color: #1e3a8a;">100%</td>
+      <td colspan="2" style="padding: 10px; border: 1px solid #d1d5db; font-size: 12px; color: #4b5563;">
+        Mathematically balanced rubric enforcing comprehensive multi-dimensional evaluation.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 class="section-heading">3. Consensus & Weight Snapshot Policy</h2>
+<p class="section-body">
+  <strong>Auditability & Defense:</strong> When an expert submits scores, the active rubric weights are permanently frozen onto the evaluation record (<code>rubric_snapshot_json</code>). Any subsequent modification to the rubric creates a new immutable version without retroactively altering existing evaluations.
+</p>
+{% endblock %}

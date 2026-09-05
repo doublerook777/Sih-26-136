@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Milestone Payment Sanction & Escrow Release Order — {{ challenge.title | default(pilot.challenge_title | default('Payment Approval')) }}{% endblock %}
+
+{% block department %}{{ challenge.department | default(pilot.department | default('Department of Urban Water Supply')) }}{% endblock %}
+{% block district %}{{ pilot.location | default(challenge.district | default('District A')) }}{% endblock %}
+{% block doc_badge %}Statutory Milestone Payment Sanction & Release Order{% endblock %}
+
+{% block doc_ref %}DOC-PAY-SANCTION-{{ pilot.id | default('001') }}-M{{ milestone.seq | default('1') }}{% endblock %}
+
+{% block extra_meta %}
+<tr>
+  <td class="doc-meta-label">Associated Pilot:</td>
+  <td class="doc-meta-value"><strong>PILOT-{{ pilot.id | default('001') }}</strong></td>
+  <td class="doc-meta-label">Disbursement Tranche:</td>
+  <td class="doc-meta-value"><strong>Milestone {{ milestone.seq | default(1) }} (₹{{ "{:,}".format(milestone.amount | default(200000)) }})</strong></td>
+</tr>
+<tr>
+  <td class="doc-meta-label">Beneficiary Entity:</td>
+  <td class="doc-meta-value"><strong>{{ startup.name | default(pilot.startup_name | default('AquaSense Systems')) }}</strong></td>
+  <td class="doc-meta-label">Mock Transaction Reference:</td>
+  <td class="doc-meta-value"><code style="font-family: monospace; font-weight: bold; color: #1e3a8a;">{{ payment.mock_txn_ref | default('MOCK-PAY-0001') }}</code></td>
+</tr>
+{% endblock %}
+
+{% block content %}
+{% set pay = payment | default(milestone.payment | default({'status': 'released', 'amount': 200000, 'mock_txn_ref': 'MOCK-PAY-0001', 'released_at': '2026-09-19T16:00:00Z'})) %}
+
+<h2 class="section-heading">1. Sanction & Escrow Release Order</h2>
+<p class="section-body">
+  Sanction of the Competent Authority is hereby conveyed for the release of payment amounting to <strong>₹{{ "{:,}".format(pay.amount | default(milestone.amount | default(200000))) }}</strong> (Rupees Two Lakhs Only) to <strong>{{ startup.name | default(pilot.startup_name | default('AquaSense Systems')) }}</strong> in respect of verified Milestone {{ milestone.seq | default(1) }} under Innovation Pilot PILOT-{{ pilot.id | default('001') }}.
+</p>
+
+<table class="doc-meta-table" style="margin-top: 15px; margin-bottom: 25px;">
+  <tbody>
+    <tr>
+      <td class="doc-meta-label" style="width: 30%;">Milestone Title:</td>
+      <td class="doc-meta-value"><strong>{{ milestone.title | default('Prototype & Telemetry Setup') }}</strong></td>
+    </tr>
+    <tr>
+      <td class="doc-meta-label">Deliverable Verified:</td>
+      <td class="doc-meta-value">{{ milestone.deliverable | default('40-node sensor prototype deployed and calibrated in Zone 3') }}</td>
+    </tr>
+    <tr>
+      <td class="doc-meta-label">Validator Certification:</td>
+      <td class="doc-meta-value"><span style="color: #166534; font-weight: bold;">Certified Approved by N Sharma (Independent Technical Validator)</span></td>
+    </tr>
+    <tr>
+      <td class="doc-meta-label">Sanction Amount:</td>
+      <td class="doc-meta-value"><strong style="font-size: 16px; color: #1e3a8a;">₹{{ "{:,}".format(pay.amount | default(200000)) }}</strong></td>
+    </tr>
+    <tr>
+      <td class="doc-meta-label">Disbursement Status:</td>
+      <td class="doc-meta-value"><span style="display: inline-block; background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 4px; font-weight: bold;">RELEASED / PAID</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 class="section-heading">2. Statutory Compliance Notice</h2>
+<p class="section-body">
+  This disbursement is executed in strict compliance with General Financial Rules (GFR 2017) Rule 149/194 milestone-based innovation procurement protocols.
+</p>
+{% endblock %}

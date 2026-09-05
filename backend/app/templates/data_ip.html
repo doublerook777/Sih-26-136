@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Data Ownership & Intellectual Property Governance Terms — {{ challenge.title | default(pilot.challenge_title | default('Data & IP Terms')) }}{% endblock %}
+
+{% block department %}{{ challenge.department | default(pilot.department | default('Department of Urban Water Supply')) }}{% endblock %}
+{% block district %}{{ pilot.location | default(challenge.district | default('District A')) }}{% endblock %}
+{% block doc_badge %}Statutory Data Sovereignty & Intellectual Property Agreement{% endblock %}
+
+{% block doc_ref %}DOC-DATA-IP-{{ pilot.id | default('001') }}{% endblock %}
+
+{% block extra_meta %}
+<tr>
+  <td class="doc-meta-label">Associated Pilot:</td>
+  <td class="doc-meta-value"><strong>PILOT-{{ pilot.id | default('001') }}</strong> ({{ challenge.title | default('Innovation Pilot') }})</td>
+  <td class="doc-meta-label">Contracting Authority:</td>
+  <td class="doc-meta-value">{{ challenge.department | default('Department of Urban Development') }}</td>
+</tr>
+<tr>
+  <td class="doc-meta-label">Startup Entity:</td>
+  <td class="doc-meta-value"><strong>{{ startup.name | default(pilot.startup_name | default('AquaSense Systems')) }}</strong></td>
+  <td class="doc-meta-label">Statutory Governance:</td>
+  <td class="doc-meta-value">GFR 2017 & National Data Governance Framework Policy</td>
+</tr>
+{% endblock %}
+
+{% block content %}
+<h2 class="section-heading">1. Purpose & Legal Context</h2>
+<p class="section-body">
+  This Data Ownership and Intellectual Property Agreement governs all data access, generation, software licensing, and intellectual property rights arising from the deployment of innovation pilot <strong>PILOT-{{ pilot.id | default('001') }}</strong>.
+</p>
+
+<h2 class="section-heading">2. Pre-Existing Background Intellectual Property</h2>
+<p class="section-body">
+  All pre-existing intellectual property, including proprietary machine learning models, sensor firmware designs, patents, and software architectures owned by <strong>{{ startup.name | default(pilot.startup_name | default('AquaSense Systems')) }}</strong> prior to the Effective Date, shall remain the sole and exclusive property of the Startup Partner.
+</p>
+
+<h2 class="section-heading">3. Sovereign Ownership of Municipal & Public Data</h2>
+<p class="section-body">
+  All data ingested, measured, processed, or generated during the course of the pilot—including raw telemetry feeds, pressure logs, citizen usage patterns, and geographic coordinates—shall remain the sole, absolute, and unencumbered property of the <strong>{{ challenge.department | default('Contracting Authority') }}</strong> and the Government of India. The Startup Partner shall not sell, monetize, disclose, or transfer any pilot dataset to any third party without explicit prior written sanction.
+</p>
+
+<h2 class="section-heading">4. Pilot-Developed Foreground Intellectual Property</h2>
+<p class="section-body">
+  Custom integration scripts, application programming interfaces (APIs), and workflow adapters developed specifically for the Contracting Authority's legacy systems shall be licensed to the Authority under an irrevocable, royalty-free, perpetual, and enterprise-wide license for internal administrative use and replication across all state districts.
+</p>
+
+<h2 class="section-heading">5. Commercialization & National Replication Framework</h2>
+<p class="section-body">
+  In accordance with public procurement innovation protocols, the Startup Partner retains commercial rights to scale the underlying core product across other state departments, municipalities, and national procurement portals (GeM), subject to maintaining strict isolation and non-disclosure of the Authority's confidential infrastructure topology.
+</p>
+{% endblock %}

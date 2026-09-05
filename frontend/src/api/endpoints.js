@@ -1,0 +1,738 @@
+import { get, post, BASE_URL } from "./client";
+import {
+  challenges as initialMockChallenges,
+  startups as mockStartups,
+  users as mockUsers,
+  rubrics as mockRubrics,
+  mockApplicationsList,
+} from "../data/mockData";
+
+const USE_MOCK = import.meta.env.VITE_USE_MOCK === "true";
+
+// Mutable in-memory store for mock mode
+let mockChallenges = [...initialMockChallenges];
+let mockApplications = [...mockApplicationsList];
+let mockEvaluations = [];
+let mockPilots = [{
+  id: 1,
+  challenge_id: 1,
+  challenge_title: "Reduce Municipal Water Leakage in Distribution Networks",
+  startup_id: 3,
+  startup_name: "AquaSense Systems",
+  location: "District A",
+  duration_days: 90,
+  budget: 1000000,
+  paid_to_date: 200000,
+  objectives: "Reduce measured water loss by at least 10 percentage points.",
+  status: "active",
+  security_status: "passed",
+  security_checklist: { authentication: true, authorization: true, data_encryption: true, secure_api: true, data_backup: true, vulnerability_assessment: true, access_logging: true, incident_response_plan: true },
+  risk_level: "medium",
+  milestones: [
+    { id: 1, seq: 1, title: "Prototype", deliverable: "40-node sensor prototype", amount: 200000, due_date: "2026-09-20", status: "paid", evidence_text: "Deployed 40 nodes across pilot zone.", evidence_url: null, submitted_at: "2026-09-18T10:00:00Z", validation: { verdict: "approved", claimed_value: 25, verified_value: 22, validator_name: "N Sharma", notes: "Sampled 12 of 40 nodes.", validated_at: "2026-09-19T15:00:00Z" }, payment: { status: "released", amount: 200000, mock_txn_ref: "MOCK-PAY-0001", released_at: "2026-09-19T16:00:00Z" } },
+    { id: 2, seq: 2, title: "Field trial", deliverable: "Live field data for two weeks", amount: 300000, due_date: "2026-10-10", status: "validated", evidence_text: "Continuous telemetry captured for 14 days.", evidence_url: null, submitted_at: "2026-10-08T10:00:00Z", validation: { verdict: "approved", claimed_value: 95, verified_value: 94, validator_name: "N Sharma", notes: "Telemetry and field samples verified.", validated_at: "2026-10-09T15:00:00Z" }, payment: null },
+    { id: 3, seq: 3, title: "Deployment", deliverable: "Full pilot-zone coverage", amount: 300000, due_date: "2026-11-01", status: "submitted", evidence_text: "Coverage evidence submitted for validation.", evidence_url: null, claimed_value: 88, submitted_at: "2026-10-30T10:00:00Z", validation: null, payment: null },
+    { id: 4, seq: 4, title: "Final results", deliverable: "Verified KPI report", amount: 200000, due_date: "2026-11-25", status: "pending", evidence_text: null, evidence_url: null, submitted_at: null, validation: null, payment: null },
+  ],
+  kpis: [
+    { id: 1, name: "Water wastage", unit: "%", baseline: 30, target: 20, achieved: 22, category: "impact", direction: "lower_is_better", achievement: 80, met: false },
+    { id: 2, name: "Leak detection time", unit: "hours", baseline: 72, target: 6, achieved: 8, category: "technical", direction: "lower_is_better", achievement: 97, met: false },
+    { id: 3, name: "System uptime", unit: "%", baseline: 0, target: 95, achieved: 96, category: "technical", direction: "higher_is_better", achievement: 101.1, met: true },
+    { id: 4, name: "Cost per km monitored", unit: "INR", baseline: 40000, target: 25000, achieved: 24000, category: "cost", direction: "lower_is_better", achievement: 106.7, met: true },
+  ],
+  risks: [{ id: 1, description: "Sensor failure during monsoon", probability: 3, impact: 4, score: 12, mitigation: "Maintain sealed spare sensor units", owner: "Pilot delivery lead" }],
+  created_at: "2026-08-28T12:00:00Z",
+}];
+let mockProcurement = {
+  1: {
+    pilot_id: 1,
+    final_score: null,
+    decision: null,
+    checks: { pilot_validated: true, performance_threshold_met: true, security_approved: true, budget_available: true },
+    recommended_pathway: "GeM direct procurement",
+    justification: null,
+    replication: [{ district: "District A", status: "completed" }],
+  },
+};
+
+const MOCK_DOCUMENT_TEMPLATES = [
+  ["problem_statement", "Problem Statement", "Standard 15-section challenge specification.", "challenge"],
+  ["eligibility_criteria", "Eligibility Criteria", "Startup eligibility and screening requirements.", "challenge"],
+  ["evaluation_criteria", "Evaluation Criteria", "Expert scoring criteria and weights.", "challenge"],
+  ["pilot_agreement", "Pilot Agreement", "Agreement covering scope, IP, data, security, and termination.", "pilot"],
+  ["milestone_contract", "Milestone Contract", "Milestone deliverables and release conditions.", "pilot"],
+  ["data_ip", "Data and IP Agreement", "Data governance and intellectual-property clauses.", "pilot"],
+  ["security_checklist", "Security Checklist", "Cybersecurity control verification.", "pilot"],
+  ["risk_register", "Risk Register", "Risk scoring, ownership, and mitigation.", "pilot"],
+  ["kpi_report", "KPI Report", "Baseline, target, achieved, and attainment evidence.", "pilot"],
+  ["validation_report", "Validation Report", "Independent milestone validation record.", "milestone"],
+  ["payment_approval", "Payment Approval", "Validated milestone payment authorization.", "milestone"],
+  ["procurement_recommendation", "Procurement Recommendation", "Evidence-backed procurement pathway.", "pilot"],
+  ["scale_up_decision", "Scale-up Decision", "Final score and scale-up outcome.", "pilot"],
+].map(([doc_type, title, description, entity]) => ({ doc_type, title, description, entity }));
+
+const MOCK_STARTUP_NAMES = [
+  "AquaSense Systems", "PipeAI Technologies", "HydroTrack Telemetry",
+  "BlueGrid Innovations", "CivicFlow Labs", "JalDrishti Analytics",
+  "LeakLens Technologies", "UrbanPulse Systems", "FlowGuard Labs",
+  "AquaMetric Works", "District Digital Works", "SensorSpring Labs",
+  "Waterline Intelligence", "PublicGrid Systems", "CivicNode Technologies",
+  "InfraSight Labs", "FieldSignal Systems", "Municipal Metrics",
+  "OpenUtility Labs", "ImpactMesh Technologies",
+];
+
+function buildMockDiscovery(challengeId) {
+  const existing = mockApplications.filter((item) => Number(item.challenge_id) === Number(challengeId));
+  if (existing.length >= 20) return existing;
+
+  const challenge = mockChallenges.find((item) => item.id === Number(challengeId));
+  const baseId = mockApplications.reduce((max, item) => Math.max(max, item.application_id || 0), 0) + 1;
+  const generated = MOCK_STARTUP_NAMES.map((name, index) => {
+    const source = mockStartups[index % mockStartups.length] || {};
+    const eligible = index < 14;
+    const score = eligible ? Number((94 - index * 2.15).toFixed(1)) : 0;
+    const failedGate = index % 3 === 0 ? "required_certification" : index % 3 === 1 ? "min_experience_years" : "technology_overlap";
+    const eligibility_report = {
+      registered_startup: { passed: true, note: source.dpiit_number || `DIPP${48000 + index}` },
+      required_certification: { passed: eligible || failedGate !== "required_certification", note: eligible || failedGate !== "required_certification" ? "Required certification present" : "Required certification is missing" },
+      min_experience_years: { passed: eligible || failedGate !== "min_experience_years", note: eligible || failedGate !== "min_experience_years" ? "Experience threshold met" : "1 year experience, needs 2" },
+      technology_overlap: { passed: eligible || failedGate !== "technology_overlap", note: eligible || failedGate !== "technology_overlap" ? "3 required technologies matched" : "No required technology matched" },
+      budget_within_range: { passed: true, note: "Quote is within the published budget" },
+      security_baseline: { passed: true, note: "Security baseline self-declared" },
+    };
+    return {
+      application_id: baseId + index,
+      challenge_id: Number(challengeId),
+      challenge_title: challenge?.title || "Procurement Challenge",
+      startup_id: 100 + index,
+      startup_name: name,
+      eligible,
+      eligibility_report,
+      match_score: score,
+      match_breakdown: {
+        technology_match: eligible ? Math.max(52, 96 - index * 2) : 0,
+        domain_experience: eligible ? Math.max(48, 91 - index * 2) : 0,
+        past_projects: eligible ? Math.max(45, 87 - index * 2) : 0,
+        eligibility: eligible ? 100 : 0,
+        cost_fit: eligible ? Math.max(58, 89 - index) : 0,
+        scalability: eligible ? Math.max(55, 92 - index * 2) : 0,
+      },
+      rubric_snapshot: { technology_match: 30, domain_experience: 20, past_projects: 15, eligibility: 15, cost_fit: 10, scalability: 10 },
+      explanation: eligible
+        ? `${name} is ranked for relevant technology capability, public-sector delivery readiness, and a quote aligned with the pilot budget.`
+        : `${name} remains visible for auditability but cannot advance until the failed eligibility gate is resolved.`,
+      status: "screened",
+    };
+  });
+  mockApplications = [...mockApplications.filter((item) => Number(item.challenge_id) !== Number(challengeId)), ...generated];
+  return generated;
+}
+
+/**
+ * Base URL for document preview and assets
+ */
+export const BASE = BASE_URL;
+
+/**
+ * Authentication Endpoints
+ */
+export const login = async (email, password) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    const user = mockUsers.find(
+      (u) => u.email.toLowerCase() === (email || "").trim().toLowerCase()
+    );
+    if (!user || password !== "demo1234") {
+      const err = new Error("invalid email or password");
+      err.detail = "invalid email or password";
+      err.status = 401;
+      throw err;
+    }
+    return {
+      token: `mock-jwt-${user.id}-${Date.now()}`,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        department: user.department,
+        district: user.district,
+      },
+    };
+  }
+  return post("/auth/login", { email, password });
+};
+
+export const getMe = async () => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 50));
+    const rawUser = localStorage.getItem("user");
+    if (rawUser) {
+      try {
+        return JSON.parse(rawUser);
+      } catch {
+        // Fall back to default user
+      }
+    }
+    return mockUsers[0];
+  }
+  return get("/auth/me");
+};
+
+/**
+ * Rubrics Endpoints (Section 2)
+ */
+export const getRubrics = async (kind) => {
+  const kindVal = typeof kind === "object" && kind !== null ? kind.kind : kind;
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    return kindVal ? mockRubrics.filter((r) => r.kind === kindVal) : mockRubrics;
+  }
+  try {
+    return await get("/rubrics", kindVal ? { kind: kindVal } : undefined);
+  } catch (err) {
+    if (err.status === 404) {
+      return kindVal ? mockRubrics.filter((r) => r.kind === kindVal) : mockRubrics;
+    }
+    throw err;
+  }
+};
+
+export const getRubric = async (id) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 80));
+    const rubric = mockRubrics.find((r) => r.id === Number(id));
+    if (!rubric) {
+      const err = new Error("Rubric not found");
+      err.detail = "Rubric not found";
+      err.status = 404;
+      throw err;
+    }
+    return rubric;
+  }
+  return get(`/rubrics/${id}`);
+};
+
+/**
+ * Challenges Endpoints (Section 3)
+ */
+export const getChallenges = async (params = {}) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    let filtered = [...mockChallenges];
+    if (params.sector) {
+      filtered = filtered.filter(
+        (c) => c.sector?.toLowerCase() === params.sector.toLowerCase()
+      );
+    }
+    if (params.status) {
+      filtered = filtered.filter(
+        (c) => c.status?.toLowerCase() === params.status.toLowerCase()
+      );
+    }
+    return filtered;
+  }
+  return get("/challenges", params);
+};
+
+export const getChallenge = async (id) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    const item = mockChallenges.find((c) => c.id === Number(id));
+    if (!item) {
+      const err = new Error("Challenge not found");
+      err.detail = "Challenge not found";
+      err.status = 404;
+      throw err;
+    }
+    return item;
+  }
+  return get(`/challenges/${id}`);
+};
+
+export const getChallengeById = getChallenge;
+
+export const discoverStartups = async (challengeId) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 900));
+    return buildMockDiscovery(challengeId);
+  }
+  return post(`/challenges/${challengeId}/discover`);
+};
+
+export const getChallengeApplications = async (challengeId) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 120));
+    return mockApplications.filter((item) => Number(item.challenge_id) === Number(challengeId));
+  }
+  return get(`/challenges/${challengeId}/applications`);
+};
+
+export const shortlistApplication = async (applicationId) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 180));
+    const application = mockApplications.find((item) => item.application_id === Number(applicationId));
+    if (!application) throw Object.assign(new Error("Application not found"), { detail: "Application not found", status: 404 });
+    application.status = "shortlisted";
+    return { application_id: application.application_id, status: application.status };
+  }
+  return post(`/applications/${applicationId}/shortlist`);
+};
+
+export const selectApplication = async (applicationId) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 180));
+    const selected = mockApplications.find((item) => item.application_id === Number(applicationId));
+    if (!selected) throw Object.assign(new Error("Application not found"), { detail: "Application not found", status: 404 });
+    mockApplications.forEach((item) => {
+      if (item.challenge_id === selected.challenge_id) item.status = item.application_id === selected.application_id ? "selected" : "rejected";
+    });
+    const challenge = mockChallenges.find((item) => item.id === selected.challenge_id);
+    if (challenge) challenge.status = "selected";
+    return { application_id: selected.application_id, status: "selected", challenge_status: "selected" };
+  }
+  return post(`/applications/${applicationId}/select`);
+};
+
+export const createChallenge = async (body) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    const newId = mockChallenges.length > 0 ? Math.max(...mockChallenges.map((c) => c.id)) + 1 : 1;
+    const newChallenge = {
+      id: newId,
+      title: body.title || "Untitled Challenge",
+      raw_description: body.raw_description || "",
+      department: body.department || "Municipal Administration",
+      district: body.district || "District A",
+      sector: body.sector || "water",
+      budget: Number(body.budget) || 1000000,
+      timeline_days: Number(body.timeline_days) || 90,
+      deadline: body.deadline || new Date(Date.now() + 30 * 86400000).toISOString().split("T")[0],
+      status: body.status || "draft",
+      required_tech: Array.isArray(body.required_tech) ? body.required_tech : ["iot", "analytics"],
+      application_count: 0,
+      created_at: new Date().toISOString(),
+      match_rubric_id: body.match_rubric_id || 1,
+      evaluation_rubric_id: body.evaluation_rubric_id || 5,
+      statement: body.statement || {},
+      eligibility_rules: body.eligibility_rules || {
+        registered_startup: true,
+        required_certification: "ISO 9001:2015",
+        min_experience_years: 1,
+        min_technology_overlap: 1,
+        max_quote: Number(body.budget) || 1000000,
+        security_baseline: true,
+      },
+      kpi_targets: body.kpi_targets || [
+        {
+          name: "Core efficiency metric",
+          unit: "%",
+          baseline: 30,
+          target: 20,
+          category: "impact",
+          direction: "lower_is_better",
+        },
+      ],
+    };
+    mockChallenges = [newChallenge, ...mockChallenges];
+    return newChallenge;
+  }
+  return post("/challenges", body);
+};
+
+export const publishChallenge = async (id) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    const challenge = mockChallenges.find((c) => c.id === Number(id));
+    if (challenge) {
+      challenge.status = "open";
+    }
+    return challenge;
+  }
+  return post(`/challenges/${id}/publish`);
+};
+
+/**
+ * AI Statement Generator Endpoint (Section 3)
+ */
+export const generateStatement = async (body) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 1200));
+    const sectorFormatted = (body.sector || "water").replace("_", " ");
+    const formattedBudget = typeof body.budget === "number"
+      ? `INR ${body.budget.toLocaleString("en-IN")}`
+      : `INR ${body.budget || "10,00,000"}`;
+
+    return {
+      problem: `${body.title || "Challenge"}: ${body.raw_description || "Public sector operational bottleneck"}`,
+      background: `${body.department || "Municipal Department"} in ${body.district || "District A"} requires an outcome-focused innovation pilot in the ${sectorFormatted} sector.`,
+      existing_system: "Current service delivery relies on manual or periodic monitoring.",
+      identified_gap: "The current process lacks timely, measurable operational insight.",
+      desired_solution: "A scalable startup-led solution with measurable pilot outcomes.",
+      target_users: `Officers and field teams of ${body.department || "the department"}, plus affected citizens.`,
+      technical_requirements: "Interoperable, secure technology with auditable data outputs.",
+      constraints: `The solution must remain within the ${formattedBudget} pilot allocation and integrate safely with existing operations.`,
+      budget: `${formattedBudget}, released against verified milestones.`,
+      timeline: `${body.timeline_days || 90} days from pilot commencement.`,
+      expected_outcomes: "Measurable improvement in service quality, efficiency, and accountability.",
+      kpis: "Baseline, target, and achieved pilot metrics will be independently verified.",
+      eligibility_requirements: "Eligible startups must meet the challenge's published requirements.",
+      data_requirements: "Data must be securely stored, exportable, and available for audit.",
+      security_requirements: "Role-based access, encrypted data handling, and security review are required.",
+      generated_by: "template",
+    };
+  }
+  return post("/ai/generate-statement", body);
+};
+
+/**
+ * Applications Endpoints (Section 5)
+ */
+export const applyToChallenge = async (body) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    const challengeId = Number(body.challenge_id);
+    const existing = mockApplications.find((a) => Number(a.challenge_id) === challengeId);
+    if (existing) {
+      const err = new Error("Startup has already applied to this challenge");
+      err.detail = "Startup has already applied to this challenge";
+      err.status = 400;
+      throw err;
+    }
+
+    const matchedChallenge = mockChallenges.find((c) => c.id === challengeId);
+    const newApplication = {
+      application_id: mockApplications.length > 0 ? Math.max(...mockApplications.map((a) => a.application_id || 0)) + 1 : 1,
+      challenge_id: challengeId,
+      challenge_title: matchedChallenge?.title || "Pilot Challenge",
+      challenge_sector: matchedChallenge?.sector || "water",
+      startup_id: 3,
+      startup_name: "AquaSense",
+      quote: Number(body.quote),
+      pitch: body.pitch,
+      eligible: true,
+      eligibility_report: {
+        registered_startup: { passed: true, note: "DIPP12345" },
+        required_certification: { passed: true, note: "ISO 9001:2015 present" },
+        min_experience_years: { passed: true, note: "3 years active" },
+        technology_overlap: { passed: true, note: "Relevant capabilities verified" },
+        budget_within_range: { passed: true, note: "Quote within budget" },
+        security_baseline: { passed: true, note: "Self-declared" },
+      },
+      match_score: 91.2,
+      match_breakdown: {
+        technology_match: 94.0,
+        domain_experience: 90.0,
+        past_projects: 85.0,
+        eligibility: 100.0,
+        cost_fit: 80.0,
+        scalability: 92.0,
+      },
+      rubric_snapshot: {
+        technology_match: 30,
+        domain_experience: 20,
+        past_projects: 15,
+        eligibility: 15,
+        cost_fit: 10,
+        scalability: 10,
+      },
+      explanation: "Recommended because the startup has domain expertise, municipal infrastructure experience, and strong past performance.",
+      status: "applied",
+      applied_at: new Date().toISOString(),
+    };
+
+    mockApplications = [newApplication, ...mockApplications];
+    if (matchedChallenge) {
+      matchedChallenge.application_count = (matchedChallenge.application_count || 0) + 1;
+    }
+    return newApplication;
+  }
+  return post("/applications", body);
+};
+
+export const getMyApplications = async () => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    return [...mockApplications];
+  }
+  try {
+    return await get("/applications");
+  } catch (err) {
+    if (err.status === 404 || err.status === 405) {
+      return [...mockApplications];
+    }
+    throw err;
+  }
+};
+
+export const getApplication = async (applicationId) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 80));
+    const item = mockApplications.find((application) => application.application_id === Number(applicationId));
+    if (!item) throw Object.assign(new Error("Application not found"), { detail: "Application not found", status: 404 });
+    return item;
+  }
+  return get(`/applications/${applicationId}`);
+};
+
+export const submitEvaluation = async (body) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 650));
+    const rubric = mockRubrics.find((item) => item.kind === "evaluation" && item.is_default) || mockRubrics.find((item) => item.kind === "evaluation");
+    const weighted_total = Number(rubric.criteria.reduce((total, criterion) => total + body.scores[criterion.key] * criterion.weight / 100, 0).toFixed(1));
+    const record = {
+      id: mockEvaluations.length + 1,
+      application_id: Number(body.application_id),
+      expert_id: mockEvaluations.length + 4,
+      expert_name: `Demo Expert ${mockEvaluations.length + 1}`,
+      scores: body.scores,
+      weighted_total,
+      rubric_snapshot: rubric.weights,
+      comments: body.comments,
+      submitted_at: new Date().toISOString(),
+    };
+    mockEvaluations.push(record);
+    return record;
+  }
+  return post("/evaluations", body);
+};
+
+export const getEvaluations = async (applicationId) => {
+  if (USE_MOCK) {
+    const evaluations = mockEvaluations.filter((item) => item.application_id === Number(applicationId));
+    const average_total = evaluations.length ? Number((evaluations.reduce((sum, item) => sum + item.weighted_total, 0) / evaluations.length).toFixed(1)) : 0;
+    return { application_id: Number(applicationId), average_total, evaluation_count: evaluations.length, evaluations };
+  }
+  return get("/evaluations", { application_id: applicationId });
+};
+
+/**
+ * Pilot and governance endpoints (API sections 7 and 9)
+ */
+export const createPilot = async (body) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    const challenge = mockChallenges.find((item) => item.id === Number(body.challenge_id));
+    const application = mockApplications.find((item) => item.startup_id === Number(body.startup_id) && item.challenge_id === Number(body.challenge_id));
+    const total = body.milestones.reduce((sum, item) => sum + Number(item.amount), 0);
+    if (total !== Number(body.budget)) {
+      throw Object.assign(new Error("milestone amounts must sum to budget"), { detail: "milestone amounts must sum to budget", status: 400 });
+    }
+    const pilot = {
+      id: mockPilots.length + 1,
+      challenge_id: Number(body.challenge_id),
+      challenge_title: challenge?.title || "Pilot Challenge",
+      startup_id: Number(body.startup_id),
+      startup_name: application?.startup_name || "Selected Startup",
+      location: body.location,
+      duration_days: Number(body.duration_days),
+      budget: Number(body.budget),
+      paid_to_date: 0,
+      objectives: body.objectives,
+      status: "created",
+      security_status: "pending",
+      security_checklist: {},
+      risk_level: null,
+      milestones: body.milestones.map((item, index) => ({ id: index + 1, ...item, amount: Number(item.amount), status: "pending", evidence_text: null, evidence_url: null, submitted_at: null, validation: null, payment: null })),
+      kpis: body.kpis.map((item, index) => ({ id: index + 1, ...item, achieved: null, achievement: 0, met: false })),
+      risks: [],
+      created_at: new Date().toISOString(),
+    };
+    mockPilots.push(pilot);
+    return structuredClone(pilot);
+  }
+  return post("/pilots", body);
+};
+
+export const getPilot = async (id) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 140));
+    const pilot = mockPilots.find((item) => item.id === Number(id));
+    if (!pilot) throw Object.assign(new Error("Pilot not found"), { detail: "Pilot not found", status: 404 });
+    return structuredClone(pilot);
+  }
+  return get(`/pilots/${id}`);
+};
+
+export const getPilots = async () => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 120));
+    return mockPilots.map((pilot) => ({ id: pilot.id, challenge_title: pilot.challenge_title, startup_name: pilot.startup_name, location: pilot.location, status: pilot.status, budget: pilot.budget, paid_to_date: pilot.paid_to_date, milestones_total: pilot.milestones.length, milestones_paid: pilot.milestones.filter((item) => item.status === "paid").length, security_status: pilot.security_status, risk_level: pilot.risk_level }));
+  }
+  return get("/pilots");
+};
+
+export const runSecurityCheck = async (id, checklist) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 400));
+    const pilot = await getPilot(id);
+    const failed = Object.entries(checklist).filter(([, passed]) => !passed).map(([key]) => key);
+    const passed_count = Object.keys(checklist).length - failed.length;
+    const result = { pilot_id: pilot.id, security_status: failed.length ? "needs_remediation" : "passed", score: Number((passed_count / Object.keys(checklist).length * 100).toFixed(1)), passed_count, total_count: Object.keys(checklist).length, failed };
+    pilot.security_status = result.security_status;
+    pilot.security_checklist = { ...checklist };
+    return result;
+  }
+  return post(`/pilots/${id}/security-check`, checklist);
+};
+
+export const getRisks = async (id) => {
+  if (USE_MOCK) return [...(await getPilot(id)).risks];
+  return get(`/pilots/${id}/risks`);
+};
+
+export const addRisk = async (id, body) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    const pilot = await getPilot(id);
+    const risk = { id: pilot.risks.length + 1, ...body, probability: Number(body.probability), impact: Number(body.impact), score: Number(body.probability) * Number(body.impact) };
+    pilot.risks.push(risk);
+    const highest = Math.max(...pilot.risks.map((item) => item.score));
+    pilot.risk_level = highest >= 15 ? "high" : highest >= 8 ? "medium" : "low";
+    return risk;
+  }
+  return post(`/pilots/${id}/risks`, body);
+};
+
+export const getKpis = async (id) => {
+  if (USE_MOCK) return [...(await getPilot(id)).kpis];
+  return get(`/pilots/${id}/kpis`);
+};
+
+export const updateKpi = async (id, body) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 250));
+    const pilot = await getPilot(id);
+    const kpi = pilot.kpis.find((item) => item.id === Number(body.kpi_id));
+    if (!kpi) throw Object.assign(new Error("KPI not found"), { detail: "KPI not found", status: 404 });
+    kpi.achieved = Number(body.achieved);
+    const improvement = kpi.direction === "lower_is_better" ? (kpi.baseline - kpi.achieved) / Math.max(kpi.baseline - kpi.target, 0.0001) : (kpi.achieved - kpi.baseline) / Math.max(kpi.target - kpi.baseline, 0.0001);
+    kpi.achievement = Number(Math.max(0, Math.min(120, improvement * 100)).toFixed(1));
+    kpi.met = kpi.direction === "lower_is_better" ? kpi.achieved <= kpi.target : kpi.achieved >= kpi.target;
+    return kpi;
+  }
+  return post(`/pilots/${id}/kpis`, body);
+};
+
+/**
+ * Day 5 milestone and procurement lifecycle (API sections 8 and 10)
+ */
+export const submitMilestone = async (id, body) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 350));
+    const pilot = mockPilots.find((item) => item.milestones.some((milestone) => milestone.id === Number(id)));
+    const milestone = pilot?.milestones.find((item) => item.id === Number(id));
+    if (!milestone) throw Object.assign(new Error("Milestone not found"), { detail: "Milestone not found", status: 404 });
+    milestone.evidence_text = body.evidence_text;
+    milestone.evidence_url = body.evidence_url || null;
+    milestone.claimed_value = body.claimed_value == null ? null : Number(body.claimed_value);
+    milestone.submitted_at = new Date().toISOString();
+    milestone.status = "submitted";
+    milestone.validation = null;
+    return { id: milestone.id, status: milestone.status, submitted_at: milestone.submitted_at };
+  }
+  return post(`/milestones/${id}/submit`, body);
+};
+
+export const validateMilestone = async (id, body) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 350));
+    const pilot = mockPilots.find((item) => item.milestones.some((milestone) => milestone.id === Number(id)));
+    const milestone = pilot?.milestones.find((item) => item.id === Number(id));
+    if (!milestone) throw Object.assign(new Error("Milestone not found"), { detail: "Milestone not found", status: 404 });
+    const verdict = body.verdict;
+    milestone.status = verdict === "approved" ? "validated" : "rejected";
+    milestone.validation = { verdict, claimed_value: milestone.claimed_value ?? null, verified_value: body.verified_value == null ? null : Number(body.verified_value), validator_name: "N Sharma", notes: body.notes || null, validated_at: new Date().toISOString() };
+    return { milestone_id: milestone.id, status: milestone.status, validation: milestone.validation };
+  }
+  return post(`/milestones/${id}/validate`, body);
+};
+
+export const payMilestone = async (id) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    const pilot = mockPilots.find((item) => item.milestones.some((milestone) => milestone.id === Number(id)));
+    const milestone = pilot?.milestones.find((item) => item.id === Number(id));
+    if (!milestone) throw Object.assign(new Error("Milestone not found"), { detail: "Milestone not found", status: 404 });
+    if (milestone.status !== "validated" && milestone.status !== "paid") throw Object.assign(new Error("milestone must be validated before payment"), { detail: "milestone must be validated before payment", status: 400 });
+    if (!milestone.payment) {
+      milestone.payment = { status: "released", amount: milestone.amount, mock_txn_ref: `MOCK-PAY-${String(milestone.id).padStart(4, "0")}`, released_at: new Date().toISOString() };
+      pilot.paid_to_date += milestone.amount;
+    }
+    milestone.status = "paid";
+    return { milestone_id: milestone.id, status: milestone.status, payment: milestone.payment };
+  }
+  return post(`/milestones/${id}/pay`);
+};
+
+export const finalizePilot = async (id) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 600));
+    const result = { pilot_id: Number(id), category_scores: { technical: 89, cost: 86, impact: 96, scalability: 88, security: 100 }, weights: { technical: 30, cost: 20, impact: 20, scalability: 15, security: 15 }, final_score: 91.2, decision: "scale", justification: "Verified KPI performance, completed validation, and full security clearance support scale-up." };
+    mockProcurement[id] = { ...(mockProcurement[id] || {}), pilot_id: Number(id), final_score: result.final_score, decision: result.decision, checks: { pilot_validated: true, performance_threshold_met: true, security_approved: true, budget_available: true }, recommended_pathway: "GeM direct procurement", justification: result.justification, replication: mockProcurement[id]?.replication || [{ district: "District A", status: "completed" }] };
+    return result;
+  }
+  return post(`/pilots/${id}/finalize`);
+};
+
+export const getProcurement = async (id) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    return mockProcurement[id] || { pilot_id: Number(id), final_score: null, decision: null, checks: { pilot_validated: false, performance_threshold_met: false, security_approved: false, budget_available: true }, recommended_pathway: "Pending finalization", justification: null, replication: [] };
+  }
+  return get(`/pilots/${id}/procurement`);
+};
+
+export const replicatePilot = async (id, districts) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    const procurement = await getProcurement(id);
+    const existing = new Set(procurement.replication.map((item) => item.district.toLowerCase()));
+    districts.filter((district) => district.trim() && !existing.has(district.trim().toLowerCase())).forEach((district) => procurement.replication.push({ district: district.trim(), status: "planned" }));
+    mockProcurement[id] = procurement;
+    return { pilot_id: Number(id), replication: procurement.replication };
+  }
+  return post(`/pilots/${id}/replicate`, { districts });
+};
+
+export const getDocumentTemplates = async () => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 120));
+    return MOCK_DOCUMENT_TEMPLATES;
+  }
+  return get("/documents/templates");
+};
+
+/**
+ * Document URL Helper (Section 11)
+ * Returns plain URL string for <iframe> src, not JSON.
+ */
+export const documentUrl = (docType, id) => `${BASE}/documents/${docType}/${id}`;
+
+/**
+ * Fetches rendered document HTML through the authenticated client, since a bare
+ * <iframe src> to the backend can't carry the Authorization header and 401s.
+ */
+export const getDocumentHtml = (docType, id) => get(`/documents/${docType}/${id}`);
+
+/**
+ * Startups Endpoints (Section 4)
+ */
+export const getStartups = async (params = {}) => {
+  if (USE_MOCK) {
+    await new Promise((resolve) => setTimeout(resolve, 150));
+    let filtered = [...mockStartups];
+    if (params.sector) {
+      filtered = filtered.filter(
+        (s) => s.sector?.toLowerCase() === params.sector.toLowerCase()
+      );
+    }
+    if (params.tech) {
+      filtered = filtered.filter(
+        (s) => s.tech_tags?.some((t) => t.toLowerCase() === params.tech.toLowerCase())
+      );
+    }
+    return filtered;
+  }
+  return get("/startups", params);
+};

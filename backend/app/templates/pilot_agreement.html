@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block title %}Innovation Pilot Implementation Agreement — {{ challenge.title | default(pilot.challenge_title | default('Pilot Agreement')) }}{% endblock %}
+
+{% block department %}{{ challenge.department | default(pilot.department | default('Department of Urban Water Supply')) }}{% endblock %}
+{% block district %}{{ pilot.location | default(challenge.district | default('District A')) }}{% endblock %}
+{% block doc_badge %}Tripartite Innovation Pilot Agreement & Contract (16 Clauses){% endblock %}
+
+{% block doc_ref %}PILOT-{{ pilot.id | default('001') }}-AGREEMENT{% endblock %}
+
+{% block extra_meta %}
+<tr>
+  <td class="doc-meta-label">Pilot ID / Reference:</td>
+  <td class="doc-meta-value"><strong>PILOT-{{ pilot.id | default('001') }}</strong></td>
+  <td class="doc-meta-label">Total Pilot Budget:</td>
+  <td class="doc-meta-value"><strong>₹{{ "{:,}".format(pilot.budget | default(challenge.budget | default(1000000))) }}</strong></td>
+</tr>
+<tr>
+  <td class="doc-meta-label">Contracting Department:</td>
+  <td class="doc-meta-value">{{ challenge.department | default('Department of Urban Water Supply') }} ({{ pilot.location | default('District A') }})</td>
+  <td class="doc-meta-label">Selected Startup:</td>
+  <td class="doc-meta-value"><strong>{{ startup.name | default(pilot.startup_name | default('AquaSense Systems')) }}</strong></td>
+</tr>
+<tr>
+  <td class="doc-meta-label">Pilot Duration:</td>
+  <td class="doc-meta-value">{{ pilot.duration_days | default(90) }} Calendar Days</td>
+  <td class="doc-meta-label">Effective Date:</td>
+  <td class="doc-meta-value">{{ generated_at | default('2026-09-01') }}</td>
+</tr>
+{% endblock %}
+
+{% block content %}
+<p class="section-body" style="font-style: italic; margin-bottom: 25px;">
+  THIS INNOVATION PILOT IMPLEMENTATION AGREEMENT is entered into under the SIH 26136 Public Procurement Innovation Framework between the Contracting Government Authority and the Selected Startup Entity.
+</p>
+
+<h2 class="section-heading">Clause 1: Parties to the Agreement</h2>
+<p class="section-body">
+  This Agreement is executed between the <strong>{{ challenge.department | default('Department of Urban Development') }}</strong>, representing the Government of the State / Municipal Authority ("Authority"), and <strong>{{ startup.name | default(pilot.startup_name | default('AquaSense Systems')) }}</strong>, a DPIIT-recognized startup incorporated under Indian laws ("Startup Partner").
+</p>
+
+<h2 class="section-heading">Clause 2: Scope of Pilot Work</h2>
+<p class="section-body">
+  The Startup Partner shall deploy, operate, and calibrate its innovative technology solution to address the administrative bottleneck articulated under Challenge <strong>CHAL-{{ challenge.id | default(pilot.challenge_id | default('001')) }}</strong> (<em>{{ challenge.title | default('Smart Municipal Water Leak Detection') }}</em>) in the designated pilot area: <strong>{{ pilot.location | default('District A') }}</strong>.
+</p>
+
+<h2 class="section-heading">Clause 3: Deliverables & Specifications</h2>
+<p class="section-body">
+  The Startup Partner shall deliver: (a) Hardware/software integration with existing municipal telemetry, (b) Real-time analytical dashboard access for designated department officers, (c) Operational field telemetry for the duration of {{ pilot.duration_days | default(90) }} days, and (d) Final verified performance and impact report.
+</p>
+
+<h2 class="section-heading">Clause 4: Pilot Timeline & Phasing</h2>
+<p class="section-body">
+  The total duration of the innovation pilot is <strong>{{ pilot.duration_days | default(90) }} days</strong> from the Effective Date, structured strictly across four sequential delivery milestones.
+</p>
+
+<h2 class="section-heading">Clause 5: Milestone Schedule & Financial Allocation</h2>
+<p class="section-body">
+  Disbursements shall be released tranche-by-tranche strictly upon verified completion of milestones. Total milestone allocations sum exactly to the pilot budget of <strong>₹{{ "{:,}".format(pilot.budget | default(1000000)) }}</strong>.
+</p>
+
+{% set ms_list = milestones | default(pilot.milestones | default([])) %}
+<table class="doc-meta-table" style="margin-top: 15px; margin-bottom: 25px;">
+  <thead>
+    <tr style="background: #e5e7eb;">
+      <th style="padding: 10px; border: 1px solid #d1d5db; text-align: center; width: 10%;">Seq</th>
+      <th style="padding: 10px; border: 1px solid #d1d5db; text-align: left; width: 25%;">Milestone Title</th>
+      <th style="padding: 10px; border: 1px solid #d1d5db; text-align: left; width: 35%;">Deliverable & Evidence Standard</th>
+      <th style="padding: 10px; border: 1px solid #d1d5db; text-align: right; width: 15%;">Tranche Amount</th>
+      <th style="padding: 10px; border: 1px solid #d1d5db; text-align: center; width: 15%;">Due Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% if ms_list and ms_list | length > 0 %}
+      {% for m in ms_list %}
+      <tr>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: bold;">M{{ m.seq }}</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>{{ m.title }}</strong></td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;">{{ m.deliverable }}</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: right; font-weight: 600;">₹{{ "{:,}".format(m.amount) }}</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center;">{{ m.due_date }}</td>
+      </tr>
+      {% endfor %}
+    {% else %}
+      <tr>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: bold;">M1</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>Prototype & Hardware Setup</strong></td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;">40-node sensor prototype deployed and calibrated in Zone 3</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: right; font-weight: 600;">₹200,000</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center;">Day 20</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: bold;">M2</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>Field Trial & Data Logging</strong></td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;">2 weeks of continuous telemetry and automated leak alerts</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: right; font-weight: 600;">₹300,000</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center;">Day 45</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: bold;">M3</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>District Scale Deployment</strong></td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;">Full district pipeline telemetry with SCADA integration</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: right; font-weight: 600;">₹300,000</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center;">Day 70</td>
+      </tr>
+      <tr>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center; font-weight: bold;">M4</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;"><strong>Final Evaluation & KPI Audit</strong></td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb;">Independent validator report verifying achieved KPI thresholds</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: right; font-weight: 600;">₹200,000</td>
+        <td style="padding: 10px; border: 1px solid #e5e7eb; text-align: center;">Day 90</td>
+      </tr>
+    {% endif %}
+    <tr style="background: #f9fafb; font-weight: bold;">
+      <td colspan="3" style="padding: 10px; border: 1px solid #d1d5db;">TOTAL COMMITTED PILOT BUDGET</td>
+      <td style="padding: 10px; border: 1px solid #d1d5db; text-align: right; color: #1e3a8a;">₹{{ "{:,}".format(pilot.budget | default(1000000)) }}</td>
+      <td style="padding: 10px; border: 1px solid #d1d5db; text-align: center;">100% Allocated</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 class="section-heading">Clause 6: Payment Terms & Verification Conditions</h2>
+<p class="section-body">
+  No tranche shall be disbursed without an affirmative <code>approved</code> verdict from an empanelled Independent Validator. Payments shall be released within 5 business days of validation via digital escrow protocol.
+</p>
+
+<h2 class="section-heading">Clause 7: Key Performance Indicators (KPIs)</h2>
+<p class="section-body">
+  Pilot success is benchmarked against pre-agreed quantifiable metrics across Technical, Cost, Impact, and Scalability categories. Performance achievement shall be capped at 1.2x per indicator to prevent statistical skew.
+</p>
+
+<h2 class="section-heading">Clause 8: Data Ownership & Sovereignty</h2>
+<p class="section-body">
+  All municipal operational data, citizen telemetry, and sensor logs generated during the pilot remain the exclusive, sovereign property of the Contracting Authority.
+</p>
+
+<h2 class="section-heading">Clause 9: Intellectual Property (IP) Rights</h2>
+<p class="section-body">
+  Pre-existing background IP remains the property of the Startup Partner. The Authority receives an irrevocable, royalty-free, perpetual license to use the pilot outputs for municipal administration.
+</p>
+
+<h2 class="section-heading">Clause 10: Confidentiality & Non-Disclosure</h2>
+<p class="section-body">
+  Both parties agree to protect all sensitive infrastructure diagrams, network topologies, and proprietary algorithms from third-party disclosure.
+</p>
+
+<h2 class="section-heading">Clause 11: Cybersecurity & Baseline Compliance</h2>
+<p class="section-body">
+  The Startup Partner warrants continuous compliance with the 8-point cybersecurity baseline, including end-to-end payload encryption (AES-256), TLS 1.3 API endpoints, and immutable access audit logging.
+</p>
+
+<h2 class="section-heading">Clause 12: Risk Management & Mitigation Framework</h2>
+<p class="section-body">
+  All identified field risks must be recorded in the Pilot Risk Register with designated mitigation owners. Any high-risk trigger (Score > 15) necessitates an immediate joint remediation review.
+</p>
+
+<h2 class="section-heading">Clause 13: Liability & Indemnification</h2>
+<p class="section-body">
+  The Startup Partner indemnifies the Authority against third-party intellectual property infringement claims arising directly from the pilot deployment.
+</p>
+
+<h2 class="section-heading">Clause 14: Independent Milestone Validation Protocol</h2>
+<p class="section-body">
+  An independent technical validator shall physically and digitally verify claimed field metrics prior to tranche release.
+</p>
+
+<h2 class="section-heading">Clause 15: Early Termination & Dispute Resolution</h2>
+<p class="section-body">
+  The Authority may terminate the agreement upon 14 days written notice if two consecutive milestones fail validation or if a critical security breach occurs.
+</p>
+
+<h2 class="section-heading">Clause 16: Scale-Up Procurement & Replication Conditions</h2>
+<p class="section-body">
+  Upon achieving a composite final performance score of <strong>&ge; 85%</strong> (<code>SCALE</code>), the Startup Partner qualifies for streamlined procurement across adjacent municipal districts under GFR 2017 innovation provisions.
+</p>
+{% endblock %}

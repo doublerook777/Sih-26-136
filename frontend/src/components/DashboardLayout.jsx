@@ -1,4 +1,5 @@
-import { NavLink, Link } from "react-router-dom";
+import { NavLink, Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const roleNav = {
   government: [
@@ -6,20 +7,49 @@ const roleNav = {
     ["Create Challenge", "/government/create"],
     ["Challenges", "/government/challenges"],
     ["AI Recommendations", "/government/recommendations"],
+    ["Rubric Library", "/government/rubrics"],
     ["Pilot Dashboard", "/government/pilot"],
+    ["Template Library", "/government/templates"],
   ],
   startup: [
     ["Overview", "/startup"],
     ["Explore Challenges", "/startup/explore"],
     ["My Applications", "/startup/applications"],
+    ["My Pilot", "/startup/pilots"],
+  ],
+  expert: [
+    ["Overview", "/evaluator"],
+    ["Pending Reviews", "/evaluator/reviews"],
   ],
   evaluator: [
     ["Overview", "/evaluator"],
     ["Pending Reviews", "/evaluator/reviews"],
   ],
+  validator: [
+    ["Validation Queue", "/validator"],
+  ],
+  admin: [
+    ["Overview", "/government"],
+    ["Create Challenge", "/government/create"],
+    ["Rubric Library", "/government/rubrics"],
+    ["Template Library", "/government/templates"],
+  ],
 };
 
 export default function DashboardLayout({ role, title, subtitle, children }) {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const currentRole = role || user?.role || "government";
+  const navItems = roleNav[currentRole] || roleNav.government;
+
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+
+  const userInitial = (user?.name || currentRole || "U").charAt(0).toUpperCase();
+
   return (
     <div className="app-shell">
       <aside className="sidebar">
@@ -31,27 +61,48 @@ export default function DashboardLayout({ role, title, subtitle, children }) {
           </div>
         </Link>
 
-        <div className="role-chip">{role}</div>
+        <div className="role-chip" style={{ textTransform: "capitalize" }}>
+          {user?.role || currentRole}
+        </div>
 
         <nav className="side-nav">
-          {roleNav[role].map(([label, path]) => (
+          {navItems.map(([label, path]) => (
             <NavLink
               key={path}
               to={path}
-              end={path === `/${role}`}
-              className={({ isActive }) => isActive ? "side-link active" : "side-link"}
+              end={path === `/${currentRole}`}
+              className={({ isActive }) => (isActive ? "side-link active" : "side-link")}
             >
               {label}
             </NavLink>
           ))}
         </nav>
 
-        <div className="sidebar-footer">
-          <span className="avatar">A</span>
-          <div>
-            <strong>Demo User</strong>
-            <small>{role}@demo.in</small>
+        <div className="sidebar-footer" style={{ marginTop: "auto" }}>
+          <span className="avatar">{userInitial}</span>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <strong style={{ display: "block", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              {user?.name || "Demo User"}
+            </strong>
+            <small style={{ display: "block", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              {user?.email || `${currentRole}@demo.in`}
+            </small>
           </div>
+          <button
+            type="button"
+            onClick={handleLogout}
+            title="Log out"
+            style={{
+              background: "transparent",
+              border: "none",
+              color: "#8190b1",
+              fontSize: "1.1rem",
+              padding: "4px",
+              cursor: "pointer",
+            }}
+          >
+            ⎋
+          </button>
         </div>
       </aside>
 
@@ -62,7 +113,12 @@ export default function DashboardLayout({ role, title, subtitle, children }) {
             <h1>{title}</h1>
             <p className="muted">{subtitle}</p>
           </div>
-          <Link to="/" className="btn btn-ghost">Home</Link>
+          <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+            <Link to="/" className="btn btn-ghost">Home</Link>
+            <button type="button" onClick={handleLogout} className="btn btn-soft">
+              Logout
+            </button>
+          </div>
         </header>
 
         {children}

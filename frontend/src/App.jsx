@@ -1,4 +1,6 @@
 import { Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
@@ -6,29 +8,159 @@ import GovernmentDashboard from "./pages/GovernmentDashboard";
 import CreateChallenge from "./pages/CreateChallenge";
 import Recommendations from "./pages/Recommendations";
 import PilotDashboard from "./pages/PilotDashboard";
+import ChallengeList from "./pages/ChallengeList";
+import ChallengeDetail from "./pages/ChallengeDetail";
 import StartupDashboard from "./pages/StartupDashboard";
 import ExploreChallenges from "./pages/ExploreChallenges";
+import MyApplications from "./pages/MyApplications";
 import EvaluatorDashboard from "./pages/EvaluatorDashboard";
-import Placeholder from "./pages/Placeholder";
+import DocumentViewer from "./pages/DocumentViewer";
+import EvaluationForm from "./pages/EvaluationForm";
+import RubricLibrary from "./pages/RubricLibrary";
+import CreatePilot from "./pages/CreatePilot";
+import MilestoneSubmit from "./pages/MilestoneSubmit";
+import ValidatorDashboard from "./pages/ValidatorDashboard";
+import ScaleUpDecision from "./pages/ScaleUpDecision";
+import Replication from "./pages/Replication";
+import TemplateLibrary from "./pages/TemplateLibrary";
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Landing />} />
-      <Route path="/login" element={<Login />} />
+    <AuthProvider>
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<Landing />} />
+        <Route path="/login" element={<Login />} />
 
-      <Route path="/government" element={<GovernmentDashboard />} />
-      <Route path="/government/create" element={<CreateChallenge />} />
-      <Route path="/government/recommendations" element={<Recommendations />} />
-      <Route path="/government/pilot" element={<PilotDashboard />} />
-      <Route path="/government/challenges" element={<Placeholder role="government" title="Challenges" />} />
+        {/* Government Portal */}
+        <Route
+          path="/government"
+          element={
+            <ProtectedRoute allowedRoles={["government", "admin"]}>
+              <GovernmentDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/government/create"
+          element={
+            <ProtectedRoute allowedRoles={["government", "admin"]}>
+              <CreateChallenge />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/government/challenges"
+          element={
+            <ProtectedRoute allowedRoles={["government", "admin"]}>
+              <ChallengeList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/government/challenges/:id"
+          element={
+            <ProtectedRoute allowedRoles={["government", "admin"]}>
+              <ChallengeDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/government/recommendations"
+          element={
+            <ProtectedRoute allowedRoles={["government", "admin"]}>
+              <Recommendations />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/government/pilot"
+          element={
+            <ProtectedRoute allowedRoles={["government", "admin"]}>
+              <PilotDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/government/pilots/create" element={<ProtectedRoute allowedRoles={["government", "admin"]}><CreatePilot /></ProtectedRoute>} />
+        <Route path="/government/pilots/:id" element={<ProtectedRoute allowedRoles={["government", "admin"]}><PilotDashboard /></ProtectedRoute>} />
+        <Route path="/government/pilots/:id/decision" element={<ProtectedRoute allowedRoles={["government", "admin"]}><ScaleUpDecision /></ProtectedRoute>} />
+        <Route path="/government/pilots/:id/replication" element={<ProtectedRoute allowedRoles={["government", "admin"]}><Replication /></ProtectedRoute>} />
+        <Route path="/government/templates" element={<ProtectedRoute allowedRoles={["government", "admin"]}><TemplateLibrary /></ProtectedRoute>} />
+        <Route path="/government/rubrics" element={<ProtectedRoute allowedRoles={["government", "admin"]}><RubricLibrary /></ProtectedRoute>} />
 
-      <Route path="/startup" element={<StartupDashboard />} />
-      <Route path="/startup/explore" element={<ExploreChallenges />} />
-      <Route path="/startup/applications" element={<Placeholder role="startup" title="My Applications" />} />
+        {/* Startup Portal */}
+        <Route
+          path="/startup"
+          element={
+            <ProtectedRoute allowedRoles={["startup"]}>
+              <StartupDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/startup/explore"
+          element={
+            <ProtectedRoute allowedRoles={["startup"]}>
+              <ExploreChallenges />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/startup/applications"
+          element={
+            <ProtectedRoute allowedRoles={["startup"]}>
+              <MyApplications />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/startup/pilots" element={<ProtectedRoute allowedRoles={["startup"]}><PilotDashboard /></ProtectedRoute>} />
+        <Route path="/startup/pilots/:id" element={<ProtectedRoute allowedRoles={["startup"]}><PilotDashboard /></ProtectedRoute>} />
+        <Route path="/startup/pilots/:pilotId/milestones/:milestoneId/submit" element={<ProtectedRoute allowedRoles={["startup"]}><MilestoneSubmit /></ProtectedRoute>} />
 
-      <Route path="/evaluator" element={<EvaluatorDashboard />} />
-      <Route path="/evaluator/reviews" element={<Placeholder role="evaluator" title="Pending Reviews" />} />
-    </Routes>
+        {/* Shared Challenge Detail and Document Viewer Routes */}
+        <Route
+          path="/challenges/:id"
+          element={
+            <ProtectedRoute allowedRoles={["government", "startup", "expert", "validator", "admin"]}>
+              <ChallengeDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/documents/:docType/:id"
+          element={
+            <ProtectedRoute allowedRoles={["government", "startup", "expert", "validator", "admin"]}>
+              <DocumentViewer />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Evaluator Portal */}
+        <Route
+          path="/evaluator"
+          element={
+            <ProtectedRoute allowedRoles={["expert", "validator", "admin"]}>
+              <EvaluatorDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/evaluator/reviews"
+          element={
+            <ProtectedRoute allowedRoles={["expert", "validator", "admin"]}>
+              <EvaluatorDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/evaluator/applications/:applicationId/evaluate" element={<ProtectedRoute allowedRoles={["expert", "admin"]}><EvaluationForm /></ProtectedRoute>} />
+        <Route path="/validator" element={<ProtectedRoute allowedRoles={["validator", "admin"]}><ValidatorDashboard /></ProtectedRoute>} />
+
+        {/* Fallback 404 Route */}
+        <Route
+          path="*"
+          element={<div style={{ padding: "40px", textAlign: "center" }}>Page not found</div>}
+        />
+      </Routes>
+    </AuthProvider>
   );
 }
