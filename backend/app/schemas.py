@@ -131,6 +131,8 @@ class GenerateStatementOut(BaseModel):
     data_requirements: str
     security_requirements: str
     generated_by: Literal["llm", "template"]
+    suggested_sector: Optional[str] = None
+    suggested_required_tech: Optional[list] = None
 
 
 # ---------------------------------------------------------------------------

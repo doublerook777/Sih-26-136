@@ -15,6 +15,7 @@ from app.schemas import (
     ApplicationRead,
 )
 from app.scoring import resolve_rubric, score_application
+from app.ai.classify import suggest_sector_and_tech
 
 router = APIRouter(tags=["challenges"])
 
@@ -126,7 +127,11 @@ def generate_statement(
 ):
     # The deterministic fallback is deliberately used until Pair C's generator is available.
     # It preserves the contract's guarantee that this endpoint always returns 200.
-    return _template_statement(data)
+    result = _template_statement(data)
+    suggestion = suggest_sector_and_tech(data.raw_description, data.title)
+    result.suggested_sector = suggestion["sector"]
+    result.suggested_required_tech = suggestion["required_tech"]
+    return result
 
 
 @router.post("/challenges", response_model=ChallengeDetail, status_code=201)

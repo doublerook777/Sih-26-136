@@ -300,12 +300,25 @@ can review the generated statement.
   "eligibility_requirements": "...",
   "data_requirements": "...",
   "security_requirements": "...",
-  "generated_by": "llm"
+  "generated_by": "llm",
+  "suggested_sector": "water",
+  "suggested_required_tech": ["iot", "sensors", "analytics"]
 }
 ```
 `generated_by` is `"llm"` or `"template"`. **If the LLM fails or times out at 10 seconds,
 return the template version with `"template"` and a 200, never a 500.** The demo must not
 depend on an API key working.
+
+`suggested_sector` and `suggested_required_tech` are a deterministic keyword-based reading
+of `raw_description` (and `title`), computed independently of whatever `sector` was passed
+in the request — they exist so the Create Challenge screen can nudge its Sector and
+Required Technologies fields toward what the officer actually typed, since neither of
+those fields is otherwise derived from the free-text description. `suggested_sector` is
+one of the 4 fixed sectors or `null` if no keywords matched; `suggested_required_tech` is a
+(possibly empty) subset of the fixed 12-tag technology vocabulary used by the matching
+engine (`backend/app/engines/matching.py::TECH_VOCABULARY`). **These are suggestions only** —
+the frontend applies them to the form but the officer can still edit both fields before
+publishing, and neither field is required to be present for the response to be valid.
 
 ---
 
