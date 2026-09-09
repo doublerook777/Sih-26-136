@@ -21,7 +21,7 @@ def seed():
     with Session(engine) as session:
 
         # -------------------------
-        # USERS — the 7 documented demo accounts, from docs/API.md section 13
+        # USERS — the 8 documented demo accounts, from docs/API.md section 13
         # -------------------------
         with open("seed_data/users.json") as f:
             user_data = json.load(f)
