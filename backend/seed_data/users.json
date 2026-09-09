@@ -61,5 +61,176 @@
     "role": "validator",
     "department": null,
     "district": null
+  },
+  {
+    "id": 13,
+    "name": "BinSense IoT",
+    "email": "founder@binsense.in",
+    "password": "demo1234",
+    "role": "startup",
+    "department": null,
+    "district": null
+  },
+  {
+    "id": 102,
+    "name": "PipeAI Technologies",
+    "email": "founder@pipeai.in",
+    "password": "demo1234",
+    "role": "startup",
+    "department": null,
+    "district": null
+  },
+  {
+    "id": 103,
+    "name": "HydroTrack Telemetry",
+    "email": "founder@hydrotrack.in",
+    "password": "demo1234",
+    "role": "startup",
+    "department": null,
+    "district": null
+  },
+  {
+    "id": 104,
+    "name": "JalShuddh AI",
+    "email": "founder@jalshuddh.in",
+    "password": "demo1234",
+    "role": "startup",
+    "department": null,
+    "district": null
+  },
+  {
+    "id": 105,
+    "name": "AquaDrain Solutions",
+    "email": "founder@aquadrain.in",
+    "password": "demo1234",
+    "role": "startup",
+    "department": null,
+    "district": null
+  },
+  {
+    "id": 106,
+    "name": "MedQueue Technologies",
+    "email": "founder@medqueue.in",
+    "password": "demo1234",
+    "role": "startup",
+    "department": null,
+    "district": null
+  },
+  {
+    "id": 107,
+    "name": "VitalsEdge Diagnostics",
+    "email": "founder@vitalsedge.in",
+    "password": "demo1234",
+    "role": "startup",
+    "department": null,
+    "district": null
+  },
+  {
+    "id": 108,
+    "name": "ArogyaScan AI",
+    "email": "founder@arogyascan.in",
+    "password": "demo1234",
+    "role": "startup",
+    "department": null,
+    "district": null
+  },
+  {
+    "id": 109,
+    "name": "PharmChain Logistics",
+    "email": "founder@pharmchain.in",
+    "password": "demo1234",
+    "role": "startup",
+    "department": null,
+    "district": null
+  },
+  {
+    "id": 110,
+    "name": "NeuroBed Systems",
+    "email": "founder@neurobed.in",
+    "password": "demo1234",
+    "role": "startup",
+    "department": null,
+    "district": null
+  },
+  {
+    "id": 111,
+    "name": "TrashBotics Automation",
+    "email": "founder@trashbotics.in",
+    "password": "demo1234",
+    "role": "startup",
+    "department": null,
+    "district": null
+  },
+  {
+    "id": 113,
+    "name": "EcoFleet Routing",
+    "email": "founder@ecofleet.in",
+    "password": "demo1234",
+    "role": "startup",
+    "department": null,
+    "district": null
+  },
+  {
+    "id": 114,
+    "name": "BioGasGen Decentralized",
+    "email": "founder@biogasgen.in",
+    "password": "demo1234",
+    "role": "startup",
+    "department": null,
+    "district": null
+  },
+  {
+    "id": 115,
+    "name": "CleanHazard Systems",
+    "email": "founder@cleanhazard.in",
+    "password": "demo1234",
+    "role": "startup",
+    "department": null,
+    "district": null
+  },
+  {
+    "id": 116,
+    "name": "UrbanFlow Traffic AI",
+    "email": "founder@urbanflow.in",
+    "password": "demo1234",
+    "role": "startup",
+    "department": null,
+    "district": null
+  },
+  {
+    "id": 117,
+    "name": "EvGrid Dynamics",
+    "email": "founder@evgrid.in",
+    "password": "demo1234",
+    "role": "startup",
+    "department": null,
+    "district": null
+  },
+  {
+    "id": 118,
+    "name": "TransitPulse Mobility",
+    "email": "founder@transitpulse.in",
+    "password": "demo1234",
+    "role": "startup",
+    "department": null,
+    "district": null
+  },
+  {
+    "id": 119,
+    "name": "SafeStreet Vision",
+    "email": "founder@safestreet.in",
+    "password": "demo1234",
+    "role": "startup",
+    "department": null,
+    "district": null
+  },
+  {
+    "id": 120,
+    "name": "LastMile Micro",
+    "email": "founder@lastmile.in",
+    "password": "demo1234",
+    "role": "startup",
+    "department": null,
+    "district": null
   }
 ]
