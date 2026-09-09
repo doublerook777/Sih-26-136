@@ -20,20 +20,19 @@ the free Postgres database.
    statement generation — it's marked `sync: false` so Render won't ask for it until you
    fill it in. If you skip it, `POST /ai/generate-statement` just falls back to the
    template path (`"generated_by": "template"`), which is expected behavior, not a bug.
-5. First deploy finishes → open a shell for the `procuraai-backend` service (Render
-   dashboard → Shell tab) and run:
-   ```bash
-   python seed.py
-   ```
-   Re-run this after any redeploy that wipes the DB (it shouldn't, since Postgres persists
-   independently of the web service — but SQLite fallback would lose data on every deploy,
-   which is why Postgres is required here, not optional).
+5. The start command is `python seed.py && uvicorn app.main:app --host 0.0.0.0 --port
+   $PORT` — `seed.py` runs on every boot, before the server starts. This is deliberate:
+   **Render's free-tier web services have no Shell tab**, so there's no dashboard way to
+   run a one-off command against the deployed instance. Since `seed.py` is idempotent
+   (existing rows are left alone), running it on every startup is harmless and means the
+   DB is seeded automatically on first deploy with zero manual steps.
 6. Confirm `https://<your-service>.onrender.com/docs` loads.
 
 **Fallback** (per ROADMAP §2b): if Postgres setup fights you, delete the `databases:`
 block and the `DATABASE_URL` env var from `render.yaml` — the backend falls back to
-SQLite automatically. You'll need to re-run `seed.py` after every redeploy since Render's
-free tier wipes disk each time, but it'll survive a demo.
+SQLite automatically. Render's free tier wipes disk on every redeploy, but since
+`seed.py` runs as part of the start command, the DB is reseeded automatically each time
+too — no manual step needed either way.
 
 ## 2. Frontend — Vercel
 
