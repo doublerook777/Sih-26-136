@@ -61,5 +61,14 @@
     "role": "validator",
     "department": null,
     "district": null
+  },
+  {
+    "id": 13,
+    "name": "BinSense IoT",
+    "email": "founder@binsense.in",
+    "password": "demo1234",
+    "role": "startup",
+    "department": null,
+    "district": null
   }
 ]

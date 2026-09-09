@@ -901,6 +901,7 @@ Password for all of them: `demo1234`
 | expert2@procura.gov.in | expert | Prof M Iyer |
 | expert3@procura.gov.in | expert | Dr A Banerjee |
 | validator@procura.gov.in | validator | N Sharma |
+| founder@binsense.in | startup | BinSense IoT (startup id 12) |
 
 The Login screen's role selector prefills these so the demo needs no typing.
 

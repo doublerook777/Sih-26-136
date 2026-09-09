@@ -21,10 +21,15 @@ typing is needed (`docs/API.md` §13).
 | Email | Role | Use for |
 |---|---|---|
 | officer@water.gov.in | government | creating challenges, generating statements, shortlisting/selecting |
-| founder@aquasense.in | startup | applying to a challenge as AquaSense |
+| founder@aquasense.in | startup | applying to a challenge as AquaSense (water demo) |
+| founder@binsense.in | startup | applying to a challenge as BinSense IoT (waste demo) |
 | expert1@procura.gov.in / expert2@... / expert3@... | expert | scoring applications (3 experts → averaged score) |
 | validator@procura.gov.in | validator | validating milestone evidence |
 | admin@procura.gov.in | admin | rubrics, oversight |
+
+Only AquaSense and BinSense IoT have real logins — every other startup in
+`backend/seed_data/startups.json` is catalog data only (a competing applicant to show up in
+the ranked list), not something you can log into.
 
 ## Problem statements
 
