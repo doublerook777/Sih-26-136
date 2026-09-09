@@ -15,21 +15,36 @@ the first request after inactivity can take ~30-50s to wake up (`docs/DEPLOYMENT
 
 ## Login accounts
 
-Password for all: `demo1234`. The Login screen's role selector prefills these, so no
-typing is needed (`docs/API.md` §13).
+Password for all: `demo1234`. The Login screen's role selector prefills the government,
+expert, validator, admin, and AquaSense-as-startup accounts, so those need no typing
+(`docs/API.md` §13). For any other startup, click the "Startup" role button (which
+prefills AquaSense) and just overwrite the email field — the field is a plain editable
+input, password stays `demo1234`.
 
 | Email | Role | Use for |
 |---|---|---|
 | officer@water.gov.in | government | creating challenges, generating statements, shortlisting/selecting |
 | founder@aquasense.in | startup | applying to a challenge as AquaSense (water demo) |
-| founder@binsense.in | startup | applying to a challenge as BinSense IoT (waste demo) |
 | expert1@procura.gov.in / expert2@... / expert3@... | expert | scoring applications (3 experts → averaged score) |
 | validator@procura.gov.in | validator | validating milestone evidence |
 | admin@procura.gov.in | admin | rubrics, oversight |
 
-Only AquaSense and BinSense IoT have real logins — every other startup in
-`backend/seed_data/startups.json` is catalog data only (a competing applicant to show up in
-the ranked list), not something you can log into.
+### Every startup has a login
+
+All 20 seeded startups in `backend/seed_data/startups.json` now have a real account
+(`founder@<slug>.in`, password `demo1234`) — not just AquaSense. Full list in
+`docs/API.md` §13. Useful ones per demo scenario below:
+
+| Sector | Startups you can log in as |
+|---|---|
+| water | founder@aquasense.in, founder@pipeai.in, founder@hydrotrack.in, founder@jalshuddh.in, founder@aquadrain.in |
+| waste | founder@binsense.in, founder@cleanhazard.in, founder@trashbotics.in, founder@ecofleet.in, founder@biogasgen.in |
+| transport | founder@urbanflow.in, founder@safestreet.in, founder@evgrid.in, founder@transitpulse.in, founder@lastmile.in |
+| healthcare | founder@medqueue.in, founder@vitalsedge.in, founder@arogyascan.in, founder@pharmchain.in, founder@neurobed.in |
+
+This means you can actually log in as more than one applicant per challenge and show a
+real ranked list of independently-submitted applications, instead of narrating "imagine
+four more startups applied."
 
 ## Problem statements
 

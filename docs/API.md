@@ -896,14 +896,42 @@ Password for all of them: `demo1234`
 |---|---|---|
 | officer@water.gov.in | government | R Kumar |
 | admin@procura.gov.in | admin | Platform Admin |
-| founder@aquasense.in | startup | AquaSense (startup id 1) |
 | expert1@procura.gov.in | expert | Dr S Rao |
 | expert2@procura.gov.in | expert | Prof M Iyer |
 | expert3@procura.gov.in | expert | Dr A Banerjee |
 | validator@procura.gov.in | validator | N Sharma |
-| founder@binsense.in | startup | BinSense IoT (startup id 12) |
 
-The Login screen's role selector prefills these so the demo needs no typing.
+The Login screen's role selector prefills the government/expert/validator/admin accounts
+above, plus `founder@aquasense.in` for the startup role, so the demo mostly needs no
+typing. Every other startup below can still be logged into — just overwrite the prefilled
+email (password stays `demo1234`).
+
+### Startup accounts (all 20 seeded startups)
+
+Every startup in `backend/seed_data/startups.json` has a real login, `founder@<slug>.in`:
+
+| Email | Startup | Sector |
+|---|---|---|
+| founder@aquasense.in | AquaSense Systems | water |
+| founder@pipeai.in | PipeAI Technologies | water |
+| founder@hydrotrack.in | HydroTrack Telemetry | water |
+| founder@jalshuddh.in | JalShuddh AI | water |
+| founder@aquadrain.in | AquaDrain Solutions | water |
+| founder@medqueue.in | MedQueue Technologies | healthcare |
+| founder@vitalsedge.in | VitalsEdge Diagnostics | healthcare |
+| founder@arogyascan.in | ArogyaScan AI | healthcare |
+| founder@pharmchain.in | PharmChain Logistics | healthcare |
+| founder@neurobed.in | NeuroBed Systems | healthcare |
+| founder@trashbotics.in | TrashBotics Automation | waste |
+| founder@binsense.in | BinSense IoT | waste |
+| founder@ecofleet.in | EcoFleet Routing | waste |
+| founder@biogasgen.in | BioGasGen Decentralized | waste |
+| founder@cleanhazard.in | CleanHazard Systems | waste |
+| founder@urbanflow.in | UrbanFlow Traffic AI | transport |
+| founder@evgrid.in | EvGrid Dynamics | transport |
+| founder@transitpulse.in | TransitPulse Mobility | transport |
+| founder@safestreet.in | SafeStreet Vision | transport |
+| founder@lastmile.in | LastMile Micro | transport |
 
 ---
 
